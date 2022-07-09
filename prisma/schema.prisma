@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int         @id @default(autoincrement())
+  bio        String?
+  email      String      @unique
+  image      String?
+  password   String
+  username   String      @unique
+  favorites  Favorites[]
+  followedBy Follows[]   @relation("following")
+  following  Follows[]   @relation("follower")
+  comments   Comment[]
+  articles   Article[]
+
+  @@map("blog_user")
+}
+
+model Follows {
+  follower    User @relation("follower", fields: [followerId], references: [id])
+  followerId  Int  @map("follower_id")
+  following   User @relation("following", fields: [followingId], references: [id])
+  followingId Int  @map("following_id")
+
+  @@id([followerId, followingId])
+  @@map("blog_follows")
+}
+
+model Article {
+  id             Int            @id @default(autoincrement())
+  slug           String         @unique
+  title          String
+  description    String
+  body           String         @db.Text
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @default(now()) @map("updated_at")
+  tags           ArticlesTags[]
+  author         User           @relation(fields: [authorId], references: [id])
+  authorId       Int            @map("author_id")
+  favoritedBy    Favorites[]
+  comments       Comment[]
+  del            Boolean        @default(false)
+  favoritesCount Int            @default(0) @map("favorites_count")
+
+  @@map("blog_article")
+}
+
+model Favorites {
+  favoriting  Article @relation(fields: [articleId], references: [id])
+  articleId   Int     @map("article_id")
+  favoritedBy User    @relation(fields: [userId], references: [id])
+  userId      Int     @map("user_id")
+
+  @@id([articleId, userId])
+  @@map("blog_favorites")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+  body      String   @db.VarChar(1024)
+  article   Article  @relation(fields: [articleId], references: [id])
+  articleId Int      @map("article_id")
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int      @map("author_id")
+  del       Boolean  @default(false)
+
+  @@map("blog_comment")
+}
+
+model ArticlesTags {
+  article   Article @relation(fields: [articleId], references: [id])
+  articleId Int     @map("article_id")
+  tag       Tag     @relation(fields: [tagId], references: [id])
+  tagId     Int     @map("tag_id")
+
+  @@id([articleId, tagId])
+  @@map("blog_articles_tags")
+}
+
+model Tag {
+  id       Int            @id @default(autoincrement())
+  name     String         @unique
+  articles ArticlesTags[]
+
+  @@map("blog_tag")
+}

@@ -1,0 +1,18 @@
+mutation Login($input: UserLoginInput!) {
+  login(input: $input) {
+    username
+    token
+    email
+    bio
+    image
+  }
+}
+
+query CurrentUser {
+  currentUser {
+    username
+    email
+    bio
+    image
+  }
+}

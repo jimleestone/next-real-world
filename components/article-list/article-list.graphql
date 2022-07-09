@@ -1,0 +1,22 @@
+query Articles {
+  articles {
+    articles {
+      ...ArticlePreview
+    }
+    articlesCount
+  }
+}
+
+fragment ArticlePreview on Article {
+  slug
+  description
+  title
+  createdAt
+  author {
+    username
+    image
+  }
+  favorited
+  favoritesCount
+  tagList
+}
