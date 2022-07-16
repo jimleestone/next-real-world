@@ -1,15 +1,28 @@
 mutation Login($input: UserLoginInput!) {
   login(input: $input) {
+    id
     username
-    token
     email
     bio
     image
+    token
+  }
+}
+
+mutation Signup($input: UserSignupInput!) {
+  signup(input: $input) {
+    id
+    username
+    email
+    bio
+    image
+    token
   }
 }
 
 query CurrentUser {
   currentUser {
+    id
     username
     email
     bio

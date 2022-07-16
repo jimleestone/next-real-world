@@ -1,4 +1,6 @@
+import { useRouter } from 'next/router';
 import { range } from 'ramda';
+import CustomLink from '../common/CustomLink';
 
 export function Pagination({
   currentPage,
@@ -11,6 +13,7 @@ export function Pagination({
   itemsPerPage: number;
   onPageChange?: (index: number) => void;
 }) {
+  const { asPath } = useRouter();
   return (
     <nav>
       <ul className='pagination'>
@@ -21,9 +24,9 @@ export function Pagination({
               className={`page-item${currentPage !== index ? '' : ' active'}`}
               onClick={onPageChange && (() => onPageChange(index))}
             >
-              <a className='page-link' aria-label={`Go to page number ${index}`} href='#'>
+              <CustomLink className='page-link' aria-label={`Go to page number ${index}`} href={asPath} shallow={true}>
                 {index}
-              </a>
+              </CustomLink>
             </li>
           ))}
       </ul>

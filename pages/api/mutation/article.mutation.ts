@@ -1,4 +1,5 @@
 import { Article, Prisma } from '@prisma/client';
+import { AuthenticationError, UserInputError } from 'apollo-server-micro';
 import { arg, extendType, nonNull, stringArg } from 'nexus';
 import { Context } from '../context';
 import Utility from '../utils';
@@ -119,7 +120,7 @@ const ArticleMutation = extendType({
         });
       },
     });
-    t.nullable.field('favorite', {
+    t.nonNull.field('favorite', {
       type: 'Article',
       args: {
         slug: nonNull(stringArg()),
@@ -142,13 +143,13 @@ const ArticleMutation = extendType({
           });
         } catch (e) {
           if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            if (e.code === 'P2002') throw new Error('Had been favorited');
+            if (e.code === 'P2002') throw new UserInputError('Had been favorited');
           }
-          return null;
+          return origin;
         }
       },
     });
-    t.nullable.field('unfavorite', {
+    t.nonNull.field('unfavorite', {
       type: 'Article',
       args: {
         slug: nonNull(stringArg()),
@@ -175,9 +176,9 @@ const ArticleMutation = extendType({
           });
         } catch (e) {
           if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            if (e.code === 'P2017') throw new Error('Had been unfavorited');
+            if (e.code === 'P2017') throw new UserInputError('Had been unfavorited');
           }
-          return null;
+          return origin;
         }
       },
     });
@@ -186,12 +187,12 @@ const ArticleMutation = extendType({
 
 export async function checkArticle(ctx: Context, slug: string) {
   const origin = await ctx.prisma.article.findUnique({ where: { slug } });
-  if (!origin || origin.del) throw new Error('Article not found');
+  if (!origin || origin.del) throw new UserInputError('Article not found');
   return origin;
 }
 
 function checkArticleOwner(ctx: Context, article: Article) {
-  if (ctx.currentUser!.id !== article.authorId) throw new Error('Unauthorized');
+  if (ctx.currentUser!.id !== article.authorId) throw new AuthenticationError('unauthorized');
 }
 
 export default ArticleMutation;

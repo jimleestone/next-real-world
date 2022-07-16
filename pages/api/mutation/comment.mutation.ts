@@ -1,4 +1,5 @@
 import { Comment } from '@prisma/client';
+import { AuthenticationError, UserInputError } from 'apollo-server-micro';
 import { arg, extendType, intArg, nonNull, stringArg } from 'nexus';
 import { Context } from '../context';
 import { checkArticle } from './article.mutation';
@@ -50,12 +51,12 @@ const CommentMutation = extendType({
 
 async function checkComment(ctx: Context, id: number) {
   const origin = await ctx.prisma.comment.findUnique({ where: { id } });
-  if (!origin || origin.del) throw new Error('Comment not found');
+  if (!origin || origin.del) throw new UserInputError('Comment not found');
   return origin;
 }
 
 function checkCommentOwner(ctx: Context, comment: Comment) {
-  if (ctx.currentUser!.id !== comment.authorId) throw new Error('Unauthorized');
+  if (ctx.currentUser!.id !== comment.authorId) throw new AuthenticationError('unauthorized');
 }
 
 export default CommentMutation;

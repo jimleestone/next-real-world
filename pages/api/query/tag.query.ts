@@ -12,8 +12,10 @@ const TagQuery = extendType({
             _count: { select: { articles: true } },
           },
           orderBy: { articles: { _count: 'desc' } },
+          skip: 0,
+          take: 39,
         });
-        return tags.map((t) => t.name);
+        return tags.filter((t) => t._count.articles != 0).map((t) => t.name);
       },
     });
   },

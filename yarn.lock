@@ -2281,6 +2281,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/crypto-hash@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@types/crypto-hash@npm:1.1.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Fcrypto-hash%2F-%2Fcrypto-hash-1.1.2.tgz"
+  dependencies:
+    crypto-hash: "*"
+  checksum: 622c1a7fef47b485bb94fd8a42d95ba0a1b0dca79fd4937a1e282412736a4f7f530959e71439a413b8f76d3b2ae3de079d3fa9d5e2426112514733fbda61b889
+  languageName: node
+  linkType: hard
+
 "@types/date-fns@npm:^2.6.0":
   version: 2.6.0
   resolution: "@types/date-fns@npm:2.6.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Fdate-fns%2F-%2Fdate-fns-2.6.0.tgz"
@@ -4463,6 +4472,13 @@ __metadata:
     undici: 5.5.1
     web-streams-polyfill: ^3.2.0
   checksum: 76927df814f5ac8f5656d69099d20f9970acdfe309a46908913c68e17cf16f4454eeeae3dfc6e9f6fb9efddf1c11a10b805a97d02dedd258efcd3e575e09bc3f
+  languageName: node
+  linkType: hard
+
+"crypto-hash@npm:*, crypto-hash@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "crypto-hash@npm:2.0.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fcrypto-hash%2F-%2Fcrypto-hash-2.0.1.tgz"
+  checksum: 08d304024166ef4856d71ec16f9429dfe6ddd8126d07b2a798e0f586eb60106c0f05b210b6d6f6f8189f8304ec33e7f1a880d5a38c2fadca19c4801fb5bd3e36
   languageName: node
   linkType: hard
 
@@ -8398,6 +8414,7 @@ __metadata:
     "@graphql-codegen/typescript-react-apollo": 3.2.17
     "@prisma/client": ^4.0.0
     "@types/bcryptjs": ^2.4.2
+    "@types/crypto-hash": ^1.1.2
     "@types/date-fns": ^2.6.0
     "@types/jsonwebtoken": ^8.5.8
     "@types/jwk-to-pem": ^2.0.1
@@ -8411,6 +8428,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.29.0
     apollo-server-micro: ^3.9.0
     bcryptjs: ^2.4.3
+    crypto-hash: ^2.0.1
     date-fns: ^2.28.0
     eslint: 8.19.0
     eslint-config-next: 12.2.0

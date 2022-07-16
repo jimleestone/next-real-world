@@ -1,49 +1,51 @@
+import { useApolloClient } from '@apollo/client';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { ContainerPage } from '../components/common/ContainerPage';
 import { GenericForm } from '../components/common/GenericForm';
-import { UserUpdateInput, useUpdateUserMutation } from '../generated/graphql';
-import { useAuth } from '../lib/hooks/use-auth';
+import { ProfileDocument, UserUpdateInput, useUpdateUserMutation } from '../generated/graphql';
+import { useCurrentUser } from '../lib/hooks/use-current-user';
+import { useErrorsHandler } from '../lib/hooks/use-errors-handler';
+import { useToken } from '../lib/hooks/use-token';
 import { buildGenericFormField } from '../lib/utils/genericFormField';
 
 const Settings: NextPage = () => {
   const router = useRouter();
-  const { user, loadUser, logout } = useAuth();
-  // useEffect(() => {
-  //   console.log(user);
-  //   if (!user) router.push('/login');
-  // }, []);
-  const [input, setInput] = useState<UserUpdateInput>({
-    username: user?.username || '',
-    email: user?.email || '',
-    bio: user?.bio,
-    image: user?.image,
+  const client = useApolloClient();
+  const { user } = useCurrentUser();
+  const { handleChangeToken } = useToken();
+  const [input, setInput] = useState<UserUpdateInput>({ username: '', email: '', bio: '', image: '' });
+  const { errors, handleErrors } = useErrorsHandler();
+
+  useEffect(() => {
+    if (user) {
+      const { username, email, bio, image } = user;
+      setInput({ username, email, bio, image });
+    }
+  }, [user]);
+
+  const originUsername = user?.username;
+  const [updateUser, { loading }] = useUpdateUserMutation({
+    refetchQueries: [{ query: ProfileDocument, variables: { username: input.username } }],
+    onError: (err) => handleErrors(err),
   });
 
   function onUpdateField(name: string, value: string) {
     setInput({ ...input, [name as keyof UserUpdateInput]: value });
   }
 
-  const [updateUser, { loading }] = useUpdateUserMutation();
   function onUpdateSettings() {
-    return (ev: React.FormEvent) => {
+    return async (ev: React.FormEvent) => {
       ev.preventDefault();
-      updateUser({ variables: { input } })
-        .then(({ data }) => {
-          if (data) {
-            loadUser(data.updateUser);
-            setInput({ ...input, ...data.updateUser });
-          }
-        })
-        .catch((err) => console.log(err));
+      await updateUser({ variables: { input } });
     };
   }
-
   function onLogout() {
-    return (ev: React.FormEvent) => {
-      ev.preventDefault();
-      logout();
+    return async () => {
+      handleChangeToken('');
+      await client.resetStore();
+      await router.replace('/');
     };
   }
 
@@ -55,6 +57,7 @@ const Settings: NextPage = () => {
 
           <GenericForm
             disabled={loading}
+            errors={errors}
             formObject={{ ...input }}
             submitButtonText='Update Settings'
             onChange={onUpdateField}
@@ -75,12 +78,16 @@ const Settings: NextPage = () => {
 
           <hr />
           <button className='btn btn-outline-danger' onClick={onLogout()}>
-            Or click here to logout.
+            Or click here to logout.()
           </button>
         </div>
       </ContainerPage>
     </div>
   );
 };
+
+export function getStaticProps() {
+  return { props: { protected: true } };
+}
 
 export default Settings;

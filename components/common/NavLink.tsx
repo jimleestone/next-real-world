@@ -4,14 +4,16 @@ import { UrlObject } from 'url';
 
 interface NavLinkProps {
   href: string | UrlObject;
-  as?: string;
+  as?: string | UrlObject;
+  shallow?: boolean;
   children: React.ReactNode;
 }
 
-const NavLink = ({ href, as, children }: NavLinkProps) => {
+const NavLink = ({ href, as, shallow, children }: NavLinkProps) => {
   const { asPath } = useRouter();
+
   return (
-    <Link href={href} as={as} passHref>
+    <Link href={href} as={as} passHref shallow={shallow}>
       <a className={`nav-link ${asPath === href && `active`}`}>{children}</a>
     </Link>
   );

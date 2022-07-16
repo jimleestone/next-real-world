@@ -1,45 +1,40 @@
-import { Prisma, PrismaClient } from '@prisma/client';
-import { ApolloServer } from 'apollo-server-micro';
+import { ApolloServerPluginCacheControl } from 'apollo-server-core';
+import { ApolloError, ApolloServer, AuthenticationError } from 'apollo-server-micro';
 import Cors from 'micro-cors';
+import prisma from '../../lib/prisma';
 import { Context } from './context';
 import { schema } from './schema';
 import Utility from './utils';
-
-const prisma = new PrismaClient<Prisma.PrismaClientOptions, 'query' | 'error'>({
-  log: [
-    {
-      emit: 'event',
-      level: 'query',
-    },
-    {
-      emit: 'event',
-      level: 'error',
-    },
-    {
-      emit: 'stdout',
-      level: 'info',
-    },
-    {
-      emit: 'stdout',
-      level: 'warn',
-    },
-  ],
-});
-
-prisma.$on('query', (event) => {
-  console.log(`[query]: ${event.query}, [params]: ${event.params}`);
-});
 
 const cors = Cors();
 
 const server = new ApolloServer({
   schema: schema,
   context: ({ req }): Context => {
-    const id = Utility.loadCurrentUser(req.headers.authorization);
-    return {
-      prisma,
-      currentUser: !!id ? { id } : undefined,
-    };
+    try {
+      const id = Utility.loadCurrentUser(req.headers.authorization);
+      return { prisma, currentUser: id ? { id } : undefined };
+    } catch {
+      return { prisma };
+    }
+  },
+  csrfPrevention: true,
+  introspection: process.env.NODE_ENV === 'development',
+  cache: 'bounded',
+  plugins: [ApolloServerPluginCacheControl({ defaultMaxAge: 20 })],
+  persistedQueries: { ttl: 300 },
+  formatError: (err) => {
+    if (
+      err.message === 'Not authorized' // nexus authorize plugin error message
+    ) {
+      return new AuthenticationError('unauthorized', {
+        path: err.path,
+        locations: err.locations,
+      });
+    } else if (err.message.includes('prisma')) {
+      return new ApolloError('Internal Server Error', 'INTERNAL_SERVER_ERROR', { path: err.path });
+    }
+    return err;
   },
 });
 const startServer = server.start();

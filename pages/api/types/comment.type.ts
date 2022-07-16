@@ -5,7 +5,7 @@ import { Context } from '../context';
 const Comment = objectType({
   name: 'Comment',
   definition(t) {
-    t.nonNull.int('id');
+    t.implements('Node');
     t.nonNull.string('body');
     t.nonNull.field('createdAt', { type: 'DateTime' });
     t.nonNull.field('updatedAt', { type: 'DateTime' });
@@ -30,4 +30,5 @@ const CommentInput = inputObjectType({
   },
 });
 
-export default [Comment, CommentInput];
+const CommentTypes = [Comment, CommentInput];
+export default CommentTypes;

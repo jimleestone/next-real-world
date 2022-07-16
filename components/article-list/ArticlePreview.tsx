@@ -1,31 +1,27 @@
 import { format } from 'date-fns';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArticlePreviewFragment } from '../../generated/graphql';
+import CustomImage from '../common/CustomImage';
+import FavoritesButton from '../common/FavoritesButton';
 import TagList from '../common/TagList';
 
-export function ArticlePreview({
-  article: {
+export function ArticlePreview({ article }: { article: ArticlePreviewFragment }) {
+  const {
     createdAt,
     favorited,
-    favoritesCount,
     slug,
     title,
     description,
     tagList,
     author: { username, image },
-  },
-  onFavoriteToggle,
-}: {
-  article: ArticlePreviewFragment;
-  onFavoriteToggle?: () => void;
-}) {
+  } = article;
+
   return (
     <div className='article-preview'>
       <div className='article-meta'>
         <Link href={{ pathname: '/profile/[username]', query: { username } }} passHref>
           <a className='author'>
-            <Image src={image || ' '} alt={username} height={32} width={32} />
+            <CustomImage src={image} alt={username} height={32} width={32} />
           </a>
         </Link>
         <div className='info'>
@@ -34,14 +30,10 @@ export function ArticlePreview({
           </Link>
           <span className='date'>{format(new Date(createdAt), 'PP')}</span>
         </div>
-        <button
+        <FavoritesButton
+          article={article}
           className={`btn btn-sm pull-xs-right ${favorited ? 'btn-primary' : 'btn-outline-primary'}`}
-          aria-label='Toggle Favorite'
-          disabled={false}
-          onClick={onFavoriteToggle}
-        >
-          <i className='ion-heart'></i> {favoritesCount}
-        </button>
+        />
       </div>
       <Link href={{ pathname: '/article/[slug]', query: { slug } }} passHref>
         <a className='preview-link'>

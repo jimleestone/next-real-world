@@ -1,31 +1,41 @@
+import { useApolloClient } from '@apollo/client';
 import { NextPage } from 'next';
 import Link from 'next/link';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { ContainerPage } from '../components/common/ContainerPage';
 import { GenericForm } from '../components/common/GenericForm';
 import { useLoginMutation, UserLoginInput } from '../generated/graphql';
-import { useAuth } from '../lib/hooks/use-auth';
+import { useErrorsHandler } from '../lib/hooks/use-errors-handler';
+import { useToken } from '../lib/hooks/use-token';
 import { buildGenericFormField } from '../lib/utils/genericFormField';
 
 const Login: NextPage = () => {
+  const router = useRouter();
+  const client = useApolloClient();
+  const { handleChangeToken } = useToken();
+  const { errors, handleErrors } = useErrorsHandler();
+
   const [input, setInput] = useState<UserLoginInput>({ email: '', password: '' });
+  const [login, { loading }] = useLoginMutation({
+    onCompleted: async (data) => {
+      if (data) {
+        handleChangeToken(data.login.token as string);
+        await client.resetStore();
+        await router.replace('/');
+      }
+    },
+    onError: (err) => handleErrors(err),
+  });
+
   function onUpdateField(name: string, value: string) {
     setInput({ ...input, [name as keyof UserLoginInput]: value });
   }
-  const { loadUser } = useAuth();
-  const [login, { loading }] = useLoginMutation();
+
   function onLogin() {
     return async (ev: React.FormEvent) => {
       ev.preventDefault();
-      await login({ variables: { input } })
-        .then(({ data }) => {
-          if (data) {
-            loadUser(data.login);
-            Router.push('/');
-          }
-        })
-        .catch((err) => console.log(err));
+      await login({ variables: { input } });
     };
   }
 
@@ -40,6 +50,7 @@ const Login: NextPage = () => {
 
           <GenericForm
             disabled={loading}
+            errors={errors}
             formObject={input as unknown as Record<string, string>}
             submitButtonText='Sign in'
             onChange={onUpdateField}
@@ -54,5 +65,9 @@ const Login: NextPage = () => {
     </div>
   );
 };
+
+export function getStaticProps() {
+  return { props: { guestOnly: true } };
+}
 
 export default Login;

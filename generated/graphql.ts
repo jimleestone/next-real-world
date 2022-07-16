@@ -16,7 +16,7 @@ export type Scalars = {
   DateTime: any;
 };
 
-export type Article = {
+export type Article = Node & {
   __typename?: 'Article';
   author: Profile;
   body: Scalars['String'];
@@ -25,6 +25,7 @@ export type Article = {
   description: Scalars['String'];
   favorited: Scalars['Boolean'];
   favoritesCount: Scalars['Int'];
+  id: Scalars['Int'];
   slug: Scalars['String'];
   tagList: Array<Scalars['String']>;
   title: Scalars['String'];
@@ -38,22 +39,23 @@ export type ArticleInput = {
   title: Scalars['String'];
 };
 
-export type Articles = {
-  __typename?: 'Articles';
-  articles: Array<Article>;
-  articlesCount: Scalars['Int'];
-};
-
-export type AuthUser = {
+export type AuthUser = BaseUser & Node & {
   __typename?: 'AuthUser';
   bio?: Maybe<Scalars['String']>;
   email: Scalars['String'];
+  id: Scalars['Int'];
   image?: Maybe<Scalars['String']>;
   token?: Maybe<Scalars['String']>;
   username: Scalars['String'];
 };
 
-export type Comment = {
+export type BaseUser = {
+  bio?: Maybe<Scalars['String']>;
+  image?: Maybe<Scalars['String']>;
+  username: Scalars['String'];
+};
+
+export type Comment = Node & {
   __typename?: 'Comment';
   author: Profile;
   body: Scalars['String'];
@@ -72,12 +74,12 @@ export type Mutation = {
   createComment: Comment;
   deleteArticle: Article;
   deleteComment: Comment;
-  favorite?: Maybe<Article>;
+  favorite: Article;
   follow: Profile;
   login: AuthUser;
   signup?: Maybe<AuthUser>;
-  unFollow?: Maybe<Profile>;
-  unfavorite?: Maybe<Article>;
+  unFollow: Profile;
+  unfavorite: Article;
   updateArticle: Article;
   updateUser: AuthUser;
 };
@@ -144,7 +146,11 @@ export type MutationUpdateUserArgs = {
   input: UserUpdateInput;
 };
 
-export type Profile = {
+export type Node = {
+  id: Scalars['Int'];
+};
+
+export type Profile = BaseUser & {
   __typename?: 'Profile';
   bio?: Maybe<Scalars['String']>;
   following: Scalars['Boolean'];
@@ -155,10 +161,12 @@ export type Profile = {
 export type Query = {
   __typename?: 'Query';
   article?: Maybe<Article>;
-  articles: Articles;
+  articles: Array<Article>;
+  articlesCount: Scalars['Int'];
   comments: Array<Comment>;
   currentUser: AuthUser;
-  feed: Articles;
+  feed: Array<Article>;
+  feedCount: Scalars['Int'];
   profile?: Maybe<Profile>;
   tags: Array<Scalars['String']>;
 };
@@ -174,6 +182,13 @@ export type QueryArticlesArgs = {
   favorited?: InputMaybe<Scalars['String']>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+  tag?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryArticlesCountArgs = {
+  author?: InputMaybe<Scalars['String']>;
+  favorited?: InputMaybe<Scalars['String']>;
   tag?: InputMaybe<Scalars['String']>;
 };
 
@@ -212,50 +227,176 @@ export type UserUpdateInput = {
   username: Scalars['String'];
 };
 
-export type ArticlesQueryVariables = Exact<{ [key: string]: never; }>;
+export type ArticlesQueryVariables = Exact<{
+  author?: InputMaybe<Scalars['String']>;
+  favorited?: InputMaybe<Scalars['String']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  tag?: InputMaybe<Scalars['String']>;
+}>;
 
 
-export type ArticlesQuery = { __typename?: 'Query', articles: { __typename?: 'Articles', articlesCount: number, articles: Array<{ __typename?: 'Article', slug: string, description: string, title: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null } }> } };
+export type ArticlesQuery = { __typename?: 'Query', articles: Array<{ __typename?: 'Article', id: number, slug: string, description: string, title: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null } }> };
 
-export type ArticlePreviewFragment = { __typename?: 'Article', slug: string, description: string, title: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null } };
+export type ArticlesCountQueryVariables = Exact<{
+  author?: InputMaybe<Scalars['String']>;
+  favorited?: InputMaybe<Scalars['String']>;
+  tag?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ArticlesCountQuery = { __typename?: 'Query', articlesCount: number };
+
+export type FeedQueryVariables = Exact<{
+  offset?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type FeedQuery = { __typename?: 'Query', feed: Array<{ __typename?: 'Article', id: number, slug: string, description: string, title: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null } }> };
+
+export type FeedCountQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FeedCountQuery = { __typename?: 'Query', feedCount: number };
+
+export type FavoriteMutationVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type FavoriteMutation = { __typename?: 'Mutation', favorite: { __typename?: 'Article', id: number, favorited: boolean, favoritesCount: number } };
+
+export type UnfavoriteMutationVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type UnfavoriteMutation = { __typename?: 'Mutation', unfavorite: { __typename?: 'Article', id: number, favorited: boolean, favoritesCount: number } };
+
+export type FavoritesFragment = { __typename?: 'Article', id: number, favorited: boolean, favoritesCount: number };
+
+export type ArticlePreviewFragment = { __typename?: 'Article', id: number, slug: string, description: string, title: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null } };
 
 export type ArticleQueryVariables = Exact<{
   slug: Scalars['String'];
 }>;
 
 
-export type ArticleQuery = { __typename?: 'Query', article?: { __typename?: 'Article', slug: string, title: string, body: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean }, comments: Array<{ __typename?: 'Comment', id: number, body: string, createdAt: any, author: { __typename?: 'Profile', username: string, image?: string | null } }> } | null };
+export type ArticleQuery = { __typename?: 'Query', article?: { __typename?: 'Article', id: number, slug: string, title: string, body: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean }, comments: Array<{ __typename?: 'Comment', id: number, body: string, createdAt: any, author: { __typename?: 'Profile', username: string, image?: string | null } }> } | null };
 
-export type ArticleViewFragment = { __typename?: 'Article', slug: string, title: string, body: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean }, comments: Array<{ __typename?: 'Comment', id: number, body: string, createdAt: any, author: { __typename?: 'Profile', username: string, image?: string | null } }> };
+export type CreateCommentMutationVariables = Exact<{
+  slug: Scalars['String'];
+  input: CommentInput;
+}>;
+
+
+export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'Comment', id: number, body: string, createdAt: any, author: { __typename?: 'Profile', username: string, image?: string | null } } };
+
+export type DeleteCommentMutationVariables = Exact<{
+  deleteCommentId: Scalars['Int'];
+}>;
+
+
+export type DeleteCommentMutation = { __typename?: 'Mutation', deleteComment: { __typename?: 'Comment', id: number } };
+
+export type DeleteArticleMutationVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type DeleteArticleMutation = { __typename?: 'Mutation', deleteArticle: { __typename?: 'Article', id: number } };
+
+export type ArticleViewFragment = { __typename?: 'Article', id: number, slug: string, title: string, body: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean }, comments: Array<{ __typename?: 'Comment', id: number, body: string, createdAt: any, author: { __typename?: 'Profile', username: string, image?: string | null } }> };
 
 export type CommentViewFragment = { __typename?: 'Comment', id: number, body: string, createdAt: any, author: { __typename?: 'Profile', username: string, image?: string | null } };
-
-export type TagsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type TagsQuery = { __typename?: 'Query', tags: Array<string> };
 
 export type LoginMutationVariables = Exact<{
   input: UserLoginInput;
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthUser', username: string, token?: string | null, email: string, bio?: string | null, image?: string | null } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthUser', id: number, username: string, email: string, bio?: string | null, image?: string | null, token?: string | null } };
+
+export type SignupMutationVariables = Exact<{
+  input: UserSignupInput;
+}>;
+
+
+export type SignupMutation = { __typename?: 'Mutation', signup?: { __typename?: 'AuthUser', id: number, username: string, email: string, bio?: string | null, image?: string | null, token?: string | null } | null };
 
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserQuery = { __typename?: 'Query', currentUser: { __typename?: 'AuthUser', username: string, email: string, bio?: string | null, image?: string | null } };
+export type CurrentUserQuery = { __typename?: 'Query', currentUser: { __typename?: 'AuthUser', id: number, username: string, email: string, bio?: string | null, image?: string | null } };
+
+export type CreateArticleMutationVariables = Exact<{
+  input: ArticleInput;
+}>;
+
+
+export type CreateArticleMutation = { __typename?: 'Mutation', createArticle: { __typename?: 'Article', id: number, slug: string } };
+
+export type UpdateArticleMutationVariables = Exact<{
+  slug: Scalars['String'];
+  input: ArticleInput;
+}>;
+
+
+export type UpdateArticleMutation = { __typename?: 'Mutation', updateArticle: { __typename?: 'Article', id: number, slug: string, title: string, body: string, description: string, tagList: Array<string> } };
+
+export type EditArticleQueryVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type EditArticleQuery = { __typename?: 'Query', article?: { __typename?: 'Article', id: number, slug: string, title: string, body: string, description: string, tagList: Array<string>, author: { __typename?: 'Profile', username: string } } | null };
+
+export type EditArticleViewFragment = { __typename?: 'Article', id: number, slug: string, title: string, body: string, description: string, tagList: Array<string>, author: { __typename?: 'Profile', username: string } };
+
+export type TagsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TagsQuery = { __typename?: 'Query', tags: Array<string> };
+
+export type ProfileQueryVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type ProfileQuery = { __typename?: 'Query', profile?: { __typename?: 'Profile', username: string, bio?: string | null, image?: string | null, following: boolean } | null };
+
+export type FollowMutationVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type FollowMutation = { __typename?: 'Mutation', follow: { __typename?: 'Profile', username: string, following: boolean } };
+
+export type UnFollowMutationVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type UnFollowMutation = { __typename?: 'Mutation', unFollow: { __typename?: 'Profile', username: string, following: boolean } };
+
+export type FollowsFragment = { __typename?: 'Profile', username: string, following: boolean };
 
 export type UpdateUserMutationVariables = Exact<{
   input: UserUpdateInput;
 }>;
 
 
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'AuthUser', username: string, email: string, bio?: string | null, image?: string | null } };
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'AuthUser', id: number, username: string, email: string, bio?: string | null, image?: string | null } };
 
+export const FavoritesFragmentDoc = gql`
+    fragment Favorites on Article {
+  id
+  favorited
+  favoritesCount
+}
+    `;
 export const ArticlePreviewFragmentDoc = gql`
     fragment ArticlePreview on Article {
+  id
   slug
   description
   title
@@ -282,6 +423,7 @@ export const CommentViewFragmentDoc = gql`
     `;
 export const ArticleViewFragmentDoc = gql`
     fragment ArticleView on Article {
+  id
   slug
   title
   body
@@ -299,13 +441,29 @@ export const ArticleViewFragmentDoc = gql`
   tagList
 }
     ${CommentViewFragmentDoc}`;
+export const EditArticleViewFragmentDoc = gql`
+    fragment EditArticleView on Article {
+  id
+  slug
+  title
+  body
+  description
+  tagList
+  author {
+    username
+  }
+}
+    `;
+export const FollowsFragmentDoc = gql`
+    fragment Follows on Profile {
+  username
+  following
+}
+    `;
 export const ArticlesDocument = gql`
-    query Articles {
-  articles {
-    articles {
-      ...ArticlePreview
-    }
-    articlesCount
+    query Articles($author: String, $favorited: String, $offset: Int, $tag: String) {
+  articles(author: $author, favorited: $favorited, offset: $offset, tag: $tag) {
+    ...ArticlePreview
   }
 }
     ${ArticlePreviewFragmentDoc}`;
@@ -322,6 +480,10 @@ export const ArticlesDocument = gql`
  * @example
  * const { data, loading, error } = useArticlesQuery({
  *   variables: {
+ *      author: // value for 'author'
+ *      favorited: // value for 'favorited'
+ *      offset: // value for 'offset'
+ *      tag: // value for 'tag'
  *   },
  * });
  */
@@ -336,6 +498,174 @@ export function useArticlesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<A
 export type ArticlesQueryHookResult = ReturnType<typeof useArticlesQuery>;
 export type ArticlesLazyQueryHookResult = ReturnType<typeof useArticlesLazyQuery>;
 export type ArticlesQueryResult = Apollo.QueryResult<ArticlesQuery, ArticlesQueryVariables>;
+export const ArticlesCountDocument = gql`
+    query ArticlesCount($author: String, $favorited: String, $tag: String) {
+  articlesCount(author: $author, favorited: $favorited, tag: $tag)
+}
+    `;
+
+/**
+ * __useArticlesCountQuery__
+ *
+ * To run a query within a React component, call `useArticlesCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useArticlesCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useArticlesCountQuery({
+ *   variables: {
+ *      author: // value for 'author'
+ *      favorited: // value for 'favorited'
+ *      tag: // value for 'tag'
+ *   },
+ * });
+ */
+export function useArticlesCountQuery(baseOptions?: Apollo.QueryHookOptions<ArticlesCountQuery, ArticlesCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ArticlesCountQuery, ArticlesCountQueryVariables>(ArticlesCountDocument, options);
+      }
+export function useArticlesCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ArticlesCountQuery, ArticlesCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ArticlesCountQuery, ArticlesCountQueryVariables>(ArticlesCountDocument, options);
+        }
+export type ArticlesCountQueryHookResult = ReturnType<typeof useArticlesCountQuery>;
+export type ArticlesCountLazyQueryHookResult = ReturnType<typeof useArticlesCountLazyQuery>;
+export type ArticlesCountQueryResult = Apollo.QueryResult<ArticlesCountQuery, ArticlesCountQueryVariables>;
+export const FeedDocument = gql`
+    query Feed($offset: Int) {
+  feed(offset: $offset) {
+    ...ArticlePreview
+  }
+}
+    ${ArticlePreviewFragmentDoc}`;
+
+/**
+ * __useFeedQuery__
+ *
+ * To run a query within a React component, call `useFeedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFeedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFeedQuery({
+ *   variables: {
+ *      offset: // value for 'offset'
+ *   },
+ * });
+ */
+export function useFeedQuery(baseOptions?: Apollo.QueryHookOptions<FeedQuery, FeedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FeedQuery, FeedQueryVariables>(FeedDocument, options);
+      }
+export function useFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FeedQuery, FeedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FeedQuery, FeedQueryVariables>(FeedDocument, options);
+        }
+export type FeedQueryHookResult = ReturnType<typeof useFeedQuery>;
+export type FeedLazyQueryHookResult = ReturnType<typeof useFeedLazyQuery>;
+export type FeedQueryResult = Apollo.QueryResult<FeedQuery, FeedQueryVariables>;
+export const FeedCountDocument = gql`
+    query FeedCount {
+  feedCount
+}
+    `;
+
+/**
+ * __useFeedCountQuery__
+ *
+ * To run a query within a React component, call `useFeedCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFeedCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFeedCountQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFeedCountQuery(baseOptions?: Apollo.QueryHookOptions<FeedCountQuery, FeedCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FeedCountQuery, FeedCountQueryVariables>(FeedCountDocument, options);
+      }
+export function useFeedCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FeedCountQuery, FeedCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FeedCountQuery, FeedCountQueryVariables>(FeedCountDocument, options);
+        }
+export type FeedCountQueryHookResult = ReturnType<typeof useFeedCountQuery>;
+export type FeedCountLazyQueryHookResult = ReturnType<typeof useFeedCountLazyQuery>;
+export type FeedCountQueryResult = Apollo.QueryResult<FeedCountQuery, FeedCountQueryVariables>;
+export const FavoriteDocument = gql`
+    mutation Favorite($slug: String!) {
+  favorite(slug: $slug) {
+    ...Favorites
+  }
+}
+    ${FavoritesFragmentDoc}`;
+export type FavoriteMutationFn = Apollo.MutationFunction<FavoriteMutation, FavoriteMutationVariables>;
+
+/**
+ * __useFavoriteMutation__
+ *
+ * To run a mutation, you first call `useFavoriteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useFavoriteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [favoriteMutation, { data, loading, error }] = useFavoriteMutation({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useFavoriteMutation(baseOptions?: Apollo.MutationHookOptions<FavoriteMutation, FavoriteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<FavoriteMutation, FavoriteMutationVariables>(FavoriteDocument, options);
+      }
+export type FavoriteMutationHookResult = ReturnType<typeof useFavoriteMutation>;
+export type FavoriteMutationResult = Apollo.MutationResult<FavoriteMutation>;
+export type FavoriteMutationOptions = Apollo.BaseMutationOptions<FavoriteMutation, FavoriteMutationVariables>;
+export const UnfavoriteDocument = gql`
+    mutation Unfavorite($slug: String!) {
+  unfavorite(slug: $slug) {
+    ...Favorites
+  }
+}
+    ${FavoritesFragmentDoc}`;
+export type UnfavoriteMutationFn = Apollo.MutationFunction<UnfavoriteMutation, UnfavoriteMutationVariables>;
+
+/**
+ * __useUnfavoriteMutation__
+ *
+ * To run a mutation, you first call `useUnfavoriteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnfavoriteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unfavoriteMutation, { data, loading, error }] = useUnfavoriteMutation({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useUnfavoriteMutation(baseOptions?: Apollo.MutationHookOptions<UnfavoriteMutation, UnfavoriteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnfavoriteMutation, UnfavoriteMutationVariables>(UnfavoriteDocument, options);
+      }
+export type UnfavoriteMutationHookResult = ReturnType<typeof useUnfavoriteMutation>;
+export type UnfavoriteMutationResult = Apollo.MutationResult<UnfavoriteMutation>;
+export type UnfavoriteMutationOptions = Apollo.BaseMutationOptions<UnfavoriteMutation, UnfavoriteMutationVariables>;
 export const ArticleDocument = gql`
     query Article($slug: String!) {
   article(slug: $slug) {
@@ -371,46 +701,115 @@ export function useArticleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ar
 export type ArticleQueryHookResult = ReturnType<typeof useArticleQuery>;
 export type ArticleLazyQueryHookResult = ReturnType<typeof useArticleLazyQuery>;
 export type ArticleQueryResult = Apollo.QueryResult<ArticleQuery, ArticleQueryVariables>;
-export const TagsDocument = gql`
-    query Tags {
-  tags
+export const CreateCommentDocument = gql`
+    mutation CreateComment($slug: String!, $input: CommentInput!) {
+  createComment(slug: $slug, input: $input) {
+    ...CommentView
+  }
 }
-    `;
+    ${CommentViewFragmentDoc}`;
+export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
 
 /**
- * __useTagsQuery__
+ * __useCreateCommentMutation__
  *
- * To run a query within a React component, call `useTagsQuery` and pass it any options that fit your needs.
- * When your component renders, `useTagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `useCreateCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useTagsQuery({
+ * const [createCommentMutation, { data, loading, error }] = useCreateCommentMutation({
  *   variables: {
+ *      slug: // value for 'slug'
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useTagsQuery(baseOptions?: Apollo.QueryHookOptions<TagsQuery, TagsQueryVariables>) {
+export function useCreateCommentMutation(baseOptions?: Apollo.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
+        return Apollo.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, options);
       }
-export function useTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TagsQuery, TagsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
-        }
-export type TagsQueryHookResult = ReturnType<typeof useTagsQuery>;
-export type TagsLazyQueryHookResult = ReturnType<typeof useTagsLazyQuery>;
-export type TagsQueryResult = Apollo.QueryResult<TagsQuery, TagsQueryVariables>;
+export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
+export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
+export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
+export const DeleteCommentDocument = gql`
+    mutation DeleteComment($deleteCommentId: Int!) {
+  deleteComment(id: $deleteCommentId) {
+    id
+  }
+}
+    `;
+export type DeleteCommentMutationFn = Apollo.MutationFunction<DeleteCommentMutation, DeleteCommentMutationVariables>;
+
+/**
+ * __useDeleteCommentMutation__
+ *
+ * To run a mutation, you first call `useDeleteCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
+ *   variables: {
+ *      deleteCommentId: // value for 'deleteCommentId'
+ *   },
+ * });
+ */
+export function useDeleteCommentMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, options);
+      }
+export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
+export type DeleteCommentMutationResult = Apollo.MutationResult<DeleteCommentMutation>;
+export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
+export const DeleteArticleDocument = gql`
+    mutation DeleteArticle($slug: String!) {
+  deleteArticle(slug: $slug) {
+    id
+  }
+}
+    `;
+export type DeleteArticleMutationFn = Apollo.MutationFunction<DeleteArticleMutation, DeleteArticleMutationVariables>;
+
+/**
+ * __useDeleteArticleMutation__
+ *
+ * To run a mutation, you first call `useDeleteArticleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteArticleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteArticleMutation, { data, loading, error }] = useDeleteArticleMutation({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useDeleteArticleMutation(baseOptions?: Apollo.MutationHookOptions<DeleteArticleMutation, DeleteArticleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteArticleMutation, DeleteArticleMutationVariables>(DeleteArticleDocument, options);
+      }
+export type DeleteArticleMutationHookResult = ReturnType<typeof useDeleteArticleMutation>;
+export type DeleteArticleMutationResult = Apollo.MutationResult<DeleteArticleMutation>;
+export type DeleteArticleMutationOptions = Apollo.BaseMutationOptions<DeleteArticleMutation, DeleteArticleMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($input: UserLoginInput!) {
   login(input: $input) {
+    id
     username
-    token
     email
     bio
     image
+    token
   }
 }
     `;
@@ -440,9 +839,48 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const SignupDocument = gql`
+    mutation Signup($input: UserSignupInput!) {
+  signup(input: $input) {
+    id
+    username
+    email
+    bio
+    image
+    token
+  }
+}
+    `;
+export type SignupMutationFn = Apollo.MutationFunction<SignupMutation, SignupMutationVariables>;
+
+/**
+ * __useSignupMutation__
+ *
+ * To run a mutation, you first call `useSignupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signupMutation, { data, loading, error }] = useSignupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSignupMutation(baseOptions?: Apollo.MutationHookOptions<SignupMutation, SignupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignupMutation, SignupMutationVariables>(SignupDocument, options);
+      }
+export type SignupMutationHookResult = ReturnType<typeof useSignupMutation>;
+export type SignupMutationResult = Apollo.MutationResult<SignupMutation>;
+export type SignupMutationOptions = Apollo.BaseMutationOptions<SignupMutation, SignupMutationVariables>;
 export const CurrentUserDocument = gql`
     query CurrentUser {
   currentUser {
+    id
     username
     email
     bio
@@ -477,9 +915,254 @@ export function useCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
 export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
 export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
+export const CreateArticleDocument = gql`
+    mutation CreateArticle($input: ArticleInput!) {
+  createArticle(input: $input) {
+    id
+    slug
+  }
+}
+    `;
+export type CreateArticleMutationFn = Apollo.MutationFunction<CreateArticleMutation, CreateArticleMutationVariables>;
+
+/**
+ * __useCreateArticleMutation__
+ *
+ * To run a mutation, you first call `useCreateArticleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateArticleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createArticleMutation, { data, loading, error }] = useCreateArticleMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateArticleMutation(baseOptions?: Apollo.MutationHookOptions<CreateArticleMutation, CreateArticleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateArticleMutation, CreateArticleMutationVariables>(CreateArticleDocument, options);
+      }
+export type CreateArticleMutationHookResult = ReturnType<typeof useCreateArticleMutation>;
+export type CreateArticleMutationResult = Apollo.MutationResult<CreateArticleMutation>;
+export type CreateArticleMutationOptions = Apollo.BaseMutationOptions<CreateArticleMutation, CreateArticleMutationVariables>;
+export const UpdateArticleDocument = gql`
+    mutation UpdateArticle($slug: String!, $input: ArticleInput!) {
+  updateArticle(slug: $slug, input: $input) {
+    id
+    slug
+    title
+    body
+    description
+    tagList
+  }
+}
+    `;
+export type UpdateArticleMutationFn = Apollo.MutationFunction<UpdateArticleMutation, UpdateArticleMutationVariables>;
+
+/**
+ * __useUpdateArticleMutation__
+ *
+ * To run a mutation, you first call `useUpdateArticleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateArticleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateArticleMutation, { data, loading, error }] = useUpdateArticleMutation({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateArticleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateArticleMutation, UpdateArticleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateArticleMutation, UpdateArticleMutationVariables>(UpdateArticleDocument, options);
+      }
+export type UpdateArticleMutationHookResult = ReturnType<typeof useUpdateArticleMutation>;
+export type UpdateArticleMutationResult = Apollo.MutationResult<UpdateArticleMutation>;
+export type UpdateArticleMutationOptions = Apollo.BaseMutationOptions<UpdateArticleMutation, UpdateArticleMutationVariables>;
+export const EditArticleDocument = gql`
+    query EditArticle($slug: String!) {
+  article(slug: $slug) {
+    ...EditArticleView
+  }
+}
+    ${EditArticleViewFragmentDoc}`;
+
+/**
+ * __useEditArticleQuery__
+ *
+ * To run a query within a React component, call `useEditArticleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEditArticleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEditArticleQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useEditArticleQuery(baseOptions: Apollo.QueryHookOptions<EditArticleQuery, EditArticleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EditArticleQuery, EditArticleQueryVariables>(EditArticleDocument, options);
+      }
+export function useEditArticleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EditArticleQuery, EditArticleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EditArticleQuery, EditArticleQueryVariables>(EditArticleDocument, options);
+        }
+export type EditArticleQueryHookResult = ReturnType<typeof useEditArticleQuery>;
+export type EditArticleLazyQueryHookResult = ReturnType<typeof useEditArticleLazyQuery>;
+export type EditArticleQueryResult = Apollo.QueryResult<EditArticleQuery, EditArticleQueryVariables>;
+export const TagsDocument = gql`
+    query Tags {
+  tags
+}
+    `;
+
+/**
+ * __useTagsQuery__
+ *
+ * To run a query within a React component, call `useTagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTagsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTagsQuery(baseOptions?: Apollo.QueryHookOptions<TagsQuery, TagsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
+      }
+export function useTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TagsQuery, TagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
+        }
+export type TagsQueryHookResult = ReturnType<typeof useTagsQuery>;
+export type TagsLazyQueryHookResult = ReturnType<typeof useTagsLazyQuery>;
+export type TagsQueryResult = Apollo.QueryResult<TagsQuery, TagsQueryVariables>;
+export const ProfileDocument = gql`
+    query Profile($username: String!) {
+  profile(username: $username) {
+    username
+    bio
+    image
+    following
+  }
+}
+    `;
+
+/**
+ * __useProfileQuery__
+ *
+ * To run a query within a React component, call `useProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProfileQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useProfileQuery(baseOptions: Apollo.QueryHookOptions<ProfileQuery, ProfileQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProfileQuery, ProfileQueryVariables>(ProfileDocument, options);
+      }
+export function useProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProfileQuery, ProfileQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProfileQuery, ProfileQueryVariables>(ProfileDocument, options);
+        }
+export type ProfileQueryHookResult = ReturnType<typeof useProfileQuery>;
+export type ProfileLazyQueryHookResult = ReturnType<typeof useProfileLazyQuery>;
+export type ProfileQueryResult = Apollo.QueryResult<ProfileQuery, ProfileQueryVariables>;
+export const FollowDocument = gql`
+    mutation Follow($username: String!) {
+  follow(username: $username) {
+    ...Follows
+  }
+}
+    ${FollowsFragmentDoc}`;
+export type FollowMutationFn = Apollo.MutationFunction<FollowMutation, FollowMutationVariables>;
+
+/**
+ * __useFollowMutation__
+ *
+ * To run a mutation, you first call `useFollowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useFollowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [followMutation, { data, loading, error }] = useFollowMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useFollowMutation(baseOptions?: Apollo.MutationHookOptions<FollowMutation, FollowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<FollowMutation, FollowMutationVariables>(FollowDocument, options);
+      }
+export type FollowMutationHookResult = ReturnType<typeof useFollowMutation>;
+export type FollowMutationResult = Apollo.MutationResult<FollowMutation>;
+export type FollowMutationOptions = Apollo.BaseMutationOptions<FollowMutation, FollowMutationVariables>;
+export const UnFollowDocument = gql`
+    mutation UnFollow($username: String!) {
+  unFollow(username: $username) {
+    ...Follows
+  }
+}
+    ${FollowsFragmentDoc}`;
+export type UnFollowMutationFn = Apollo.MutationFunction<UnFollowMutation, UnFollowMutationVariables>;
+
+/**
+ * __useUnFollowMutation__
+ *
+ * To run a mutation, you first call `useUnFollowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnFollowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unFollowMutation, { data, loading, error }] = useUnFollowMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useUnFollowMutation(baseOptions?: Apollo.MutationHookOptions<UnFollowMutation, UnFollowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnFollowMutation, UnFollowMutationVariables>(UnFollowDocument, options);
+      }
+export type UnFollowMutationHookResult = ReturnType<typeof useUnFollowMutation>;
+export type UnFollowMutationResult = Apollo.MutationResult<UnFollowMutation>;
+export type UnFollowMutationOptions = Apollo.BaseMutationOptions<UnFollowMutation, UnFollowMutationVariables>;
 export const UpdateUserDocument = gql`
     mutation UpdateUser($input: UserUpdateInput!) {
   updateUser(input: $input) {
+    id
     username
     email
     bio

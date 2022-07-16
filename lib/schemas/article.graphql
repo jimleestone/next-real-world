@@ -4,7 +4,26 @@ query Article($slug: String!) {
   }
 }
 
+mutation CreateComment($slug: String!, $input: CommentInput!) {
+  createComment(slug: $slug, input: $input) {
+    ...CommentView
+  }
+}
+
+mutation DeleteComment($deleteCommentId: Int!) {
+  deleteComment(id: $deleteCommentId) {
+    id
+  }
+}
+
+mutation DeleteArticle($slug: String!) {
+  deleteArticle(slug: $slug) {
+    id
+  }
+}
+
 fragment ArticleView on Article {
+  id
   slug
   title
   body

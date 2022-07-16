@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
-import Image from 'next/image';
 import React from 'react';
 import { ArticleViewFragment } from '../../generated/graphql';
+import CustomImage from '../common/CustomImage';
 import CustomLink from '../common/CustomLink';
 
 export default function ArticleAuthorInfo({
@@ -15,7 +15,7 @@ export default function ArticleAuthorInfo({
   return (
     <React.Fragment>
       <CustomLink href={{ pathname: '/profile/[username]', query: { username } }}>
-        <Image src={image || ' '} alt={username} height={32} width={32} />
+        <CustomImage src={image} alt={username} height={32} width={32} />
       </CustomLink>
       <div className='info'>
         <CustomLink href={{ pathname: '/profile/[username]', query: { username } }} className='author'>

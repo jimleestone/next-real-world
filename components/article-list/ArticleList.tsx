@@ -1,30 +1,20 @@
-import React from 'react';
 import { ArticlePreviewFragment } from '../../generated/graphql';
+import LoadingSpinner from '../common/LoadingSpinner';
 import { ArticlePreview } from './ArticlePreview';
 
-export default function ArticleList({
-  articles,
-  loading,
-}: {
-  articles: ArticlePreviewFragment[] | undefined;
-  loading: boolean;
-}) {
-  if (loading)
+export default function ArticleList({ articles, loading }: { articles?: ArticlePreviewFragment[]; loading: boolean }) {
+  if (loading) return <LoadingSpinner />;
+  if (!articles || articles.length === 0)
     return (
       <div className='article-preview' key={1}>
-        Loading articles...
+        No articles are here... yet.
       </div>
     );
   return (
-    <React.Fragment>
-      {articles?.length === 0 && (
-        <div className='article-preview' key={1}>
-          No articles are here... yet.
-        </div>
-      )}
-      {articles?.map((article, index) => (
+    <>
+      {articles.map((article, index) => (
         <ArticlePreview key={article.slug} article={article} />
       ))}
-    </React.Fragment>
+    </>
   );
 }

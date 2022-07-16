@@ -18,13 +18,13 @@ const ArticleQuery = extendType({
         return checkArticle(context, slug);
       },
     });
-    t.nonNull.field('articles', {
-      type: 'Articles',
+    t.nonNull.list.nonNull.field('articles', {
+      type: 'Article',
       args: {
         author: stringArg(),
         tag: stringArg(),
         favorited: stringArg(),
-        limit: intArg({ default: 20 }),
+        limit: intArg({ default: 10 }),
         offset: intArg({ default: 0 }),
       },
       validate: ({ string, number }) => ({
@@ -34,24 +34,40 @@ const ArticleQuery = extendType({
         limit: number().integer().positive().max(100),
         offset: number().integer().min(0),
       }),
-      resolve: async (_, args, context: Context) => {
+      resolve: (_, args, context: Context) => {
         const { limit, offset, ...rest } = args;
-        const articles = await context.prisma.article.findMany({
+        return context.prisma.article.findMany({
           where: articleQueryFilter(rest),
           skip: offset || undefined,
           take: limit || undefined,
           orderBy: { createdAt: 'desc' },
         });
-        const articlesCount = await context.prisma.article.count({
-          where: articleQueryFilter(rest),
-        });
-        return { articles, articlesCount };
       },
     });
-    t.nonNull.field('feed', {
-      type: 'Articles',
+    t.nonNull.int('articlesCount', {
       args: {
-        limit: intArg({ default: 20 }),
+        author: stringArg(),
+        tag: stringArg(),
+        favorited: stringArg(),
+      },
+      validate: ({ string }) => ({
+        author: string(),
+        tag: string(),
+        favorited: string(),
+      }),
+      resolve: async (_, args, context: Context) => {
+        const idCount = await context.prisma.article.count({
+          select: { id: true },
+          where: articleQueryFilter(args),
+        });
+        return idCount.id;
+      },
+    });
+
+    t.nonNull.list.nonNull.field('feed', {
+      type: 'Article',
+      args: {
+        limit: intArg({ default: 10 }),
         offset: intArg({ default: 0 }),
       },
       authorize: (_, _args, ctx: Context) => !!ctx.currentUser,
@@ -59,17 +75,23 @@ const ArticleQuery = extendType({
         limit: number().integer().positive().max(100),
         offset: number().integer().min(0),
       }),
-      resolve: async (_, { limit, offset }, context: Context) => {
-        const articles = await context.prisma.article.findMany({
+      resolve: (_, { limit, offset }, context: Context) => {
+        return context.prisma.article.findMany({
           where: feedQueryFilter(context.currentUser!.id),
           skip: offset || undefined,
           take: limit || undefined,
           orderBy: { createdAt: 'desc' },
         });
-        const articlesCount = await context.prisma.article.count({
+      },
+    });
+    t.nonNull.int('feedCount', {
+      authorize: (_, _args, ctx: Context) => !!ctx.currentUser,
+      resolve: async (_, _args, context: Context) => {
+        const idCount = await context.prisma.article.count({
+          select: { id: true },
           where: feedQueryFilter(context.currentUser!.id),
         });
-        return { articles, articlesCount };
+        return idCount.id;
       },
     });
   },

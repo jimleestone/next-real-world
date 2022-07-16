@@ -1,0 +1,25 @@
+query Profile($username: String!) {
+  profile(username: $username) {
+    username
+    bio
+    image
+    following
+  }
+}
+
+mutation Follow($username: String!) {
+  follow(username: $username) {
+    ...Follows
+  }
+}
+
+mutation UnFollow($username: String!) {
+  unFollow(username: $username) {
+    ...Follows
+  }
+}
+
+fragment Follows on Profile {
+  username
+  following
+}

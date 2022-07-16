@@ -5,12 +5,14 @@ import ArticlePageBanner from '../../components/article/ArticlePageBanner';
 import CommentSection from '../../components/article/CommentSection';
 import TagList from '../../components/common/TagList';
 import { useArticleQuery } from '../../generated/graphql';
+import Custom404 from '../404';
 
 const ArticlePage: NextPage = () => {
   const { slug } = useRouter().query as { slug: string };
   const { data, loading } = useArticleQuery({ variables: { slug } });
+
   if (loading) return <div>Loading article...</div>;
-  if (!data?.article) return <div>No such article</div>;
+  if (!data?.article) return <Custom404 />;
   const { article } = data;
   return (
     <div className='article-page'>

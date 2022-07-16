@@ -1,44 +1,23 @@
 import React from 'react';
 import { ArticleViewFragment } from '../../generated/graphql';
-import { classObjectToClassName } from '../../lib/utils/style';
+import FavoritesButton from '../common/FavoritesButton';
+import FollowsButton from '../common/FollowsButton';
 
-export default function NonOwnerArticleMetaActions({
-  article: {
-    slug,
-    favoritesCount,
-    favorited,
-    author: { username, image },
-  },
-}: {
-  article: ArticleViewFragment;
-}) {
+export default function NonOwnerArticleMetaActions({ article }: { article: ArticleViewFragment }) {
+  const { favorited, author } = article;
+  const { following } = author;
   return (
     <React.Fragment>
-      <button
-        className={classObjectToClassName({
-          btn: true,
-          'btn-sm': true,
-          'btn-outline-secondary': true,
-          'btn-secondary': false,
-        })}
-        disabled={false}
-      >
-        <i className='ion-plus-round'></i>
-        &nbsp; Following
-      </button>
+      <FollowsButton
+        author={author}
+        className={`btn btn-sm ${following ? 'btn-secondary' : 'btn-outline-secondary'}`}
+      />
       &nbsp;
-      <button
-        className={classObjectToClassName({
-          btn: true,
-          'btn-sm': true,
-          'btn-outline-primary': true,
-          'btn-primary': false,
-        })}
-      >
-        <i className='ion-heart'></i>
-        &nbsp; {(favorited ? 'Unfavorite ' : 'Favorite ') + 'Article'}
-        <span className='counter'>({favoritesCount})</span>
-      </button>
+      <FavoritesButton
+        article={article}
+        className={`btn btn-sm ${favorited ? 'btn-primary' : 'btn-outline-primary'}`}
+        text={(favorited ? 'Unfavorite ' : 'Favorite ') + 'Article'}
+      />
     </React.Fragment>
   );
 }

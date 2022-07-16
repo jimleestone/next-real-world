@@ -1,5 +1,6 @@
 mutation UpdateUser($input: UserUpdateInput!) {
   updateUser(input: $input) {
+    id
     username
     email
     bio

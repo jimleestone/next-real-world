@@ -2,7 +2,7 @@
 ### Do not make changes to this file directly
 
 
-type Article {
+type Article implements Node {
   author: Profile!
   body: String!
   comments: [Comment!]!
@@ -10,6 +10,7 @@ type Article {
   description: String!
   favorited: Boolean!
   favoritesCount: Int!
+  id: Int!
   slug: String!
   tagList: [String!]!
   title: String!
@@ -23,20 +24,22 @@ input ArticleInput {
   title: String!
 }
 
-type Articles {
-  articles: [Article!]!
-  articlesCount: Int!
-}
-
-type AuthUser {
+type AuthUser implements BaseUser & Node {
   bio: String
   email: String!
+  id: Int!
   image: String
   token: String
   username: String!
 }
 
-type Comment {
+interface BaseUser {
+  bio: String
+  image: String
+  username: String!
+}
+
+type Comment implements Node {
   author: Profile!
   body: String!
   createdAt: DateTime!
@@ -58,17 +61,21 @@ type Mutation {
   createComment(input: CommentInput!, slug: String!): Comment!
   deleteArticle(slug: String!): Article!
   deleteComment(id: Int!): Comment!
-  favorite(slug: String!): Article
+  favorite(slug: String!): Article!
   follow(username: String!): Profile!
   login(input: UserLoginInput!): AuthUser!
   signup(input: UserSignupInput!): AuthUser
-  unFollow(username: String!): Profile
-  unfavorite(slug: String!): Article
+  unFollow(username: String!): Profile!
+  unfavorite(slug: String!): Article!
   updateArticle(input: ArticleInput!, slug: String!): Article!
   updateUser(input: UserUpdateInput!): AuthUser!
 }
 
-type Profile {
+interface Node {
+  id: Int!
+}
+
+type Profile implements BaseUser {
   bio: String
   following: Boolean!
   image: String
@@ -77,10 +84,12 @@ type Profile {
 
 type Query {
   article(slug: String!): Article
-  articles(author: String, favorited: String, limit: Int = 20, offset: Int = 0, tag: String): Articles!
+  articles(author: String, favorited: String, limit: Int = 10, offset: Int = 0, tag: String): [Article!]!
+  articlesCount(author: String, favorited: String, tag: String): Int!
   comments(slug: String!): [Comment!]!
   currentUser: AuthUser!
-  feed(limit: Int = 20, offset: Int = 0): Articles!
+  feed(limit: Int = 10, offset: Int = 0): [Article!]!
+  feedCount: Int!
   profile(username: String!): Profile
   tags: [String!]!
 }

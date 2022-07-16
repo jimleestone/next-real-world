@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { GenericFormField } from '../../lib/utils/genericFormField';
+import Errors, { GenericErrors } from './Errors';
 import { FormGroup, ListFormGroup, TextAreaFormGroup } from './FormGroup';
 
 export interface GenericFormProps {
@@ -7,6 +8,7 @@ export interface GenericFormProps {
   disabled: boolean;
   formObject: Record<string, string | null>;
   submitButtonText: string;
+  errors: GenericErrors;
   onChange: (name: string, value: string) => void;
   onSubmit: (ev: React.FormEvent) => void;
   onAddItemToList?: (name: string) => void;
@@ -18,12 +20,15 @@ export const GenericForm: FC<GenericFormProps> = ({
   disabled,
   formObject,
   submitButtonText,
+  errors,
   onChange,
   onSubmit,
   onAddItemToList,
   onRemoveListItem,
 }) => (
   <React.Fragment>
+    <Errors errors={errors} />
+
     <form onSubmit={onSubmit}>
       <fieldset>
         {fields.map((field) =>

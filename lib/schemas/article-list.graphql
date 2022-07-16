@@ -1,0 +1,52 @@
+query Articles($author: String, $favorited: String, $offset: Int, $tag: String) {
+  articles(author: $author, favorited: $favorited, offset: $offset, tag: $tag) {
+    ...ArticlePreview
+  }
+}
+
+query ArticlesCount($author: String, $favorited: String, $tag: String) {
+  articlesCount(author: $author, favorited: $favorited, tag: $tag)
+}
+
+query Feed($offset: Int) {
+  feed(offset: $offset) {
+    ...ArticlePreview
+  }
+}
+
+query FeedCount {
+  feedCount
+}
+
+mutation Favorite($slug: String!) {
+  favorite(slug: $slug) {
+    ...Favorites
+  }
+}
+
+mutation Unfavorite($slug: String!) {
+  unfavorite(slug: $slug) {
+    ...Favorites
+  }
+}
+
+fragment Favorites on Article {
+  id
+  favorited
+  favoritesCount
+}
+
+fragment ArticlePreview on Article {
+  id
+  slug
+  description
+  title
+  createdAt
+  author {
+    username
+    image
+  }
+  favorited
+  favoritesCount
+  tagList
+}

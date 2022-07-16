@@ -5,6 +5,7 @@ import { Context } from '../context';
 const Article = objectType({
   name: 'Article',
   definition(t) {
+    t.implements('Node');
     t.nonNull.string('slug');
     t.nonNull.string('title');
     t.nonNull.string('description');
@@ -51,17 +52,9 @@ const Article = objectType({
           .findUnique({
             where: { slug },
           })
-          .comments({ where: { del: false } });
+          .comments({ where: { del: false }, orderBy: { createdAt: 'desc' } });
       },
     });
-  },
-});
-
-const Articles = objectType({
-  name: 'Articles',
-  definition(t) {
-    t.nonNull.int('articlesCount');
-    t.nonNull.list.nonNull.field('articles', { type: 'Article' });
   },
 });
 
@@ -75,4 +68,5 @@ const ArticleInput = inputObjectType({
   },
 });
 
-export default [Article, Articles, ArticleInput];
+const ArticleTypes = [Article, ArticleInput];
+export default ArticleTypes;

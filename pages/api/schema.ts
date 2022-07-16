@@ -1,6 +1,8 @@
+import { UserInputError } from 'apollo-server-micro';
 import { fieldAuthorizePlugin, makeSchema } from 'nexus';
 import { validatePlugin } from 'nexus-validate';
 import path from 'path';
+import { ValidationError } from 'yup';
 import ArticleMutation from './mutation/article.mutation';
 import CommentMutation from './mutation/comment.mutation';
 import ProfileMutation from './mutation/profile.mutation';
@@ -9,10 +11,11 @@ import ArticleQuery from './query/article.query';
 import CommentQuery from './query/comment.query';
 import TagQuery from './query/tag.query';
 import userQuery from './query/user.query';
-import articleType from './types/article.type';
-import commentType from './types/comment.type';
+import ArticleTypes from './types/article.type';
+import BaseTypes from './types/base.type';
+import CommentTypes from './types/comment.type';
 import { DateTime } from './types/scalar.type';
-import userType from './types/user.type';
+import UserTypes from './types/user.type';
 
 export const schema = makeSchema({
   types: [
@@ -25,13 +28,19 @@ export const schema = makeSchema({
     CommentMutation,
     TagQuery,
     DateTime,
-    ...userType,
-    ...articleType,
-    ...commentType,
+    ...BaseTypes,
+    ...UserTypes,
+    ...ArticleTypes,
+    ...CommentTypes,
   ],
   outputs: {
     schema: path.join(__dirname, '..', '..', 'generated', 'schema.graphql'),
     typegen: path.join(__dirname, '..', '..', 'generated', 'nexus.ts'),
+  },
+  features: {
+    abstractTypeStrategies: {
+      resolveType: false,
+    },
   },
   contextType: {
     // module: require.resolve('./context'),
@@ -46,5 +55,19 @@ export const schema = makeSchema({
       },
     ],
   },
-  plugins: [fieldAuthorizePlugin(), validatePlugin()],
+  plugins: [
+    fieldAuthorizePlugin(),
+    validatePlugin({
+      formatError: ({ error }) => {
+        if (error instanceof ValidationError) {
+          // convert error to UserInputError from apollo-server
+          return new UserInputError(error.message.replace('input.', ''), {
+            invalidArgs: [error.path],
+          });
+        }
+
+        return error;
+      },
+    }),
+  ],
 });

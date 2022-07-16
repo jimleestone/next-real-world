@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { UserInputError } from 'apollo-server-micro';
 import { extendType, nonNull, stringArg } from 'nexus';
 import { Context } from '../context';
 
@@ -16,7 +17,6 @@ const ProfileMutation = extendType({
       }),
       resolve: async (_, { username }, context: Context) => {
         const following = await checkProfile(context, username);
-
         return context.prisma.user.update({
           where: { id: following.id },
           data: {
@@ -32,7 +32,7 @@ const ProfileMutation = extendType({
         });
       },
     });
-    t.nullable.field('unFollow', {
+    t.nonNull.field('unFollow', {
       type: 'Profile',
       args: {
         username: nonNull(stringArg()),
@@ -56,9 +56,9 @@ const ProfileMutation = extendType({
           });
         } catch (e) {
           if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            if (e.code === 'P2017') throw new Error('Had been unfollowed');
+            if (e.code === 'P2017') throw new UserInputError('Had been unfollowed');
           }
-          return null;
+          return following;
         }
       },
     });
@@ -67,10 +67,9 @@ const ProfileMutation = extendType({
 
 async function checkProfile(ctx: Context, username: string) {
   const following = await ctx.prisma.user.findUnique({
-    select: { id: true },
     where: { username },
   });
-  if (!following) throw new Error('User not found');
+  if (!following) throw new UserInputError('User not found');
   return following;
 }
 

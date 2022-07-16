@@ -7,10 +7,11 @@ interface CustomLinkProps {
   children: React.ReactNode;
   className?: string;
   as?: string | UrlObject;
+  shallow?: boolean;
 }
 
-const CustomLink = ({ className, href, as, children }: CustomLinkProps) => (
-  <Link href={href} as={as} passHref>
+const CustomLink = ({ className, href, as, shallow, children }: CustomLinkProps) => (
+  <Link href={href} as={as} passHref shallow={shallow}>
     <a className={className || ''}>{children}</a>
   </Link>
 );

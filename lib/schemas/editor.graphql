@@ -1,0 +1,35 @@
+mutation CreateArticle($input: ArticleInput!) {
+  createArticle(input: $input) {
+    id
+    slug
+  }
+}
+
+mutation UpdateArticle($slug: String!, $input: ArticleInput!) {
+  updateArticle(slug: $slug, input: $input) {
+    id
+    slug
+    title
+    body
+    description
+    tagList
+  }
+}
+
+query EditArticle($slug: String!) {
+  article(slug: $slug) {
+    ...EditArticleView
+  }
+}
+
+fragment EditArticleView on Article {
+  id
+  slug
+  title
+  body
+  description
+  tagList
+  author {
+    username
+  }
+}

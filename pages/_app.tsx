@@ -1,17 +1,15 @@
 import type { AppProps } from 'next/app';
-import Footer from '../components/common/Footer';
-import Header from '../components/common/Header';
-import { AuthProvider, CustomApolloProvider } from '../lib/hooks/use-auth';
+import { CustomApolloProvider } from '../lib/hooks/use-apollo';
+import { TokenProvider } from '../lib/hooks/use-token';
+import Container from './_container';
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp(appProps: AppProps) {
   return (
-    <CustomApolloProvider>
-      <AuthProvider>
-        <Header />
-        <Component {...pageProps} />;
-        <Footer />
-      </AuthProvider>
-    </CustomApolloProvider>
+    <TokenProvider>
+      <CustomApolloProvider>
+        <Container {...appProps} />
+      </CustomApolloProvider>
+    </TokenProvider>
   );
 }
 

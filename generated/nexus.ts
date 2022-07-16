@@ -76,17 +76,15 @@ export interface NexusGenObjects {
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     description: string; // String!
     favoritesCount: number; // Int!
+    id: number; // Int!
     slug: string; // String!
     title: string; // String!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
-  Articles: { // root type
-    articles: NexusGenRootTypes['Article'][]; // [Article!]!
-    articlesCount: number; // Int!
-  }
   AuthUser: { // root type
     bio?: string | null; // String
     email: string; // String!
+    id: number; // Int!
     image?: string | null; // String
     token?: string | null; // String
     username: string; // String!
@@ -107,12 +105,14 @@ export interface NexusGenObjects {
 }
 
 export interface NexusGenInterfaces {
+  BaseUser: NexusGenRootTypes['AuthUser'] | NexusGenRootTypes['Profile'];
+  Node: NexusGenRootTypes['Article'] | NexusGenRootTypes['AuthUser'] | NexusGenRootTypes['Comment'];
 }
 
 export interface NexusGenUnions {
 }
 
-export type NexusGenRootTypes = NexusGenObjects
+export type NexusGenRootTypes = NexusGenInterfaces & NexusGenObjects
 
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
@@ -125,18 +125,16 @@ export interface NexusGenFieldTypes {
     description: string; // String!
     favorited: boolean; // Boolean!
     favoritesCount: number; // Int!
+    id: number; // Int!
     slug: string; // String!
     tagList: string[]; // [String!]!
     title: string; // String!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
-  Articles: { // field return type
-    articles: NexusGenRootTypes['Article'][]; // [Article!]!
-    articlesCount: number; // Int!
-  }
   AuthUser: { // field return type
     bio: string | null; // String
     email: string; // String!
+    id: number; // Int!
     image: string | null; // String
     token: string | null; // String
     username: string; // String!
@@ -153,12 +151,12 @@ export interface NexusGenFieldTypes {
     createComment: NexusGenRootTypes['Comment']; // Comment!
     deleteArticle: NexusGenRootTypes['Article']; // Article!
     deleteComment: NexusGenRootTypes['Comment']; // Comment!
-    favorite: NexusGenRootTypes['Article'] | null; // Article
+    favorite: NexusGenRootTypes['Article']; // Article!
     follow: NexusGenRootTypes['Profile']; // Profile!
     login: NexusGenRootTypes['AuthUser']; // AuthUser!
     signup: NexusGenRootTypes['AuthUser'] | null; // AuthUser
-    unFollow: NexusGenRootTypes['Profile'] | null; // Profile
-    unfavorite: NexusGenRootTypes['Article'] | null; // Article
+    unFollow: NexusGenRootTypes['Profile']; // Profile!
+    unfavorite: NexusGenRootTypes['Article']; // Article!
     updateArticle: NexusGenRootTypes['Article']; // Article!
     updateUser: NexusGenRootTypes['AuthUser']; // AuthUser!
   }
@@ -170,12 +168,22 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     article: NexusGenRootTypes['Article'] | null; // Article
-    articles: NexusGenRootTypes['Articles']; // Articles!
+    articles: NexusGenRootTypes['Article'][]; // [Article!]!
+    articlesCount: number; // Int!
     comments: NexusGenRootTypes['Comment'][]; // [Comment!]!
     currentUser: NexusGenRootTypes['AuthUser']; // AuthUser!
-    feed: NexusGenRootTypes['Articles']; // Articles!
+    feed: NexusGenRootTypes['Article'][]; // [Article!]!
+    feedCount: number; // Int!
     profile: NexusGenRootTypes['Profile'] | null; // Profile
     tags: string[]; // [String!]!
+  }
+  BaseUser: { // field return type
+    bio: string | null; // String
+    image: string | null; // String
+    username: string; // String!
+  }
+  Node: { // field return type
+    id: number; // Int!
   }
 }
 
@@ -188,18 +196,16 @@ export interface NexusGenFieldTypeNames {
     description: 'String'
     favorited: 'Boolean'
     favoritesCount: 'Int'
+    id: 'Int'
     slug: 'String'
     tagList: 'String'
     title: 'String'
     updatedAt: 'DateTime'
   }
-  Articles: { // field return type name
-    articles: 'Article'
-    articlesCount: 'Int'
-  }
   AuthUser: { // field return type name
     bio: 'String'
     email: 'String'
+    id: 'Int'
     image: 'String'
     token: 'String'
     username: 'String'
@@ -233,12 +239,22 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     article: 'Article'
-    articles: 'Articles'
+    articles: 'Article'
+    articlesCount: 'Int'
     comments: 'Comment'
     currentUser: 'AuthUser'
-    feed: 'Articles'
+    feed: 'Article'
+    feedCount: 'Int'
     profile: 'Profile'
     tags: 'String'
+  }
+  BaseUser: { // field return type name
+    bio: 'String'
+    image: 'String'
+    username: 'String'
+  }
+  Node: { // field return type name
+    id: 'Int'
   }
 }
 
@@ -294,6 +310,11 @@ export interface NexusGenArgTypes {
       offset?: number | null; // Int
       tag?: string | null; // String
     }
+    articlesCount: { // args
+      author?: string | null; // String
+      favorited?: string | null; // String
+      tag?: string | null; // String
+    }
     comments: { // args
       slug: string; // String!
     }
@@ -308,9 +329,15 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
+  BaseUser: "AuthUser" | "Profile"
+  Node: "Article" | "AuthUser" | "Comment"
 }
 
 export interface NexusGenTypeInterfaces {
+  Article: "Node"
+  AuthUser: "BaseUser" | "Node"
+  Comment: "Node"
+  Profile: "BaseUser"
 }
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
@@ -319,7 +346,7 @@ export type NexusGenInputNames = keyof NexusGenInputs;
 
 export type NexusGenEnumNames = never;
 
-export type NexusGenInterfaceNames = never;
+export type NexusGenInterfaceNames = keyof NexusGenInterfaces;
 
 export type NexusGenScalarNames = keyof NexusGenScalars;
 
@@ -331,9 +358,9 @@ export type NexusGenAbstractsUsingStrategyResolveType = never;
 
 export type NexusGenFeaturesConfig = {
   abstractTypeStrategies: {
-    isTypeOf: false
-    resolveType: true
+    resolveType: false
     __typename: false
+    isTypeOf: false
   }
 }
 

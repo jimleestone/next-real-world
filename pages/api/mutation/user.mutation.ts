@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { UserInputError } from 'apollo-server-micro';
 import { arg, mutationType, nonNull } from 'nexus';
 import { Context } from '../context';
 import Utility from '../utils';
@@ -18,14 +19,14 @@ const UserMutation = mutationType({
       }),
       resolve: async (_, { input: { email, password: inputPassword } }, context: Context) => {
         const user = await context.prisma.user.findUnique({ where: { email } });
-        if (!user) throw new Error('Bad Credentials');
+        if (!user) throw new UserInputError('Bad Credentials');
 
-        const { id, password, ...rest } = user;
+        const { id, username, password } = user;
         const checkPassword = Utility.checkPassword(inputPassword, password);
-        if (!checkPassword) throw new Error('Bad Credentials');
+        if (!checkPassword) throw new UserInputError('Bad Credentials');
 
-        const payload = { sub: id, user: rest.username };
-        return { ...rest, token: Utility.issueToken(payload) };
+        const payload = { sub: id, user: username };
+        return { ...user, token: Utility.issueToken(payload) };
       },
     });
     t.nullable.field('signup', {
@@ -49,12 +50,12 @@ const UserMutation = mutationType({
               password: Utility.encodePassword(password),
             },
           });
-          const { id, ...rest } = user;
-          const payload = { sub: id, user: rest.username };
-          return { ...rest, token: Utility.issueToken(payload) };
+          const { id, username } = user;
+          const payload = { sub: id, user: username };
+          return { ...user, token: Utility.issueToken(payload) };
         } catch (e) {
           if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            if (e.code === 'P2002') throw new Error('Duplicate username or email');
+            if (e.code === 'P2002') throw new UserInputError('Duplicate username or email');
           }
           return null;
         }
@@ -71,15 +72,15 @@ const UserMutation = mutationType({
           username: string().required().max(100),
           email: string().required().email().max(100),
           password: string().max(100),
-          bio: string().max(300),
-          image: string().url().max(1024),
+          bio: string().max(300).nullable(),
+          image: string().url().max(1024).nullable(),
         }),
       }),
       resolve: async (_, { input }, context: Context) => {
         const origin = await context.prisma.user.findUnique({
           where: { id: context.currentUser!.id },
         });
-        if (!origin) throw new Error('User not found');
+        if (!origin) throw new UserInputError('User not found');
 
         try {
           const { password, ...rest } = input;
@@ -93,7 +94,7 @@ const UserMutation = mutationType({
           });
         } catch (e) {
           if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            if (e.code === 'P2002') throw new Error('Duplicate username or email');
+            if (e.code === 'P2002') throw new UserInputError('Duplicate username or email');
           }
           return origin;
         }
