@@ -20,6 +20,7 @@ export function FormGroup({
       <input
         className={`form-control${!lg ? '' : ' form-control-lg'}`}
         {...{ type, placeholder, disabled, value, onChange }}
+        autoComplete={`${type === 'password' ? 'off' : 'on'}`}
       />
     </fieldset>
   );
@@ -47,6 +48,7 @@ export function TextAreaFormGroup({
       <textarea
         className={`form-control${!lg ? '' : ' form-control-lg'}`}
         {...{ type, placeholder, disabled, value, onChange, rows }}
+        autoComplete='on'
       ></textarea>
     </fieldset>
   );
@@ -80,6 +82,7 @@ export function ListFormGroup({
         {...{ type, placeholder, disabled, value, onChange }}
         onKeyDown={(ev) => ev.key === 'Enter' && ev.preventDefault()}
         onKeyUp={onListFieldKeyUp(onEnter)}
+        autoComplete={`${type === 'password' ? 'off' : 'on'}`}
       />
       <div className='tag-list'>
         {listValue.map((value, index) => (

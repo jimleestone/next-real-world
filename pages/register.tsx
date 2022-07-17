@@ -58,7 +58,7 @@ const Register: NextPage = () => {
             onSubmit={onSignUp()}
             fields={[
               buildGenericFormField({ name: 'username', placeholder: 'Username' }),
-              buildGenericFormField({ name: 'email', placeholder: 'Email' }),
+              buildGenericFormField({ name: 'email', placeholder: 'Email', type: 'email' }),
               buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
             ]}
           />

@@ -68,7 +68,7 @@ const Settings: NextPage = () => {
                 rows: 8,
                 fieldType: 'textarea',
               }),
-              buildGenericFormField({ name: 'email', placeholder: 'Email' }),
+              buildGenericFormField({ name: 'email', placeholder: 'Email', type: 'email' }),
               buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
             ]}
           />

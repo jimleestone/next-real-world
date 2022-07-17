@@ -62,6 +62,7 @@ export default function CommentForm({
           rows={3}
           onChange={onCommentChange}
           value={commentBody}
+          disabled={loading}
         ></textarea>
       </div>
       <div className='card-footer'>
