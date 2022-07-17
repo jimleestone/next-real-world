@@ -1,7 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { extendType, intArg, nonNull, stringArg } from 'nexus';
 import { Context } from '../context';
-import { checkArticle } from '../mutation/article.mutation';
 
 const ArticleQuery = extendType({
   type: 'Query',
@@ -15,7 +14,7 @@ const ArticleQuery = extendType({
         slug: string().required(),
       }),
       resolve: (_, { slug }, context: Context) => {
-        return checkArticle(context, slug);
+        return context.prisma.article.findUnique({ where: { slug } });
       },
     });
     t.nonNull.list.nonNull.field('articles', {

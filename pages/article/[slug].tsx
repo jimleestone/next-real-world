@@ -12,8 +12,8 @@ const ArticlePage: NextPage = () => {
   const { slug } = useRouter().query as { slug: string };
   const { data, loading } = useArticleQuery({ variables: { slug } });
 
-  if (loading) return <LoadingSpinner />;
-  if (!data?.article) return <Custom404 />;
+  if (loading || !data) return <LoadingSpinner />;
+  if (!data.article) return <Custom404 />;
   const { article } = data;
   return (
     <div className='article-page'>

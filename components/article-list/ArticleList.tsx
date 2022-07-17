@@ -3,8 +3,8 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import { ArticlePreview } from './ArticlePreview';
 
 export default function ArticleList({ articles, loading }: { articles?: ArticlePreviewFragment[]; loading: boolean }) {
-  if (loading) return <LoadingSpinner />;
-  if (!articles || articles.length === 0)
+  if (loading || !articles) return <LoadingSpinner />;
+  if (articles.length === 0)
     return (
       <div className='article-preview' key={1}>
         No articles are here... yet.
@@ -12,7 +12,7 @@ export default function ArticleList({ articles, loading }: { articles?: ArticleP
     );
   return (
     <>
-      {articles.map((article, index) => (
+      {articles?.map((article, index) => (
         <ArticlePreview key={article.slug} article={article} />
       ))}
     </>

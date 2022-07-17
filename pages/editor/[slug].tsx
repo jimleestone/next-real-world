@@ -13,9 +13,8 @@ const EditArticle: NextPage = () => {
 
   const { data, loading } = useEditArticleQuery({ variables: { slug } });
 
-  if (loading) return <LoadingSpinner />;
+  if (loading || !data) return <LoadingSpinner />;
   if (
-    !data ||
     !data.article ||
     // owner check
     data.article.author.username !== user?.username
