@@ -1,8 +1,9 @@
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ArticleEditor from '../../components/editor/ArticleEditor';
 import { useEditArticleQuery } from '../../generated/graphql';
+import withAuth from '../../lib/auth/with-auth';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
 import Custom404 from '../404';
 
@@ -25,15 +26,4 @@ const EditArticle: NextPage = () => {
   return <ArticleEditor article={article} />;
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  return { props: { protected: true } };
-};
-
-export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
-  return {
-    paths: [],
-    fallback: 'blocking',
-  };
-};
-
-export default EditArticle;
+export default withAuth(EditArticle);

@@ -1,0 +1,7 @@
+next-real-world:
+  component: './node_modules/@sls-next/serverless-component'
+  inputs:
+    bucketName: 'next-real-world'
+    bucketRegion: 'ap-northeast-3'
+    minifyHandlers: true
+    useServerlessTraceTarget: true

@@ -1,17 +1,16 @@
 import { useApolloClient } from '@apollo/client';
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { ContainerPage } from '../components/common/ContainerPage';
 import { GenericForm } from '../components/common/GenericForm';
 import { ProfileDocument, UserUpdateInput, useUpdateUserMutation } from '../generated/graphql';
+import withAuth from '../lib/auth/with-auth';
 import { useCurrentUser } from '../lib/hooks/use-current-user';
 import { useErrorsHandler } from '../lib/hooks/use-errors-handler';
 import { useToken } from '../lib/hooks/use-token';
 import { buildGenericFormField } from '../lib/utils/genericFormField';
 
 const Settings: NextPage = () => {
-  const router = useRouter();
   const client = useApolloClient();
   const { user } = useCurrentUser();
   const { handleChangeToken } = useToken();
@@ -25,7 +24,6 @@ const Settings: NextPage = () => {
     }
   }, [user]);
 
-  const originUsername = user?.username;
   const [updateUser, { loading }] = useUpdateUserMutation({
     refetchQueries: [{ query: ProfileDocument, variables: { username: input.username } }],
     onError: (err) => handleErrors(err),
@@ -45,7 +43,6 @@ const Settings: NextPage = () => {
     return async () => {
       handleChangeToken('');
       await client.resetStore();
-      await router.replace('/');
     };
   }
 
@@ -86,8 +83,4 @@ const Settings: NextPage = () => {
   );
 };
 
-export function getStaticProps() {
-  return { props: { protected: true } };
-}
-
-export default Settings;
+export default withAuth(Settings);

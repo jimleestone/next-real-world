@@ -1,12 +1,9 @@
 import { NextPage } from 'next';
 import ArticleEditor from '../../components/editor/ArticleEditor';
+import withAuth from '../../lib/auth/with-auth';
 
 const NewArticle: NextPage = () => {
   return <ArticleEditor />;
 };
 
-export function getStaticProps() {
-  return { props: { protected: true } };
-}
-
-export default NewArticle;
+export default withAuth(NewArticle);

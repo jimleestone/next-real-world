@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { ContainerPage } from '../components/common/ContainerPage';
 import { GenericForm } from '../components/common/GenericForm';
 import { UserSignupInput, useSignupMutation } from '../generated/graphql';
+import guestOnly from '../lib/auth/guest-only';
 import { useErrorsHandler } from '../lib/hooks/use-errors-handler';
 import { useToken } from '../lib/hooks/use-token';
 import { buildGenericFormField } from '../lib/utils/genericFormField';
@@ -22,7 +23,7 @@ const Register: NextPage = () => {
       if (data) {
         handleChangeToken(data.signup?.token as string);
         await client.resetStore();
-        await router.replace('/');
+        await router.back();
       }
     },
     onError: (err) => handleErrors(err),
@@ -67,8 +68,4 @@ const Register: NextPage = () => {
   );
 };
 
-export function getStaticProps() {
-  return { props: { guestOnly: true } };
-}
-
-export default Register;
+export default guestOnly(Register);

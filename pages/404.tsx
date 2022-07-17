@@ -14,7 +14,9 @@ const Custom404: NextPage = () => {
     >
       <h1>404</h1>
       <p style={{ display: 'inherit' }}>
-        <CustomLink href='/'>Go To Home Page</CustomLink>
+        <CustomLink href='/' replace>
+          Go To Home Page
+        </CustomLink>
       </p>
       <p>Sorry, the content you are looking for could not be found.</p>
     </div>

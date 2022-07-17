@@ -8,10 +8,11 @@ interface CustomLinkProps {
   className?: string;
   as?: string | UrlObject;
   shallow?: boolean;
+  replace?: boolean;
 }
 
-const CustomLink = ({ className, href, as, shallow, children }: CustomLinkProps) => (
-  <Link href={href} as={as} passHref shallow={shallow}>
+const CustomLink = ({ className, href, as, shallow, replace, children }: CustomLinkProps) => (
+  <Link href={href} as={as} passHref shallow={shallow} replace={replace}>
     <a className={className || ''}>{children}</a>
   </Link>
 );

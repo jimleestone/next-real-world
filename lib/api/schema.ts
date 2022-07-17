@@ -44,7 +44,7 @@ export const schema = makeSchema({
   },
   contextType: {
     // module: require.resolve('./context'),
-    module: path.join(process.cwd(), 'pages', 'api', 'context.ts'),
+    module: path.join(process.cwd(), 'lib', 'api', 'context.ts'),
     export: 'Context',
   },
   sourceTypes: {

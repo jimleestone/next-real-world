@@ -4,7 +4,7 @@
  */
 
 
-import type { Context } from "./../pages/api/context"
+import type { Context } from "./../lib/api/context"
 import type { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
 import type { ValidateResolver } from "nexus-validate"
 import type { core } from "nexus"

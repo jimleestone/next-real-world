@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "deploy": "sls --debug",
     "generate:prisma": "prisma generate",
-    "generate:nexus": "ts-node --transpile-only pages/api/schema",
+    "generate:nexus": "ts-node --transpile-only lib/api/schema",
     "generate:jwk": "node gen-jwk",
     "generate:graphql": "graphql-codegen --config .graphql-codegen.yml"
   },
@@ -39,6 +40,11 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@sls-next/aws-cloudfront": "^3.7.0",
+    "@sls-next/aws-lambda": "^3.7.0",
+    "@sls-next/aws-sqs": "^3.7.0",
+    "@sls-next/domain": "^3.7.0",
+    "@sls-next/serverless-component": "^3.7.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/crypto-hash": "^1.1.2",
     "@types/date-fns": "^2.6.0",
@@ -60,16 +66,9 @@
     "prettier": "^2.7.1",
     "prisma": "^4.0.0",
     "rimraf": "^3.0.2",
-    "serverless": "^3.19.0",
-    "serverless-dotenv-plugin": "^4.0.1",
-    "serverless-offline": "^8.8.0",
-    "serverless-webpack": "^5.7.1",
-    "serverless-webpack-prisma": "^1.1.0",
+    "serverless": "2.72.2",
     "ts-node": "10.8.1",
-    "typescript": "4.7.4",
-    "webpack": "^5.73.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-node-externals": "^3.0.0"
+    "typescript": "4.7.4"
   },
   "peerDependencies": {
     "graphql": "^16.5.0"
