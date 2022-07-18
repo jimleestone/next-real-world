@@ -5,7 +5,7 @@ async function gen() {
   const privateJwk = await jose.exportJWK(privateKey);
   const publicJwk = await jose.exportJWK(publicKey);
 
-  console.log(privateJwk);
+  console.log(JSON.stringify(privateJwk));
   console.log(publicJwk);
 }
 gen();

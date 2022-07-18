@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import jwkToPem from 'jwk-to-pem';
 import slug from 'slug';
-import { PRIVATE_JWK, PUBLIC_JWK, TOKEN_ALG, TOKEN_KID, TOKEN_PREFIX, TOKEN_TTL } from '../constants';
+import { PUBLIC_JWK, TOKEN_ALG, TOKEN_KID, TOKEN_PREFIX, TOKEN_TTL } from '../constants';
 import { AuthPayload } from './types/user.type';
 
 export default class Utility {
@@ -24,7 +24,8 @@ export default class Utility {
   };
 
   static issueToken(payload: object) {
-    return jwt.sign(payload, jwkToPem(PRIVATE_JWK, { private: true }), {
+    const privateKey = JSON.parse(process.env.PRIVATE_JWK as string);
+    return jwt.sign(payload, jwkToPem(privateKey, { private: true }), {
       algorithm: TOKEN_ALG,
       expiresIn: TOKEN_TTL,
       keyid: TOKEN_KID,

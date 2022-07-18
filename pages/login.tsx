@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { ContainerPage } from '../components/common/ContainerPage';
 import { GenericForm } from '../components/common/GenericForm';
+import Title from '../components/common/Title';
 import { useLoginMutation, UserLoginInput } from '../generated/graphql';
 import guestOnly from '../lib/auth/guest-only';
 import { useErrorsHandler } from '../lib/hooks/use-errors-handler';
@@ -41,29 +42,32 @@ const Login: NextPage = () => {
   }
 
   return (
-    <div className='auth-page'>
-      <ContainerPage>
-        <div className='col-md-6 offset-md-3 col-xs-12'>
-          <h1 className='text-xs-center'>Sign in</h1>
-          <p className='text-xs-center'>
-            <Link href='/register'>Need an account?</Link>
-          </p>
+    <>
+      <Title title='Sign in' />
+      <div className='auth-page'>
+        <ContainerPage>
+          <div className='col-md-6 offset-md-3 col-xs-12'>
+            <h1 className='text-xs-center'>Sign in</h1>
+            <p className='text-xs-center'>
+              <Link href='/register'>Need an account?</Link>
+            </p>
 
-          <GenericForm
-            disabled={loading}
-            errors={errors}
-            formObject={input as unknown as Record<string, string>}
-            submitButtonText='Sign in'
-            onChange={onUpdateField}
-            onSubmit={onLogin()}
-            fields={[
-              buildGenericFormField({ name: 'email', placeholder: 'Email', type: 'email' }),
-              buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
-            ]}
-          />
-        </div>
-      </ContainerPage>
-    </div>
+            <GenericForm
+              disabled={loading}
+              errors={errors}
+              formObject={input as unknown as Record<string, string>}
+              submitButtonText='Sign in'
+              onChange={onUpdateField}
+              onSubmit={onLogin()}
+              fields={[
+                buildGenericFormField({ name: 'email', placeholder: 'Email', type: 'email' }),
+                buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
+              ]}
+            />
+          </div>
+        </ContainerPage>
+      </div>
+    </>
   );
 };
 

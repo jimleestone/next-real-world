@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import ArticlesViewer from '../components/article-list/ArticlesViewer';
 import { ContainerPage } from '../components/common/ContainerPage';
+import Title from '../components/common/Title';
 import HomeBanner from '../components/home/Banner';
 import HomeSidebar from '../components/home/Sidebar';
 import { ArticlesQueryVariables } from '../generated/graphql';
@@ -29,22 +30,25 @@ const Home: NextPage = () => {
   }
 
   return (
-    <div className='home-page'>
-      <HomeBanner />
-      <ContainerPage>
-        <div className='col-md-9'>
-          <ArticlesViewer
-            toggleClassName='feed-toggle'
-            tabs={buildTabList()}
-            queryFilter={queryFilter}
-            isFeedQuery={isFeedQuery}
-          />
-        </div>
-        <div className='col-md-3'>
-          <HomeSidebar />
-        </div>
-      </ContainerPage>
-    </div>
+    <>
+      <Title title='Home' />
+      <div className='home-page'>
+        <HomeBanner />
+        <ContainerPage>
+          <div className='col-md-9'>
+            <ArticlesViewer
+              toggleClassName='feed-toggle'
+              tabs={buildTabList()}
+              queryFilter={queryFilter}
+              isFeedQuery={isFeedQuery}
+            />
+          </div>
+          <div className='col-md-3'>
+            <HomeSidebar />
+          </div>
+        </ContainerPage>
+      </div>
+    </>
   );
 };
 

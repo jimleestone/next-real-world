@@ -3,6 +3,7 @@ import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import { ContainerPage } from '../components/common/ContainerPage';
 import { GenericForm } from '../components/common/GenericForm';
+import Title from '../components/common/Title';
 import { ProfileDocument, UserUpdateInput, useUpdateUserMutation } from '../generated/graphql';
 import withAuth from '../lib/auth/with-auth';
 import { useCurrentUser } from '../lib/hooks/use-current-user';
@@ -47,39 +48,42 @@ const Settings: NextPage = () => {
   }
 
   return (
-    <div className='settings-page'>
-      <ContainerPage>
-        <div className='col-md-6 offset-md-3 col-xs-12'>
-          <h1 className='text-xs-center'>Your Settings</h1>
+    <>
+      <Title title='Settings' />
+      <div className='settings-page'>
+        <ContainerPage>
+          <div className='col-md-6 offset-md-3 col-xs-12'>
+            <h1 className='text-xs-center'>Your Settings</h1>
 
-          <GenericForm
-            disabled={loading}
-            errors={errors}
-            formObject={{ ...input }}
-            submitButtonText='Update Settings'
-            onChange={onUpdateField}
-            onSubmit={onUpdateSettings()}
-            fields={[
-              buildGenericFormField({ name: 'image', placeholder: 'URL of profile picture' }),
-              buildGenericFormField({ name: 'username', placeholder: 'Your Name' }),
-              buildGenericFormField({
-                name: 'bio',
-                placeholder: 'Short bio about you',
-                rows: 8,
-                fieldType: 'textarea',
-              }),
-              buildGenericFormField({ name: 'email', placeholder: 'Email', type: 'email' }),
-              buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
-            ]}
-          />
+            <GenericForm
+              disabled={loading}
+              errors={errors}
+              formObject={{ ...input }}
+              submitButtonText='Update Settings'
+              onChange={onUpdateField}
+              onSubmit={onUpdateSettings()}
+              fields={[
+                buildGenericFormField({ name: 'image', placeholder: 'URL of profile picture' }),
+                buildGenericFormField({ name: 'username', placeholder: 'Your Name' }),
+                buildGenericFormField({
+                  name: 'bio',
+                  placeholder: 'Short bio about you',
+                  rows: 8,
+                  fieldType: 'textarea',
+                }),
+                buildGenericFormField({ name: 'email', placeholder: 'Email', type: 'email' }),
+                buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
+              ]}
+            />
 
-          <hr />
-          <button className='btn btn-outline-danger' onClick={onLogout()}>
-            Or click here to logout.()
-          </button>
-        </div>
-      </ContainerPage>
-    </div>
+            <hr />
+            <button className='btn btn-outline-danger' onClick={onLogout()}>
+              Or click here to logout.()
+            </button>
+          </div>
+        </ContainerPage>
+      </div>
+    </>
   );
 };
 

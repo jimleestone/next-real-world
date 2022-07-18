@@ -5,6 +5,7 @@ import ArticlePageBanner from '../../components/article/ArticlePageBanner';
 import CommentSection from '../../components/article/CommentSection';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import TagList from '../../components/common/TagList';
+import Title from '../../components/common/Title';
 import { useArticleQuery } from '../../generated/graphql';
 import Custom404 from '../404';
 
@@ -16,24 +17,27 @@ const ArticlePage: NextPage = () => {
   if (!data.article) return <Custom404 />;
   const { article } = data;
   return (
-    <div className='article-page'>
-      <ArticlePageBanner article={article} />
+    <>
+      <Title title={article.title} />
+      <div className='article-page'>
+        <ArticlePageBanner article={article} />
 
-      <div className='container page'>
-        <div className='row article-content'>
-          <div className='col-md-12'>{article.body}</div>
-          <TagList tagList={article.tagList} />
+        <div className='container page'>
+          <div className='row article-content'>
+            <div className='col-md-12'>{article.body}</div>
+            <TagList tagList={article.tagList} />
+          </div>
+
+          <hr />
+
+          <div className='article-actions'>
+            <ArticleMeta article={article} />
+          </div>
+
+          <CommentSection article={article} />
         </div>
-
-        <hr />
-
-        <div className='article-actions'>
-          <ArticleMeta article={article} />
-        </div>
-
-        <CommentSection article={article} />
       </div>
-    </div>
+    </>
   );
 };
 
