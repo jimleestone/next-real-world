@@ -48,7 +48,7 @@ export default function ArticleComment({
       </div>
       <div className='card-footer'>
         <CustomLink className='comment-author' href={{ pathname: '/profile/[username]', query: { username } }}>
-          <CustomImage src={image} alt={username} className='comment-author-img' height={30} width={30} />
+          <CustomImage src={image} alt={username} className='comment-author-image' />
         </CustomLink>
         &nbsp;
         <CustomLink className='comment-author' href={{ pathname: '/profile/[username]', query: { username } }}>

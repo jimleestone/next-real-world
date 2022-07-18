@@ -15,7 +15,7 @@ export default function ArticleAuthorInfo({
   return (
     <React.Fragment>
       <CustomLink href={{ pathname: '/profile/[username]', query: { username } }}>
-        <CustomImage src={image} alt={username} height={32} width={32} />
+        <CustomImage src={image} alt={username} className='author-image' />
       </CustomLink>
       <div className='info'>
         <CustomLink href={{ pathname: '/profile/[username]', query: { username } }} className='author'>

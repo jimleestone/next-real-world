@@ -27,7 +27,7 @@ async function getApiHandler() {
     introspection: process.env.NODE_ENV === 'development',
     cache: 'bounded',
     plugins: R.concat(
-      [ApolloServerPluginCacheControl({ defaultMaxAge: 30 })],
+      [ApolloServerPluginCacheControl({ defaultMaxAge: 5 })],
       process.env.NODE_ENV === 'development' ? [] : [ApolloServerPluginLandingPageDisabled()]
     ),
     persistedQueries: { ttl: 1500 },

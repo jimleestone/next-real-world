@@ -2,6 +2,7 @@ import type { AppProps } from 'next/app';
 import Layout from '../components/common/Layout';
 import { CustomApolloProvider } from '../lib/hooks/use-apollo';
 import { TokenProvider } from '../lib/hooks/use-token';
+import '../styles/global.css';
 
 function MyApp(appProps: AppProps) {
   return (

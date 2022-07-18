@@ -1,5 +1,5 @@
-module.exports = function(...args) {
-  let original = require('./next.config.original.1658036366446.js');
+module.exports = function (...args) {
+  let original = require('./next.config.original.js');
   const finalConfig = {};
   const target = { target: 'experimental-serverless-trace' };
   if (typeof original === 'function' && original.constructor.name === 'AsyncFunction') {
@@ -19,4 +19,4 @@ module.exports = function(...args) {
   }
   Object.assign(finalConfig, target);
   return finalConfig;
-}
+};

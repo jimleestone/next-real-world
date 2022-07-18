@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import CustomLink from '../components/common/CustomLink';
+import Link from 'next/link';
 
 const Custom404: NextPage = () => {
   return (
@@ -14,9 +14,9 @@ const Custom404: NextPage = () => {
     >
       <h1>404</h1>
       <p style={{ display: 'inherit' }}>
-        <CustomLink href='/' replace>
+        <Link href='/' replace>
           Go To Home Page
-        </CustomLink>
+        </Link>
       </p>
       <p>Sorry, the content you are looking for could not be found.</p>
     </div>

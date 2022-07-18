@@ -1,0 +1,45 @@
+/* fixed image display when using next/image */
+.article-meta img {
+  all: initial;
+  all: unset;
+}
+
+.article-meta .author-image {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  height: 32px;
+  width: 32px;
+  border-radius: 32px;
+  overflow: hidden;
+}
+
+.article-page .card .comment-author-image {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  height: 20px;
+  width: 20px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.article-page .comment-form .card-footer .comment-author-image {
+  display: inline-block;
+  vertical-align: middle;
+  height: 30px;
+  width: 30px;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.profile-page .user-info .user-image {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}

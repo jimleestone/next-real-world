@@ -66,7 +66,7 @@ export default function CommentForm({
         ></textarea>
       </div>
       <div className='card-footer'>
-        <CustomImage src={image} alt={username} className='comment-author-img' height={30} width={30} />
+        <CustomImage src={image} alt={username} className='comment-author-image' />
         <button className='btn btn-sm btn-primary' disabled={loading}>
           Post Comment
         </button>

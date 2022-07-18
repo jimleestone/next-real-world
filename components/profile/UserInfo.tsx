@@ -16,7 +16,7 @@ export default function UserInfo({ author }: { author: Profile }) {
       <div className='container'>
         <div className='row'>
           <div className='col-xs-12 col-md-10 offset-md-1'>
-            <CustomImage src={image} alt={username} className='user-img' width={100} height={100} />
+            <CustomImage src={image} alt={username} className='user-image' />
             <h4>{username}</h4>
             <p>{bio}</p>
 
