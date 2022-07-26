@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { GenericFormField } from '../../lib/utils/genericFormField';
+import CustomButton from './CustomButton';
 import Errors, { GenericErrors } from './Errors';
 import { FormGroup, ListFormGroup, TextAreaFormGroup } from './FormGroup';
 
@@ -68,7 +69,10 @@ export const GenericForm: FC<GenericFormProps> = ({
             />
           )
         )}
-        <button className='btn btn-lg btn-primary pull-xs-right'>{submitButtonText}</button>
+        {/* <button className='btn btn-lg btn-primary pull-xs-right'>{submitButtonText}</button> */}
+        <CustomButton color='secondary' size='m'>
+          {submitButtonText}
+        </CustomButton>
       </fieldset>
     </form>
   </React.Fragment>

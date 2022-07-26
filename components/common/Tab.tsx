@@ -1,12 +1,18 @@
 import { UrlObject } from 'url';
-import NavLink from './NavLink';
+import CustomLink from './CustomLink';
 
-export default function Tab({ name, href, as }: { name: string; href: string | UrlObject; as?: string | UrlObject }) {
+export interface TabProps {
+  name: string;
+  href: string | UrlObject;
+  as?: string | UrlObject;
+}
+
+export default function Tab({ name, href, as }: TabProps) {
   return (
-    <li className='nav-item'>
-      <NavLink href={href} as={as}>
+    <li>
+      <CustomLink mode='tab' href={href} as={as} shallow>
         {name}
-      </NavLink>
+      </CustomLink>
     </li>
   );
 }

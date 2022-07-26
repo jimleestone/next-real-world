@@ -3,6 +3,7 @@ import React from 'react';
 import { ArticlesDocument, ArticleViewFragment, TagsDocument, useDeleteArticleMutation } from '../../generated/graphql';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
 import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import CustomButton from '../common/CustomButton';
 
 export default function OwnerArticleMetaActions({ article }: { article: ArticleViewFragment }) {
   const router = useRouter();
@@ -26,15 +27,15 @@ export default function OwnerArticleMetaActions({ article }: { article: ArticleV
 
   return (
     <React.Fragment>
-      <button className='btn btn-outline-secondary btn-sm' onClick={() => router.push(`/editor/${slug}`)}>
+      <CustomButton size='s' color='secondary' outlined onClick={() => router.push(`/editor/${slug}`)}>
         <i className='ion-edit'></i>
         &nbsp; Edit Article
-      </button>
+      </CustomButton>
       &nbsp;
-      <button className='btn btn-outline-danger btn-sm' disabled={loading} onClick={() => onDeleteArticle()}>
+      <CustomButton size='s' color='danger' outlined disabled={loading} onClick={() => onDeleteArticle()}>
         <i className='ion-trash-a'></i>
         &nbsp; Delete Article
-      </button>
+      </CustomButton>
     </React.Fragment>
   );
 }

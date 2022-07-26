@@ -44,4 +44,6 @@ export default class Utility {
     const payload = this.verifyToken<AuthPayload>(token);
     return payload.sub;
   }
+
+  static wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 }

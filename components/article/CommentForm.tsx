@@ -1,13 +1,17 @@
 import * as R from 'ramda';
-import React, { useState } from 'react';
 import {
   ArticleViewFragment,
   AuthUser,
+  CommentInput,
   CommentViewFragmentDoc,
   useCreateCommentMutation,
 } from '../../generated/graphql';
 import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import { commentInputSchema } from '../../lib/validation/schema';
 import CustomImage from '../common/CustomImage';
+import Form from '../forms/form';
+import FormTextarea from '../forms/form-teextarea';
+import Submit from '../forms/submit';
 
 export default function CommentForm({
   user: { image, username },
@@ -16,7 +20,6 @@ export default function CommentForm({
   user: AuthUser;
   article: ArticleViewFragment;
 }) {
-  const [commentBody, setCommentBody] = useState<string>('');
   const { handleErrors } = useErrorsHandler();
 
   const [createComment, { loading }] = useCreateCommentMutation({
@@ -41,36 +44,29 @@ export default function CommentForm({
         });
       }
     },
-    onCompleted: () => setCommentBody(''),
     onError: (err) => handleErrors(err),
   });
-  function onCommentChange(ev: React.ChangeEvent<HTMLTextAreaElement>) {
-    setCommentBody(ev.target.value);
+
+  async function onPostComment(input: CommentInput) {
+    await createComment({ variables: { slug: article.slug, input } });
   }
-  function onPostComment(): (ev: React.FormEvent) => void {
-    return async (ev) => {
-      ev.preventDefault();
-      await createComment({ variables: { slug: article.slug, input: { body: commentBody } } });
-    };
-  }
+  const init: CommentInput = { body: '' };
   return (
-    <form className='card comment-form' onSubmit={onPostComment()}>
-      <div className='card-block'>
-        <textarea
-          className='form-control'
-          placeholder='Write a comment...'
-          rows={3}
-          onChange={onCommentChange}
-          value={commentBody}
-          disabled={loading}
-        ></textarea>
+    <Form<CommentInput> onSubmit={onPostComment} mode='onChange' schema={commentInputSchema} defaultValues={init}>
+      <div className='border rounded-t-md shadow-sm'>
+        <fieldset className='flex flex-col justify-center mx-auto space-y-4' aria-live='polite'>
+          <FormTextarea<CommentInput> name='body' placeholder='Write a comment...' rows={3} clear />
+
+          <div className='bg-gray-100 py-2 px-4 '>
+            <div className='flex flex-wrap items-center justify-between mx-auto'>
+              <CustomImage src={image} alt={username} />
+              <Submit className='self-end' strict>
+                Post Comment
+              </Submit>
+            </div>
+          </div>
+        </fieldset>
       </div>
-      <div className='card-footer'>
-        <CustomImage src={image} alt={username} className='comment-author-image' />
-        <button className='btn btn-sm btn-primary' disabled={loading}>
-          Post Comment
-        </button>
-      </div>
-    </form>
+    </Form>
   );
 }

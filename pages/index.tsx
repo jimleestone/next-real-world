@@ -2,7 +2,6 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import ArticlesViewer from '../components/article-list/ArticlesViewer';
-import { ContainerPage } from '../components/common/ContainerPage';
 import Title from '../components/common/Title';
 import HomeBanner from '../components/home/Banner';
 import HomeSidebar from '../components/home/Sidebar';
@@ -32,10 +31,10 @@ const Home: NextPage = () => {
   return (
     <>
       <Title title='Home' />
-      <div className='home-page'>
+      <div className='mb-auto'>
         <HomeBanner />
-        <ContainerPage>
-          <div className='col-md-9'>
+        <div className='container flex flex-col-reverse justify-center mx-auto mt-8 md:flex-row overflow-hidden'>
+          <div className='basis-9/12 shrink-0 md:mr-6'>
             <ArticlesViewer
               toggleClassName='feed-toggle'
               tabs={buildTabList()}
@@ -43,10 +42,11 @@ const Home: NextPage = () => {
               isFeedQuery={isFeedQuery}
             />
           </div>
-          <div className='col-md-3'>
+
+          <aside className=''>
             <HomeSidebar />
-          </div>
-        </ContainerPage>
+          </aside>
+        </div>
       </div>
     </>
   );

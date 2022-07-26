@@ -1,45 +1,35 @@
 import { useApolloClient } from '@apollo/client';
 import { NextPage } from 'next';
-import React, { useEffect, useState } from 'react';
-import { ContainerPage } from '../components/common/ContainerPage';
-import { GenericForm } from '../components/common/GenericForm';
+import * as R from 'ramda';
+import CustomButton from '../components/common/CustomButton';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 import Title from '../components/common/Title';
-import { ProfileDocument, UserUpdateInput, useUpdateUserMutation } from '../generated/graphql';
+import Form from '../components/forms/form';
+import FormTextarea from '../components/forms/form-teextarea';
+import FormInput from '../components/forms/FormInput';
+import Submit from '../components/forms/submit';
+import { AuthUser, ProfileDocument, UserUpdateInput, useUpdateUserMutation } from '../generated/graphql';
 import withAuth from '../lib/auth/with-auth';
 import { useCurrentUser } from '../lib/hooks/use-current-user';
 import { useErrorsHandler } from '../lib/hooks/use-errors-handler';
 import { useToken } from '../lib/hooks/use-token';
-import { buildGenericFormField } from '../lib/utils/genericFormField';
+import { updateUserInputSchemaAsync } from '../lib/validation/schema';
 
 const Settings: NextPage = () => {
   const client = useApolloClient();
   const { user } = useCurrentUser();
   const { handleChangeToken } = useToken();
-  const [input, setInput] = useState<UserUpdateInput>({ username: '', email: '', bio: '', image: '' });
   const { errors, handleErrors } = useErrorsHandler();
 
-  useEffect(() => {
-    if (user) {
-      const { username, email, bio, image } = user;
-      setInput({ username, email, bio, image });
-    }
-  }, [user]);
-
   const [updateUser, { loading }] = useUpdateUserMutation({
-    refetchQueries: [{ query: ProfileDocument, variables: { username: input.username } }],
+    refetchQueries: [{ query: ProfileDocument, variables: { username: user?.username } }],
     onError: (err) => handleErrors(err),
   });
 
-  function onUpdateField(name: string, value: string) {
-    setInput({ ...input, [name as keyof UserUpdateInput]: value });
+  async function onUpdateSettings(input: UserUpdateInput) {
+    await updateUser({ variables: { input } });
   }
 
-  function onUpdateSettings() {
-    return async (ev: React.FormEvent) => {
-      ev.preventDefault();
-      await updateUser({ variables: { input } });
-    };
-  }
   function onLogout() {
     return async () => {
       handleChangeToken('');
@@ -47,41 +37,37 @@ const Settings: NextPage = () => {
     };
   }
 
+  if (!user) return <LoadingSpinner />;
+  const init = R.pickAll<AuthUser, UserUpdateInput>(['username', 'email', 'bio', 'image'], user);
+  const checkSchema = updateUserInputSchemaAsync(client, init);
   return (
     <>
       <Title title='Settings' />
-      <div className='settings-page'>
-        <ContainerPage>
-          <div className='col-md-6 offset-md-3 col-xs-12'>
-            <h1 className='text-xs-center'>Your Settings</h1>
+      <div className='mb-auto'>
+        <div className='container flex flex-wrap flex-col items-center mx-auto space-y-4'>
+          <h1 className='text-4xl font-extralight'>Your Settings</h1>
+          <div className='w-6/12'>
+            <Form<UserUpdateInput> onSubmit={onUpdateSettings} schema={checkSchema} mode='onBlur' defaultValues={init}>
+              <fieldset className='flex flex-col justify-center mx-auto space-y-6' aria-live='polite'>
+                <FormInput<UserUpdateInput> name='image' placeholder='URL of profile picture' watch />
+                <FormInput<UserUpdateInput> name='username' placeholder='Your name' />
+                <FormTextarea<UserUpdateInput> name='bio' placeholder='Short bio about you' rows={8} />
+                <FormInput<UserUpdateInput> name='email' placeholder='Email' />
+                <FormInput<UserUpdateInput> name='password' placeholder='Password' type='password' watch />
 
-            <GenericForm
-              disabled={loading}
-              errors={errors}
-              formObject={{ ...input }}
-              submitButtonText='Update Settings'
-              onChange={onUpdateField}
-              onSubmit={onUpdateSettings()}
-              fields={[
-                buildGenericFormField({ name: 'image', placeholder: 'URL of profile picture' }),
-                buildGenericFormField({ name: 'username', placeholder: 'Your Name' }),
-                buildGenericFormField({
-                  name: 'bio',
-                  placeholder: 'Short bio about you',
-                  rows: 8,
-                  fieldType: 'textarea',
-                }),
-                buildGenericFormField({ name: 'email', placeholder: 'Email', type: 'email' }),
-                buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
-              ]}
-            />
+                <Submit size='l' className='self-end' strict>
+                  Update Settings
+                </Submit>
+              </fieldset>
+            </Form>
 
-            <hr />
-            <button className='btn btn-outline-danger' onClick={onLogout()}>
+            <hr className='my-4' />
+
+            <CustomButton color='danger' outlined className='self-start' onClick={onLogout()}>
               Or click here to logout.()
-            </button>
+            </CustomButton>
           </div>
-        </ContainerPage>
+        </div>
       </div>
     </>
   );

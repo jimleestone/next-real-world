@@ -1,24 +1,19 @@
-import { format } from 'date-fns';
 import { ArticleViewFragment, CommentViewFragment, useDeleteCommentMutation } from '../../generated/graphql';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
 import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
-import CustomImage from '../common/CustomImage';
-import CustomLink from '../common/CustomLink';
+import ArticleAuthorInfo, { AuthorInfo } from './ArticleAuthorInfo';
 
-export default function ArticleComment({
-  comment: {
-    id,
-    body,
-    createdAt,
-    author: { username, image },
-  },
-  article,
-}: {
+interface ArticleCommentProps {
   comment: CommentViewFragment;
   article: ArticleViewFragment;
-}) {
+}
+
+export default function ArticleComment({ comment, article }: ArticleCommentProps) {
   const { user } = useCurrentUser();
   const { handleErrors } = useErrorsHandler();
+  const { id, body, author, createdAt } = comment;
+  const { username, image } = author;
+  const authorInfo: AuthorInfo = { createdAt, username, image };
 
   const [deleteComment] = useDeleteCommentMutation({
     optimisticResponse: { deleteComment: { id, __typename: 'Comment' } },
@@ -42,25 +37,24 @@ export default function ArticleComment({
   }
 
   return (
-    <div className='card'>
-      <div className='card-block'>
-        <p className='card-text'>{body}</p>
+    <li className='border rounded-sm shadow-sm mb-2'>
+      <div className='p-4'>
+        <p className=''>{body}</p>
       </div>
-      <div className='card-footer'>
-        <CustomLink className='comment-author' href={{ pathname: '/profile/[username]', query: { username } }}>
-          <CustomImage src={image} alt={username} className='comment-author-image' />
-        </CustomLink>
-        &nbsp;
-        <CustomLink className='comment-author' href={{ pathname: '/profile/[username]', query: { username } }}>
-          {username}
-        </CustomLink>
-        <span className='date-posted'>{format(new Date(createdAt), 'PP')}</span>
-        {user && user.username === username && (
-          <span className='mod-options'>
-            <i className='ion-trash-a' aria-label={`Delete comment #${id}`} onClick={() => onDeleteComment()}></i>
-          </span>
-        )}
+      <div className='bg-gray-100 py-2 px-4 border shadow-sm'>
+        <div className='flex flex-wrap items-center justify-between mx-auto'>
+          <ArticleAuthorInfo authorInfo={authorInfo} inlined />
+          {user && user.username === username && (
+            <span className='self-end'>
+              <i
+                className='ion-trash-a cursor-pointer'
+                aria-label={`Delete comment #${id}`}
+                onClick={() => onDeleteComment()}
+              ></i>
+            </span>
+          )}
+        </div>
       </div>
-    </div>
+    </li>
   );
 }

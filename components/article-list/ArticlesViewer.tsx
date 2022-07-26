@@ -24,17 +24,22 @@ export default function ArticlesViewer({ tabs, toggleClassName, isFeedQuery, que
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { errors, handleErrors } = useErrorsHandler();
 
-  const [loadArticles, { data: articlesData, loading: articlesLoading, fetchMore }] = useArticlesLazyQuery({
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first',
-  });
-  const [loadArticlesCount, { data: articlesCount }] = useArticlesCountLazyQuery({ fetchPolicy: 'cache-and-network' });
-
-  const [loadFeed, { data: feedData, loading: feedLoading, fetchMore: fetchMoreFeed }] = useFeedLazyQuery({
+  const [loadArticles, { data: articlesData, loading: articlesLoading, error, fetchMore }] = useArticlesLazyQuery({
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onError: (err) => handleErrors(err),
   });
+  const [loadArticlesCount, { data: articlesCount }] = useArticlesCountLazyQuery({
+    fetchPolicy: 'cache-and-network',
+    onError: (err) => handleErrors(err),
+  });
+
+  const [loadFeed, { data: feedData, loading: feedLoading, error: feedError, fetchMore: fetchMoreFeed }] =
+    useFeedLazyQuery({
+      fetchPolicy: 'cache-and-network',
+      nextFetchPolicy: 'cache-first',
+      onError: (err) => handleErrors(err),
+    });
   const [loadFeedCount, { data: feedCount }] = useFeedCountLazyQuery({
     fetchPolicy: 'cache-and-network',
     onError: (err) => handleErrors(err),
@@ -74,7 +79,7 @@ export default function ArticlesViewer({ tabs, toggleClassName, isFeedQuery, que
   return (
     <React.Fragment>
       <TabList {...{ tabs, toggleClassName }} />
-      <ArticleList articles={articles} loading={feedLoading || articlesLoading} />
+      <ArticleList articles={articles} loading={feedLoading || articlesLoading} errors={errors} />
       <LoadMore currentSize={currentSize || 0} totalCount={totalCount || 0} onLoadMore={onLoadMore} />
     </React.Fragment>
   );

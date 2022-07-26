@@ -1,84 +1,14 @@
 @import url('//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css');
 @import url('//fonts.googleapis.com/css?family=Titillium+Web:700|Source+Serif+Pro:400,700|Merriweather+Sans:400,700|Source+Sans+Pro:400,300,600,700,300italic,400italic,600italic,700italic');
-@import url('//demo.productionready.io/main.css');
 
-/* fixed image display when using next/image */
-.article-meta img {
-  all: initial;
-  all: unset;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-.article-meta .author-image {
-  position: relative;
-  display: inline-block;
-  vertical-align: middle;
-  height: 32px;
-  width: 32px;
-  border-radius: 32px;
-  overflow: hidden;
-}
-
-.article-page .card .comment-author-image {
-  position: relative;
-  display: inline-block;
-  vertical-align: middle;
-  height: 20px;
-  width: 20px;
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.article-page .comment-form .card-footer .comment-author-image {
-  display: inline-block;
-  vertical-align: middle;
-  height: 30px;
-  width: 30px;
-  border-radius: 30px;
-  overflow: hidden;
-}
-
-.profile-page .user-info .user-image {
-  position: relative;
-  display: inline-block;
-  vertical-align: middle;
-  width: 100px;
-  height: 100px;
-  border-radius: 100px;
-  overflow: hidden;
-  margin-bottom: 1rem;
-}
-
-.not-found {
-  margin-top: 100;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.not-found p {
-  display: inherit;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.loading-spinner {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  margin: 90px auto;
-  border-radius: 50%;
-  border-top: 3px solid rgba(0, 0, 0, 0.1);
-  border-right: 3px solid rgba(0, 0, 0, 0.1);
-  border-bottom: 3px solid rgba(0, 0, 0, 0.1);
-  border-left: 3px solid #818a91;
-  transform: translateZ(0);
-  animation: spin 0.5s infinite linear;
+.error-msg {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 3px;
+  color: #d8000c;
+  background-color: #ffbaba;
 }

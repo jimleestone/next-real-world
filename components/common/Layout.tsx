@@ -1,5 +1,4 @@
 import type { AppProps } from 'next/app';
-import React from 'react';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
 import Footer from './Footer';
 import Header from './Header';
@@ -9,11 +8,11 @@ export default function Layout({ Component, pageProps }: AppProps) {
   return (
     <>
       {!loading && (
-        <React.Fragment>
+        <div className='flex flex-col h-screen justify-between'>
           <Header />
           <Component {...pageProps} />;
           <Footer />
-        </React.Fragment>
+        </div>
       )}
     </>
   );

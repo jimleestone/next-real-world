@@ -1,16 +1,15 @@
-import Link from 'next/link';
 import CustomLink from './CustomLink';
 
 export default function Footer() {
   return (
-    <footer>
-      <div className='container'>
-        <CustomLink href='/' className='logo-font'>
+    <footer className='bg-gray-50 mt-3 py-4'>
+      <div className='container flex flex-col items-center mx-auto md:flex-row'>
+        <CustomLink href='/' className='font-titillium' mode='primary' underlined>
           conduit
         </CustomLink>
-        <span className='attribution'>
-          An interactive learning project from <Link href='https://thinkster.io'>Thinkster</Link>. Code &amp; design
-          licensed under MIT.
+        <span className='mt-2 font-light text-sm text-gray-400 md:ml-2.5 md:mt-0'>
+          An interactive learning project from <CustomLink href='https://thinkster.io'>Thinkster</CustomLink>. Code
+          &amp; design licensed under MIT.
         </span>
       </div>
     </footer>

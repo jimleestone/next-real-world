@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import ArticleMeta from '../../components/article/ArticleMeta';
 import ArticlePageBanner from '../../components/article/ArticlePageBanner';
 import CommentSection from '../../components/article/CommentSection';
+import Marked from '../../components/article/marked';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import TagList from '../../components/common/TagList';
 import Title from '../../components/common/Title';
@@ -16,26 +17,24 @@ const ArticlePage: NextPage = () => {
   if (loading || !data) return <LoadingSpinner />;
   if (!data.article) return <Custom404 />;
   const { article } = data;
+
   return (
     <>
       <Title title={article.title} />
-      <div className='article-page'>
+      <div className='mb-auto'>
         <ArticlePageBanner article={article} />
 
-        <div className='container page'>
-          <div className='row article-content'>
-            <div className='col-md-12'>{article.body}</div>
-            <TagList tagList={article.tagList} />
-          </div>
+        <div className='container flex flex-wrap flex-col mx-auto mt-8'>
+          <Marked content={article.body} className='mb-4' />
+          <TagList outlined tagList={article.tagList} />
 
-          <hr />
+          <hr className='my-4' />
 
-          <div className='article-actions'>
+          <div className='mt-16 self-center'>
             <ArticleMeta article={article} />
           </div>
-
-          <CommentSection article={article} />
         </div>
+        <CommentSection article={article} />
       </div>
     </>
   );

@@ -24,7 +24,7 @@ export function Pagination({
               className={`page-item${currentPage !== index ? '' : ' active'}`}
               onClick={onPageChange && (() => onPageChange(index))}
             >
-              <CustomLink className='page-link' aria-label={`Go to page number ${index}`} href={asPath} shallow={true}>
+              <CustomLink aria-label={`Go to page number ${index}`} href={asPath} shallow>
                 {index}
               </CustomLink>
             </li>

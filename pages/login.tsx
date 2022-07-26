@@ -1,16 +1,16 @@
 import { useApolloClient } from '@apollo/client';
 import { NextPage } from 'next';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
-import { ContainerPage } from '../components/common/ContainerPage';
-import { GenericForm } from '../components/common/GenericForm';
+import CustomLink from '../components/common/CustomLink';
 import Title from '../components/common/Title';
+import Form from '../components/forms/form';
+import FormInput from '../components/forms/FormInput';
+import Submit from '../components/forms/submit';
 import { useLoginMutation, UserLoginInput } from '../generated/graphql';
 import guestOnly from '../lib/auth/guest-only';
 import { useErrorsHandler } from '../lib/hooks/use-errors-handler';
 import { useToken } from '../lib/hooks/use-token';
-import { buildGenericFormField } from '../lib/utils/genericFormField';
+import { loginInputSchema } from '../lib/validation/schema';
 
 const Login: NextPage = () => {
   const router = useRouter();
@@ -18,54 +18,45 @@ const Login: NextPage = () => {
   const { handleChangeToken } = useToken();
   const { errors, handleErrors } = useErrorsHandler();
 
-  const [input, setInput] = useState<UserLoginInput>({ email: '', password: '' });
   const [login, { loading }] = useLoginMutation({
     onCompleted: async (data) => {
       if (data) {
         handleChangeToken(data.login.token as string);
         await client.resetStore();
-        await router.back();
+        router.back();
       }
     },
     onError: (err) => handleErrors(err),
   });
 
-  function onUpdateField(name: string, value: string) {
-    setInput({ ...input, [name as keyof UserLoginInput]: value });
+  async function onLogin(input: UserLoginInput) {
+    await login({ variables: { input } });
   }
-
-  function onLogin() {
-    return async (ev: React.FormEvent) => {
-      ev.preventDefault();
-      await login({ variables: { input } });
-    };
-  }
-
+  const init = { email: '', password: '' };
   return (
     <>
       <Title title='Sign in' />
-      <div className='auth-page'>
-        <ContainerPage>
-          <div className='col-md-6 offset-md-3 col-xs-12'>
-            <h1 className='text-xs-center'>Sign in</h1>
-            <p className='text-xs-center'>
-              <Link href='/register'>Need an account?</Link>
-            </p>
+      <div className='mb-auto'>
+        <div className='container flex flex-wrap flex-col items-center mx-auto space-y-4'>
+          <h1 className='text-4xl font-extralight'>Sign in</h1>
+          <p>
+            <CustomLink href='/register' mode='primary' underlined>
+              Need an account?
+            </CustomLink>
+          </p>
+          <div className='w-6/12'>
+            <Form<UserLoginInput> onSubmit={onLogin} schema={loginInputSchema} defaultValues={init}>
+              <fieldset className='flex flex-col justify-center mx-auto space-y-4' aria-live='polite'>
+                <FormInput<UserLoginInput> name='email' placeholder='Email' />
+                <FormInput<UserLoginInput> name='password' placeholder='Password' type='password' />
 
-            <GenericForm
-              disabled={loading}
-              errors={errors}
-              formObject={input as unknown as Record<string, string>}
-              submitButtonText='Sign in'
-              onChange={onUpdateField}
-              onSubmit={onLogin()}
-              fields={[
-                buildGenericFormField({ name: 'email', placeholder: 'Email', type: 'email' }),
-                buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
-              ]}
-            />
+                <Submit size='l' className='self-end'>
+                  Sign in
+                </Submit>
+              </fieldset>
+            </Form>
           </div>
-        </ContainerPage>
+        </div>
       </div>
     </>
   );

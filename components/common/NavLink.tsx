@@ -7,18 +7,20 @@ interface NavLinkProps {
   as?: string | UrlObject;
   shallow?: boolean;
   children: React.ReactNode;
+  className?: string;
+  hoverClass?: string;
+  activeClass?: string;
 }
 
-const NavLink = ({ href, as, shallow, children }: NavLinkProps) => {
+export default function NavLink({ href, as, className, hoverClass, activeClass, shallow, children }: NavLinkProps) {
   const { asPath } = useRouter();
-
+  const active = decodeURIComponent(asPath) === decodeURIComponent(href as string);
+  const ariaCurrent = active ? 'page' : undefined;
   return (
     <Link href={href} as={as} passHref shallow={shallow}>
-      <a className={`nav-link ${decodeURIComponent(asPath) === decodeURIComponent(href as string) && `active`}`}>
+      <a className={`${className} ${hoverClass} ${active ? activeClass : ''}`} aria-current={ariaCurrent}>
         {children}
       </a>
     </Link>
   );
-};
-
-export default NavLink;
+}

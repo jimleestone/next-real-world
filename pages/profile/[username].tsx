@@ -21,20 +21,18 @@ const Profile: NextPage = () => {
   return (
     <>
       <Title title='Profile' />
-      <div className='profile-page'>
+      <div className='mb-auto'>
         <UserInfo author={data.profile} />,
-        <div className='container'>
-          <div className='row'>
-            <div className='col-xs-12 col-md-10 offset-md-1'>
-              <ArticlesViewer
-                toggleClassName='articles-toggle'
-                tabs={[
-                  { name: 'My Articles', href: `/profile/${username}` },
-                  { name: 'Favorited Articles', href: `/profile/${username}?favorites=true` },
-                ]}
-                queryFilter={queryFilter}
-              />
-            </div>
+        <div className='container flex flex-wrap justify-center mx-auto mt-8'>
+          <div className='w-full'>
+            <ArticlesViewer
+              toggleClassName='articles-toggle'
+              tabs={[
+                { name: 'My Articles', href: `/profile/${username}` },
+                { name: 'Favorited Articles', href: `/profile/${username}?favorites=true` },
+              ]}
+              queryFilter={queryFilter}
+            />
           </div>
         </div>
       </div>

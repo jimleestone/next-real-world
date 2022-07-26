@@ -1,13 +1,19 @@
 import { UrlObject } from 'url';
-import NavLink from './NavLink';
+import CustomLink from './CustomLink';
 
-export default function NavItem({ text, href, icon }: { text: string; href: string | UrlObject; icon?: string }) {
+interface NavItemProps {
+  text: string;
+  href: string | UrlObject;
+  icon?: string;
+}
+
+export default function NavItem({ text, href, icon }: NavItemProps) {
   return (
-    <li className='nav-item'>
-      <NavLink href={href}>
+    <li>
+      <CustomLink href={href} mode='nav'>
         {icon && <i className={icon}></i>}&nbsp;
         {text}
-      </NavLink>
+      </CustomLink>
     </li>
   );
 }

@@ -1,23 +1,14 @@
 import { useTagsQuery } from '../../generated/graphql';
-import CustomLink from '../common/CustomLink';
 import LoadingSpinner from '../common/LoadingSpinner';
+import TagList from '../common/TagList';
 
 export default function HomeSidebar() {
   const { loading, data } = useTagsQuery();
   if (loading) return <LoadingSpinner />;
   return (
-    <div className='sidebar'>
+    <div className='px-2 bg-gray-200 rounded-sm mb-4'>
       <p>Popular Tags</p>
-      {data && (
-        <div className='tag-list'>
-          {' '}
-          {data.tags.map((tag: string) => (
-            <CustomLink key={tag} href={{ pathname: '/', query: { tag } }} className='tag-pill tag-default' shallow>
-              {tag}
-            </CustomLink>
-          ))}{' '}
-        </div>
-      )}
+      {data && <TagList tagList={data.tags} withLink />}
     </div>
   );
 }

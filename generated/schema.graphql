@@ -86,6 +86,8 @@ type Query {
   article(slug: String!): Article
   articles(author: String, favorited: String, limit: Int = 10, offset: Int = 0, tag: String): [Article!]!
   articlesCount(author: String, favorited: String, tag: String): Int!
+  checkEmail(email: String!): String
+  checkUsername(username: String!): String
   comments(slug: String!): [Comment!]!
   currentUser: AuthUser!
   feed(limit: Int = 10, offset: Int = 0): [Article!]!

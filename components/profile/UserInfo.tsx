@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { Profile } from '../../generated/graphql';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
+import CustomButton from '../common/CustomButton';
 import CustomImage from '../common/CustomImage';
 import FollowsButton from '../common/FollowsButton';
 
@@ -12,22 +13,20 @@ export default function UserInfo({ author }: { author: Profile }) {
   const currentUsername = user ? user.username : '';
 
   return (
-    <div className='user-info'>
-      <div className='container'>
-        <div className='row'>
-          <div className='col-xs-12 col-md-10 offset-md-1'>
-            <CustomImage src={image} alt={username} className='user-image' />
-            <h4>{username}</h4>
-            <p>{bio}</p>
+    <div className='bg-gray-200 py-8'>
+      <div className='container flex flex-wrap flex-col items-center mx-auto'>
+        <CustomImage src={image} alt={username} size='l' />
+        <h4 className='text-3xl font-bold mt-4 mb-2'>{username}</h4>
+        <p className='font-thin text-lg text-gray-400 mb-4'>{bio}</p>
 
-            {currentUsername === username ? (
-              <button className='btn btn-sm btn-outline-secondary action-btn' onClick={() => router.push('/settings')}>
-                <i className='ion-gear-a'></i>&nbsp; Edit Profile Settings
-              </button>
-            ) : (
-              <FollowsButton author={author} className='btn btn-sm btn-outline-secondary action-btn' />
-            )}
-          </div>
+        <div className='md:self-end'>
+          {currentUsername === username ? (
+            <CustomButton color='secondary' size='s' outlined onClick={() => router.push('/settings')}>
+              <i className='ion-gear-a'></i>&nbsp; Edit Profile Settings
+            </CustomButton>
+          ) : (
+            <FollowsButton author={author} />
+          )}
         </div>
       </div>
     </div>

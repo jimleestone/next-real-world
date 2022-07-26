@@ -1,28 +1,31 @@
 import { format } from 'date-fns';
-import React from 'react';
-import { ArticleViewFragment } from '../../generated/graphql';
 import CustomImage from '../common/CustomImage';
 import CustomLink from '../common/CustomLink';
 
-export default function ArticleAuthorInfo({
-  article: {
-    author: { username, image },
-    createdAt,
-  },
-}: {
-  article: ArticleViewFragment;
-}) {
+export interface AuthorInfo {
+  createdAt: any;
+  username: string;
+  image?: string | null;
+}
+interface ArticleAuthorInfoProps {
+  inlined?: boolean; // layout property
+  dark?: boolean; // background
+  authorInfo: AuthorInfo;
+}
+
+export default function ArticleAuthorInfo({ inlined = false, dark = false, authorInfo }: ArticleAuthorInfoProps) {
+  const { username, image, createdAt } = authorInfo;
   return (
-    <React.Fragment>
-      <CustomLink href={{ pathname: '/profile/[username]', query: { username } }}>
-        <CustomImage src={image} alt={username} className='author-image' />
+    <div className={`flex flex-wrap ${inlined ? 'items-center' : 'items-end'}`}>
+      <CustomLink href={`/profile/${username}`}>
+        <CustomImage src={image} alt={username} />
       </CustomLink>
-      <div className='info'>
-        <CustomLink href={{ pathname: '/profile/[username]', query: { username } }} className='author'>
+      <div className={`flex ml-2 ${inlined ? 'flex-wrap items-center' : 'flex-col items-start'}`}>
+        <CustomLink href={`/profile/${username}`} underlined mode={`${dark ? 'reverse' : 'secondary'}`}>
           {username}
         </CustomLink>
-        <span className='date'>{format(new Date(createdAt), 'PP')}</span>
+        <span className={`text-xs text-gray-400 ${inlined && 'ml-2'}`}>{format(new Date(createdAt), 'PP')}</span>
       </div>
-    </React.Fragment>
+    </div>
   );
 }

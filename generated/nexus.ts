@@ -170,6 +170,8 @@ export interface NexusGenFieldTypes {
     article: NexusGenRootTypes['Article'] | null; // Article
     articles: NexusGenRootTypes['Article'][]; // [Article!]!
     articlesCount: number; // Int!
+    checkEmail: string | null; // String
+    checkUsername: string | null; // String
     comments: NexusGenRootTypes['Comment'][]; // [Comment!]!
     currentUser: NexusGenRootTypes['AuthUser']; // AuthUser!
     feed: NexusGenRootTypes['Article'][]; // [Article!]!
@@ -241,6 +243,8 @@ export interface NexusGenFieldTypeNames {
     article: 'Article'
     articles: 'Article'
     articlesCount: 'Int'
+    checkEmail: 'String'
+    checkUsername: 'String'
     comments: 'Comment'
     currentUser: 'AuthUser'
     feed: 'Article'
@@ -314,6 +318,12 @@ export interface NexusGenArgTypes {
       author?: string | null; // String
       favorited?: string | null; // String
       tag?: string | null; // String
+    }
+    checkEmail: { // args
+      email: string; // String!
+    }
+    checkUsername: { // args
+      username: string; // String!
     }
     comments: { // args
       slug: string; // String!

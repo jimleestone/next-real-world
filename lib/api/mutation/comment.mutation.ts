@@ -1,6 +1,7 @@
 import { Comment } from '@prisma/client';
 import { AuthenticationError, UserInputError } from 'apollo-server-micro';
 import { arg, extendType, intArg, nonNull, stringArg } from 'nexus';
+import { commentInputSchema } from '../../validation/schema';
 import { Context } from '../context';
 import { checkArticle } from './article.mutation';
 
@@ -16,9 +17,7 @@ const CommentMutation = extendType({
       authorize: (_, _args, ctx: Context) => !!ctx.currentUser,
       validate: ({ object, string }) => ({
         slug: string().required(),
-        input: object({
-          body: string().required().max(65535),
-        }),
+        input: commentInputSchema,
       }),
       resolve: async (_, { slug, input: { body } }, context: Context) => {
         await checkArticle(context, slug);

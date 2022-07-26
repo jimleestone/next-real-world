@@ -1,16 +1,16 @@
 import { useApolloClient } from '@apollo/client';
 import { NextPage } from 'next';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
-import { ContainerPage } from '../components/common/ContainerPage';
-import { GenericForm } from '../components/common/GenericForm';
+import CustomLink from '../components/common/CustomLink';
 import Title from '../components/common/Title';
+import Form from '../components/forms/form';
+import FormInput from '../components/forms/FormInput';
+import Submit from '../components/forms/submit';
 import { UserSignupInput, useSignupMutation } from '../generated/graphql';
 import guestOnly from '../lib/auth/guest-only';
 import { useErrorsHandler } from '../lib/hooks/use-errors-handler';
 import { useToken } from '../lib/hooks/use-token';
-import { buildGenericFormField } from '../lib/utils/genericFormField';
+import { signupInputSchema } from '../lib/validation/schema';
 
 const Register: NextPage = () => {
   const router = useRouter();
@@ -18,55 +18,46 @@ const Register: NextPage = () => {
   const { handleChangeToken } = useToken();
   const { errors, handleErrors } = useErrorsHandler();
 
-  const [input, setInput] = useState<UserSignupInput>({ username: '', email: '', password: '' });
   const [signUp, { loading }] = useSignupMutation({
     onCompleted: async (data) => {
       if (data) {
         handleChangeToken(data.signup?.token as string);
         await client.resetStore();
-        await router.back();
+        router.back();
       }
     },
     onError: (err) => handleErrors(err),
   });
 
-  function onSignUp() {
-    return async (ev: React.FormEvent) => {
-      ev.preventDefault();
-      await signUp({ variables: { input } });
-    };
+  async function onSignUp(input: UserSignupInput) {
+    await signUp({ variables: { input } });
   }
-
-  function onUpdateField(name: string, value: string) {
-    setInput({ ...input, [name as keyof UserSignupInput]: value });
-  }
-
+  const init: UserSignupInput = { email: '', password: '', username: '' };
   return (
     <>
       <Title title='Sign up' />
-      <div className='auth-page'>
-        <ContainerPage>
-          <div className='col-md-6 offset-md-3 col-xs-12'>
-            <h1 className='text-xs-center'>Sign up</h1>
-            <p className='text-xs-center'>
-              <Link href='/login'>Have an account?</Link>
-            </p>
+      <div className='mb-auto'>
+        <div className='container flex flex-wrap flex-col items-center mx-auto space-y-4'>
+          <h1 className='text-4xl font-extralight'>Sign up</h1>
+          <p>
+            <CustomLink href='/login' mode='primary' underlined>
+              Have an account?
+            </CustomLink>
+          </p>
+          <div className='w-6/12'>
+            <Form<UserSignupInput> onSubmit={onSignUp} schema={signupInputSchema} defaultValues={init}>
+              <fieldset className='flex flex-col justify-center mx-auto space-y-4' aria-live='polite'>
+                <FormInput<UserSignupInput> name='username' placeholder='Username' />
+                <FormInput<UserSignupInput> name='email' placeholder='Email' />
+                <FormInput<UserSignupInput> name='password' placeholder='Password' type='password' />
 
-            <GenericForm
-              disabled={loading}
-              errors={errors}
-              formObject={input as unknown as Record<string, string>}
-              submitButtonText='Sign up'
-              onChange={onUpdateField}
-              onSubmit={onSignUp()}
-              fields={[
-                buildGenericFormField({ name: 'username', placeholder: 'Username' }),
-                buildGenericFormField({ name: 'email', placeholder: 'Email', type: 'email' }),
-                buildGenericFormField({ name: 'password', placeholder: 'Password', type: 'password' }),
-              ]}
-            />
+                <Submit size='l' className='self-end'>
+                  Sign up
+                </Submit>
+              </fieldset>
+            </Form>
           </div>
-        </ContainerPage>
+        </div>
       </div>
     </>
   );

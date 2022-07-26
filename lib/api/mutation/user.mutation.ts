@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { UserInputError } from 'apollo-server-micro';
 import { arg, mutationType, nonNull } from 'nexus';
+import { loginInputSchema, signupInputSchema, updateUserInputSchema } from '../../validation/schema';
 import { Context } from '../context';
 import Utility from '../utils';
 
@@ -11,11 +12,8 @@ const UserMutation = mutationType({
       args: {
         input: nonNull(arg({ type: 'UserLoginInput' })),
       },
-      validate: ({ object, string }) => ({
-        input: object({
-          email: string().required().email(),
-          password: string().required(),
-        }),
+      validate: () => ({
+        input: loginInputSchema,
       }),
       resolve: async (_, { input: { email, password: inputPassword } }, context: Context) => {
         const user = await context.prisma.user.findUnique({ where: { email } });
@@ -34,12 +32,8 @@ const UserMutation = mutationType({
       args: {
         input: nonNull(arg({ type: 'UserSignupInput' })),
       },
-      validate: ({ object, string }) => ({
-        input: object({
-          username: string().required().max(100),
-          email: string().required().email().max(100),
-          password: string().required().max(100),
-        }),
+      validate: () => ({
+        input: signupInputSchema,
       }),
       resolve: async (_, { input }, context: Context) => {
         try {
@@ -67,14 +61,8 @@ const UserMutation = mutationType({
         input: nonNull(arg({ type: 'UserUpdateInput' })),
       },
       authorize: (_, _args, ctx: Context) => !!ctx.currentUser,
-      validate: ({ object, string }) => ({
-        input: object({
-          username: string().required().max(100),
-          email: string().required().email().max(100),
-          password: string().max(100),
-          bio: string().max(300).nullable(),
-          image: string().url().max(1024).nullable(),
-        }),
+      validate: () => ({
+        input: updateUserInputSchema,
       }),
       resolve: async (_, { input }, context: Context) => {
         const origin = await context.prisma.user.findUnique({

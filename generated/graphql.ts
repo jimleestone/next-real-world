@@ -163,6 +163,8 @@ export type Query = {
   article?: Maybe<Article>;
   articles: Array<Article>;
   articlesCount: Scalars['Int'];
+  checkEmail?: Maybe<Scalars['String']>;
+  checkUsername?: Maybe<Scalars['String']>;
   comments: Array<Comment>;
   currentUser: AuthUser;
   feed: Array<Article>;
@@ -190,6 +192,16 @@ export type QueryArticlesCountArgs = {
   author?: InputMaybe<Scalars['String']>;
   favorited?: InputMaybe<Scalars['String']>;
   tag?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryCheckEmailArgs = {
+  email: Scalars['String'];
+};
+
+
+export type QueryCheckUsernameArgs = {
+  username: Scalars['String'];
 };
 
 
@@ -327,6 +339,20 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CurrentUserQuery = { __typename?: 'Query', currentUser: { __typename?: 'AuthUser', id: number, username: string, email: string, bio?: string | null, image?: string | null } };
+
+export type CheckUsernameQueryVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type CheckUsernameQuery = { __typename?: 'Query', checkUsername?: string | null };
+
+export type CheckEmailQueryVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type CheckEmailQuery = { __typename?: 'Query', checkEmail?: string | null };
 
 export type CreateArticleMutationVariables = Exact<{
   input: ArticleInput;
@@ -915,6 +941,72 @@ export function useCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
 export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
 export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
+export const CheckUsernameDocument = gql`
+    query CheckUsername($username: String!) {
+  checkUsername(username: $username)
+}
+    `;
+
+/**
+ * __useCheckUsernameQuery__
+ *
+ * To run a query within a React component, call `useCheckUsernameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckUsernameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckUsernameQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useCheckUsernameQuery(baseOptions: Apollo.QueryHookOptions<CheckUsernameQuery, CheckUsernameQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckUsernameQuery, CheckUsernameQueryVariables>(CheckUsernameDocument, options);
+      }
+export function useCheckUsernameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckUsernameQuery, CheckUsernameQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckUsernameQuery, CheckUsernameQueryVariables>(CheckUsernameDocument, options);
+        }
+export type CheckUsernameQueryHookResult = ReturnType<typeof useCheckUsernameQuery>;
+export type CheckUsernameLazyQueryHookResult = ReturnType<typeof useCheckUsernameLazyQuery>;
+export type CheckUsernameQueryResult = Apollo.QueryResult<CheckUsernameQuery, CheckUsernameQueryVariables>;
+export const CheckEmailDocument = gql`
+    query CheckEmail($email: String!) {
+  checkEmail(email: $email)
+}
+    `;
+
+/**
+ * __useCheckEmailQuery__
+ *
+ * To run a query within a React component, call `useCheckEmailQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckEmailQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckEmailQuery({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useCheckEmailQuery(baseOptions: Apollo.QueryHookOptions<CheckEmailQuery, CheckEmailQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckEmailQuery, CheckEmailQueryVariables>(CheckEmailDocument, options);
+      }
+export function useCheckEmailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckEmailQuery, CheckEmailQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckEmailQuery, CheckEmailQueryVariables>(CheckEmailDocument, options);
+        }
+export type CheckEmailQueryHookResult = ReturnType<typeof useCheckEmailQuery>;
+export type CheckEmailLazyQueryHookResult = ReturnType<typeof useCheckEmailLazyQuery>;
+export type CheckEmailQueryResult = Apollo.QueryResult<CheckEmailQuery, CheckEmailQueryVariables>;
 export const CreateArticleDocument = gql`
     mutation CreateArticle($input: ArticleInput!) {
   createArticle(input: $input) {

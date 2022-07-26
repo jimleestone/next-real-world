@@ -2,10 +2,11 @@ import { useRouter } from 'next/router';
 import { FeedDocument, Profile, useFollowMutation, useUnFollowMutation } from '../../generated/graphql';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
 import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import CustomButton from './CustomButton';
 
 interface FollowsButtonProps {
   author: Profile;
-  className: string;
+  className?: string;
 }
 
 export default function FollowsButton({ author, className }: FollowsButtonProps) {
@@ -33,7 +34,14 @@ export default function FollowsButton({ author, className }: FollowsButtonProps)
   }
 
   return (
-    <button className={className} onClick={onFollowToggle} disabled={followLoading || unFollowLoading}>
+    <CustomButton
+      color='secondary'
+      size='s'
+      outlined={!following}
+      className={className}
+      onClick={onFollowToggle}
+      disabled={followLoading || unFollowLoading}
+    >
       {following ? (
         <>
           {' '}
@@ -47,6 +55,6 @@ export default function FollowsButton({ author, className }: FollowsButtonProps)
           &nbsp; {`Follow ${username}`}
         </>
       )}
-    </button>
+    </CustomButton>
   );
 }

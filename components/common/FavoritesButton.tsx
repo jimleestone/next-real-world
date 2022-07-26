@@ -8,10 +8,11 @@ import {
 } from '../../generated/graphql';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
 import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import CustomButton from './CustomButton';
 
 interface FavoritesButtonProps {
   article: ArticlePreviewFragment | ArticleViewFragment;
-  className: string;
+  className?: string;
   text?: string;
 }
 
@@ -44,7 +45,10 @@ export default function FavoritesButton({ article, className, text }: FavoritesB
   }
 
   return (
-    <button
+    <CustomButton
+      color='primary'
+      size='s'
+      outlined={!favorited}
       className={className}
       aria-label='Toggle Favorite'
       disabled={favoriteLoading || unfavoriteLoading}
@@ -58,6 +62,6 @@ export default function FavoritesButton({ article, className, text }: FavoritesB
       ) : (
         <>&nbsp; {favoritesCount}</>
       )}
-    </button>
+    </CustomButton>
   );
 }

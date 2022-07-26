@@ -1,6 +1,7 @@
 import { Article, Prisma } from '@prisma/client';
 import { AuthenticationError, UserInputError } from 'apollo-server-micro';
 import { arg, extendType, nonNull, stringArg } from 'nexus';
+import { articleInputSchema } from '../../validation/schema';
 import { Context } from '../context';
 import Utility from '../utils';
 
@@ -13,13 +14,8 @@ const ArticleMutation = extendType({
         input: nonNull(arg({ type: 'ArticleInput' })),
       },
       authorize: (_, _args, ctx: Context) => !!ctx.currentUser,
-      validate: ({ object, string, array }) => ({
-        input: object({
-          title: string().required().max(100),
-          description: string().required().max(255),
-          body: string().required().max(65535),
-          tagList: array(string().required().max(100)),
-        }),
+      validate: () => ({
+        input: articleInputSchema,
       }),
       resolve: (_, { input: { title, description, body, tagList } }, context: Context) => {
         return context.prisma.article.create({
@@ -52,14 +48,9 @@ const ArticleMutation = extendType({
         input: nonNull(arg({ type: 'ArticleInput' })),
       },
       authorize: (_, args, ctx: Context) => !!ctx.currentUser,
-      validate: ({ object, string, array }) => ({
+      validate: ({ string }) => ({
         slug: string().required(),
-        input: object({
-          title: string().required().max(100),
-          description: string().required().max(255),
-          body: string().required().max(65535),
-          tagList: array(string().required().max(100)),
-        }),
+        input: articleInputSchema,
       }),
       resolve: async (_, { slug, input: { title, body, description, tagList } }, context: Context) => {
         const origin = await checkArticle(context, slug);

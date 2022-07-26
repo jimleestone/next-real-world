@@ -29,3 +29,11 @@ query CurrentUser {
     image
   }
 }
+
+query CheckUsername($username: String!) {
+  checkUsername(username: $username)
+}
+
+query CheckEmail($email: String!) {
+  checkEmail(email: $email)
+}
