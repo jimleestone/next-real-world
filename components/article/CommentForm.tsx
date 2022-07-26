@@ -53,11 +53,11 @@ export default function CommentForm({
   const init: CommentInput = { body: '' };
   return (
     <Form<CommentInput> onSubmit={onPostComment} mode='onChange' schema={commentInputSchema} defaultValues={init}>
-      <div className='border rounded-t-md shadow-sm'>
-        <fieldset className='flex flex-col justify-center mx-auto space-y-4' aria-live='polite'>
+      <div className='bg-gray-100 border rounded-t-md shadow-sm'>
+        <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
           <FormTextarea<CommentInput> name='body' placeholder='Write a comment...' rows={3} clear />
 
-          <div className='bg-gray-100 py-2 px-4 '>
+          <div className='py-2 px-4 '>
             <div className='flex flex-wrap items-center justify-between mx-auto'>
               <CustomImage src={image} alt={username} />
               <Submit className='self-end' strict>

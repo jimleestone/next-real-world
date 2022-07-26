@@ -39,9 +39,9 @@ export const joinInputStyles = ({
 }: Pick<InputProps, 'size' | 'mode' | 'disabled' | 'className'>) =>
   joinStylesFromArray(
     inputConfig.basic,
-    mode ? inputModeConfig[mode] : '',
-    size ? inputSizeConfig[size] : '',
-    disabled ? inputConfig.disabled : '',
+    mode && inputModeConfig[mode],
+    size && inputSizeConfig[size],
+    disabled && inputConfig.disabled,
     className
   );
 

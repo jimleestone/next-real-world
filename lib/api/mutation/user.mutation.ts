@@ -49,7 +49,7 @@ const UserMutation = mutationType({
           return { ...user, token: Utility.issueToken(payload) };
         } catch (e) {
           if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            if (e.code === 'P2002') throw new UserInputError('Duplicate username or email');
+            if (e.code === 'P2002') throw new UserInputError('Username or email had been used');
           }
           return null;
         }
@@ -82,7 +82,7 @@ const UserMutation = mutationType({
           });
         } catch (e) {
           if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            if (e.code === 'P2002') throw new UserInputError('Duplicate username or email');
+            if (e.code === 'P2002') throw new UserInputError('Username or email had been used');
           }
           return origin;
         }

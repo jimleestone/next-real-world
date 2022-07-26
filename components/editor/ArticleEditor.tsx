@@ -10,6 +10,7 @@ import {
 } from '../../generated/graphql';
 import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
 import { articleInputSchema } from '../../lib/validation/schema';
+import Alert from '../common/alert';
 import Form from '../forms/form';
 import FormTextarea from '../forms/form-teextarea';
 import FormInput from '../forms/FormInput';
@@ -53,8 +54,9 @@ export default function ArticleEditor({ article }: { article?: EditArticleViewFr
     <div className='mb-auto'>
       <div className='container flex flex-wrap flex-col items-center mx-auto mt-12'>
         <div className='w-9/12'>
+          <Alert type='danger' message={errors} />
           <Form<ArticleInput> onSubmit={onSubmit} schema={articleInputSchema} mode='onChange' defaultValues={init}>
-            <fieldset className='flex flex-col justify-center mx-auto space-y-6' aria-live='polite'>
+            <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
               <FormInput<ArticleInput> name='title' placeholder='Article title' />
               <FormInput<ArticleInput> name='description' placeholder="What's this article about?" />
               <FormTextarea<ArticleInput> name='body' placeholder='Write your article (in markdown)' rows={8} />

@@ -67,7 +67,7 @@ export default function TagInput<TFormValues extends Record<string, any> & { tag
         onKeyDown={onKeyDown()}
         onBlur={onBlur()}
       />
-      <TagList tagList={value} onRemoveItem={onRemoveTag} />
+      <TagList tagList={value} onRemoveItem={onRemoveTag} className='mt-2' />
       <FormErrorMessage message={error?.message} />
     </>
   );

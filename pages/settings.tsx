@@ -1,6 +1,7 @@
 import { useApolloClient } from '@apollo/client';
 import { NextPage } from 'next';
 import * as R from 'ramda';
+import Alert from '../components/common/alert';
 import CustomButton from '../components/common/CustomButton';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import Title from '../components/common/Title';
@@ -44,12 +45,17 @@ const Settings: NextPage = () => {
     <>
       <Title title='Settings' />
       <div className='mb-auto'>
-        <div className='container flex flex-wrap flex-col items-center mx-auto space-y-4'>
+        <div className='container flex flex-wrap flex-col items-center mx-auto'>
           <h1 className='text-4xl font-extralight'>Your Settings</h1>
           <div className='w-6/12'>
+            <Alert type='danger' message={errors} />
             <Form<UserUpdateInput> onSubmit={onUpdateSettings} schema={checkSchema} mode='onBlur' defaultValues={init}>
-              <fieldset className='flex flex-col justify-center mx-auto space-y-6' aria-live='polite'>
-                <FormInput<UserUpdateInput> name='image' placeholder='URL of profile picture' watch />
+              <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
+                <FormInput<UserUpdateInput>
+                  name='image'
+                  placeholder='URL of profile picture(currently support i.imgur.com)'
+                  watch
+                />
                 <FormInput<UserUpdateInput> name='username' placeholder='Your name' />
                 <FormTextarea<UserUpdateInput> name='bio' placeholder='Short bio about you' rows={8} />
                 <FormInput<UserUpdateInput> name='email' placeholder='Email' />

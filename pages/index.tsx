@@ -33,7 +33,7 @@ const Home: NextPage = () => {
       <Title title='Home' />
       <div className='mb-auto'>
         <HomeBanner />
-        <div className='container flex flex-col-reverse justify-center mx-auto mt-8 md:flex-row overflow-hidden'>
+        <div className='container flex flex-col-reverse justify-center mx-auto mt-8 md:flex-row'>
           <div className='basis-9/12 shrink-0 md:mr-6'>
             <ArticlesViewer
               toggleClassName='feed-toggle'

@@ -1,10 +1,14 @@
 import { joinStylesFromArray } from '../../lib/utils/styles-builder';
 
-interface FormErrorMessageProps {
-  className?: string;
-  message?: string;
-}
+type FormErrorMessageProps = Partial<{
+  className: string;
+  message: string;
+}>;
 
 export default function FormErrorMessage({ message, className }: FormErrorMessageProps) {
-  return <p className={joinStylesFromArray('text-sm text-red-600', className)}>{message && <span>{message}</span>}</p>;
+  return (
+    <div className='pt-1 pb-3 px-4 h-8'>
+      {message && <p className={joinStylesFromArray('text-sm text-red-600', className)}>{message}</p>}
+    </div>
+  );
 }

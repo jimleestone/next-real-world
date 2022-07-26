@@ -3,6 +3,18 @@ import { joinStyles, joinStylesFromArray } from '../../lib/utils/styles-builder'
 
 export type ButtonColor = 'primary' | 'secondary' | 'danger';
 export type ButtonSize = 's' | 'm' | 'l';
+type ButtonMode = 'default' | 'outline';
+type ButtonColorPattern =
+  | 'bgColor'
+  | 'color'
+  | 'hover'
+  | 'focus'
+  | 'active'
+  | 'activeHover'
+  | 'activeFocus'
+  | 'disabled'
+  | 'disabledHover'
+  | 'disabledFocus';
 
 export type ButtonProps = Partial<{
   color: ButtonColor;
@@ -12,15 +24,16 @@ export type ButtonProps = Partial<{
   Omit<DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, 'color'>;
 
 const buttonConfig = {
-  basic: {
-    shape: 'rounded border',
-    focus: 'focus:ring-4 focus:ring-opacity-50',
-    active: 'active:ring-4 active:ring-opacity-50',
-    activeFocus: 'active:focus:ring-4 active:focus:ring-opacity-50',
-    disabled: 'rounded border disabled:cursor-not-allowed disabled:ring-0',
-  },
+  shape: 'rounded border',
+  focus: 'focus:ring-4 focus:ring-opacity-50',
+  active: 'active:ring-4 active:ring-opacity-50',
+  activeFocus: 'active:focus:ring-4 active:focus:ring-opacity-50',
+  disabled: 'rounded border disabled:cursor-not-allowed disabled:ring-0',
+};
 
-  // Colors
+const buttonColorConfig: {
+  [key in ButtonColor]: { [key in ButtonMode]: Partial<{ [key in ButtonColorPattern]: string }> };
+} = {
   primary: {
     default: {
       bgColor: 'bg-primary border-primary',
@@ -117,9 +130,9 @@ export const joinButtonStyles = ({
   className,
 }: Pick<ButtonProps, 'size' | 'color' | 'outlined' | 'className'>) =>
   joinStylesFromArray(
-    joinStyles(buttonConfig.basic),
-    size ? buttonSizeConfig[size] : '',
-    color ? (outlined ? joinStyles(buttonConfig[color].outline) : joinStyles(buttonConfig[color].default)) : '',
+    joinStyles(buttonConfig),
+    size && buttonSizeConfig[size],
+    color && (outlined ? joinStyles(buttonColorConfig[color].outline) : joinStyles(buttonColorConfig[color].default)),
     className
   );
 

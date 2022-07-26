@@ -15,6 +15,10 @@ export function useErrorsHandler() {
   const client = useApolloClient();
   const push = usePush();
 
+  const dismiss = useCallback(() => {
+    setErrors('');
+  }, []);
+
   const handleErrors = useCallback(
     ({ graphQLErrors, networkError }: ApolloError) => {
       const reset = async () => {
@@ -38,5 +42,5 @@ export function useErrorsHandler() {
     },
     [token, handleChangeToken, push, client]
   );
-  return { errors, handleErrors };
+  return { errors, handleErrors, dismiss };
 }

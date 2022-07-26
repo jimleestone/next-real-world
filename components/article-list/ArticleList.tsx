@@ -1,5 +1,5 @@
 import { ArticlePreviewFragment } from '../../generated/graphql';
-import ErrorMessage from '../common/ErrorMessage';
+import Alert from '../common/alert';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { ArticlePreview } from './ArticlePreview';
 
@@ -13,13 +13,19 @@ export default function ArticleList({
   errors?: string;
 }) {
   if (loading || !articles) return <LoadingSpinner />;
-  if (errors) return <ErrorMessage message='Could not load articles... ' />;
-  if (articles.length === 0)
+  if (errors)
     return (
-      <div className='' key={1}>
-        No articles are here... yet.
+      <div className='py-4'>
+        <Alert type='danger' message='Could not load articles... ' />;
       </div>
     );
+  if (articles.length === 0)
+    return (
+      <div className='py-4'>
+        <Alert message='No articles are here... yet' />
+      </div>
+    );
+
   return (
     <div className='mb-4 bg-gray-50 rounded-lg border border-gray-100 py-4'>
       <ol className='divide-y divider-gray-200'>

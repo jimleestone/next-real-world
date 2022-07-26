@@ -7,22 +7,25 @@ import { InputProps } from './Input';
 export type FormInputProps<TFormValues> = {
   name: Path<TFormValues>;
   watch?: boolean; // RHF 'onBlur' mode to watch change
+  dismiss?: () => void; // dismiss external error message
 } & Omit<InputProps, 'name'>;
 
 export default function FormInput<TFormValues extends Record<string, any>>({
   name,
   watch = false,
+  dismiss,
   ...props
 }: FormInputProps<TFormValues>) {
   const { control, trigger } = useFormContext();
   const { isSubmitting } = useFormState({ control });
   const { field, fieldState } = useController({ name, control });
-  const { error, isDirty } = fieldState;
+  const { error } = fieldState;
 
   const watching = useWatch({ control, name });
   useEffect(() => {
     if (watch) trigger(name);
-  }, [watching, trigger, name, watch]);
+    if (dismiss) dismiss();
+  }, [watching, trigger, name, watch, dismiss]);
 
   return (
     <>

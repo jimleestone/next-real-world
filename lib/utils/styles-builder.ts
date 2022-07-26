@@ -5,6 +5,6 @@ export function joinStyles(styles: Record<any, string>): string {
   return spacer(R.values(styles));
 }
 
-export function joinStylesFromArray(...styles: Array<string | undefined>): string {
-  return spacer(styles);
+export function joinStylesFromArray(...styles: Array<string | boolean | undefined>): string {
+  return spacer(styles.filter((s) => typeof s === 'string'));
 }

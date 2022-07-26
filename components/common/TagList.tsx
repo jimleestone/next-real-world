@@ -6,11 +6,12 @@ interface TagListProps {
   withLink?: boolean;
   outlined?: boolean; // tag style
   onRemoveItem?: (index: number) => void;
+  className?: string; // justify position
 }
 
-export default function TagList({ tagList, withLink, outlined, onRemoveItem }: TagListProps) {
+export default function TagList({ tagList, withLink, outlined, onRemoveItem, className }: TagListProps) {
   return (
-    <ul className='flex flex-wrap'>
+    <ul className={`flex flex-wrap ${className}`}>
       {tagList?.map((value, index) => (
         <Tag key={value} tagName={value} index={index} outlined={outlined} onClick={onRemoveItem}>
           {withLink ? (

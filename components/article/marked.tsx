@@ -6,7 +6,7 @@ interface MarkedProps {
   className?: string;
 }
 
-const basicStyle = 'prose prose-zinc md:prose-lg lg:prose-xl'; // dark:prose-invert
+const basicStyle = 'prose prose-slate md:prose-lg lg:prose-xl'; // dark:prose-invert
 
 const joinMarkedStyles = (className?: string) => joinStylesFromArray(basicStyle, className);
 
