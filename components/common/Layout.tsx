@@ -2,6 +2,7 @@ import type { AppProps } from 'next/app';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
 import Footer from './Footer';
 import Header from './Header';
+import Toast from './toast';
 
 export default function Layout({ Component, pageProps }: AppProps) {
   const { loading } = useCurrentUser();
@@ -12,6 +13,7 @@ export default function Layout({ Component, pageProps }: AppProps) {
           <Header />
           <Component {...pageProps} />;
           <Footer />
+          <Toast />
         </div>
       )}
     </>

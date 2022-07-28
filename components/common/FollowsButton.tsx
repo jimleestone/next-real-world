@@ -12,18 +12,18 @@ interface FollowsButtonProps {
 export default function FollowsButton({ author, className }: FollowsButtonProps) {
   const { user } = useCurrentUser();
   const router = useRouter();
-  const { handleErrors } = useErrorsHandler();
+  const { toasting, handleErrors } = useErrorsHandler();
   const { following, username } = author;
 
   const [follow, { loading: followLoading }] = useFollowMutation({
     refetchQueries: [{ query: FeedDocument, variables: { offset: 0 } }], // reload the first page of user feeds
     optimisticResponse: { follow: { username, following: true, __typename: 'Profile' } },
-    onError: (err) => handleErrors(err),
+    onError: (err) => handleErrors(err, true),
   });
   const [unFollow, { loading: unFollowLoading }] = useUnFollowMutation({
     refetchQueries: [{ query: FeedDocument, variables: { offset: 0 } }],
     optimisticResponse: { unFollow: { username, following: false, __typename: 'Profile' } },
-    onError: (err) => handleErrors(err),
+    onError: (err) => handleErrors(err, true),
   });
   async function onFollowToggle() {
     if (!user) {
@@ -40,7 +40,7 @@ export default function FollowsButton({ author, className }: FollowsButtonProps)
       outlined={!following}
       className={className}
       onClick={onFollowToggle}
-      disabled={followLoading || unFollowLoading}
+      disabled={followLoading || unFollowLoading || !!toasting}
     >
       {following ? (
         <>

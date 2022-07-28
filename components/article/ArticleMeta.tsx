@@ -11,7 +11,7 @@ export default function ArticleMeta({ dark = false, article }: { dark?: boolean;
   const authorInfo: AuthorInfo = { createdAt, username, image };
   return (
     <div className='flex flex-col items-center mb-8 md:flex-row'>
-      <ArticleAuthorInfo authorInfo={authorInfo} dark />
+      <ArticleAuthorInfo authorInfo={authorInfo} dark={dark} />
       <div className='mt-4 md:ml-8 md:mt-0'>
         {user && user.username === article.author.username ? (
           <OwnerArticleMetaActions article={article} />

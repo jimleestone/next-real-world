@@ -6,7 +6,7 @@ import CommentSection from '../../components/article/CommentSection';
 import Marked from '../../components/article/marked';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import TagList from '../../components/common/TagList';
-import Title from '../../components/common/Title';
+import Wrapper from '../../components/common/wrapper';
 import { useArticleQuery } from '../../generated/graphql';
 import Custom404 from '../404';
 
@@ -19,24 +19,21 @@ const ArticlePage: NextPage = () => {
   const { article } = data;
 
   return (
-    <>
-      <Title title={article.title} />
-      <div className='mb-auto'>
-        <ArticlePageBanner article={article} />
+    <Wrapper title={article.title}>
+      <ArticlePageBanner article={article} />
 
-        <div className='container flex flex-wrap flex-col mx-auto mt-8'>
-          <Marked content={article.body} className='mb-4' />
-          <TagList outlined tagList={article.tagList} />
+      <div className='container flex flex-wrap flex-col mx-auto mt-8'>
+        <Marked content={article.body} className='mb-4' />
+        <TagList outlined tagList={article.tagList} />
 
-          <hr className='my-4' />
+        <hr className='my-4' />
 
-          <div className='mt-16 self-center'>
-            <ArticleMeta article={article} />
-          </div>
+        <div className='mt-16 self-center'>
+          <ArticleMeta article={article} />
         </div>
-        <CommentSection article={article} />
       </div>
-    </>
+      <CommentSection article={article} />
+    </Wrapper>
   );
 };
 

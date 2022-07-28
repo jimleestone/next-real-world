@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { useTools } from '../../lib/hooks/use-tools';
 import CustomImage from '../common/CustomImage';
 import CustomLink from '../common/CustomLink';
 
@@ -15,6 +15,7 @@ interface ArticleAuthorInfoProps {
 
 export default function ArticleAuthorInfo({ inlined = false, dark = false, authorInfo }: ArticleAuthorInfoProps) {
   const { username, image, createdAt } = authorInfo;
+  const { dateFormat } = useTools();
   return (
     <div className={`flex flex-wrap ${inlined ? 'items-center' : 'items-end'}`}>
       <CustomLink href={`/profile/${username}`}>
@@ -24,7 +25,7 @@ export default function ArticleAuthorInfo({ inlined = false, dark = false, autho
         <CustomLink href={`/profile/${username}`} underlined mode={`${dark ? 'reverse' : 'secondary'}`}>
           {username}
         </CustomLink>
-        <span className={`text-xs text-gray-400 ${inlined && 'ml-2'}`}>{format(new Date(createdAt), 'PP')}</span>
+        <span className={`text-xs text-gray-400 ${inlined && 'ml-2'}`}>{dateFormat(new Date(createdAt))}</span>
       </div>
     </div>
   );

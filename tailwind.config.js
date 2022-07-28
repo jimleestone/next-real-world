@@ -14,9 +14,11 @@ module.exports = {
         'primary-900': '#2d672d',
       },
       fontFamily: {
-        sans: ['source sans pro', ...defaultTheme.fontFamily.sans],
+        sans: ['Noto Sans JP', ...defaultTheme.fontFamily.sans],
+        mono: ['Source Code Pro', 'Ubuntu Mono', 'monospace', ...defaultTheme.fontFamily.mono],
+        serif: ['Noto Serif JP', 'serif', ...defaultTheme.fontFamily.serif],
         titillium: ['titillium web', ...defaultTheme.fontFamily.sans],
-        mono: ['monospace', ...defaultTheme.fontFamily.mono],
+        mplus: ['M PLUS Rounded 1c', ...defaultTheme.fontFamily.sans],
       },
       container: {
         padding: {
@@ -28,9 +30,11 @@ module.exports = {
           '2xl': '14rem',
         },
       },
-      flex: {
-        2: '1 0 10%',
-      },
+      typography: (theme) => ({
+        DEFAULT: {
+          css: {},
+        },
+      }),
     },
   },
   plugins: [require('@tailwindcss/typography')],

@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import Alert from '../components/common/alert';
 import CustomLink from '../components/common/CustomLink';
-import Title from '../components/common/Title';
+import Wrapper from '../components/common/wrapper';
 import Form from '../components/forms/form';
 import FormInput from '../components/forms/FormInput';
 import Submit from '../components/forms/submit';
@@ -17,7 +17,7 @@ const Login: NextPage = () => {
   const router = useRouter();
   const client = useApolloClient();
   const { handleChangeToken } = useToken();
-  const { errors, handleErrors, dismiss } = useErrorsHandler();
+  const { errors, handleErrors } = useErrorsHandler();
 
   const [login, { loading }] = useLoginMutation({
     onCompleted: async (data) => {
@@ -35,32 +35,29 @@ const Login: NextPage = () => {
   }
   const init = { email: '', password: '' };
   return (
-    <>
-      <Title title='Sign in' />
-      <div className='mb-auto'>
-        <div className='container flex flex-wrap flex-col items-center mx-auto'>
-          <h1 className='text-4xl font-extralight'>Sign in</h1>
-          <p className='mt-4'>
-            <CustomLink href='/register' mode='primary' underlined>
-              Need an account?
-            </CustomLink>
-          </p>
-          <div className='w-6/12'>
-            <Alert type='danger' message={errors} />
-            <Form<UserLoginInput> onSubmit={onLogin} schema={loginInputSchema} defaultValues={init}>
-              <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
-                <FormInput<UserLoginInput> name='email' placeholder='Email' dismiss={dismiss} />
-                <FormInput<UserLoginInput> name='password' placeholder='Password' type='password' dismiss={dismiss} />
+    <Wrapper title='Sign in'>
+      <div className='container flex flex-wrap flex-col items-center mx-auto'>
+        <h1 className='text-4xl font-extralight'>Sign in</h1>
+        <p className='mt-4'>
+          <CustomLink href='/register' mode='primary' underlined>
+            Need an account?
+          </CustomLink>
+        </p>
+        <div className='w-6/12'>
+          <Alert type='danger' message={errors} />
+          <Form<UserLoginInput> onSubmit={onLogin} schema={loginInputSchema} defaultValues={init}>
+            <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
+              <FormInput<UserLoginInput> name='email' placeholder='Email' />
+              <FormInput<UserLoginInput> name='password' placeholder='Password' type='password' />
 
-                <Submit size='l' className='self-end'>
-                  Sign in
-                </Submit>
-              </fieldset>
-            </Form>
-          </div>
+              <Submit size='l' className='self-end'>
+                Sign in
+              </Submit>
+            </fieldset>
+          </Form>
         </div>
       </div>
-    </>
+    </Wrapper>
   );
 };
 

@@ -2701,6 +2701,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@next/bundle-analyzer@npm:^12.2.3":
+  version: 12.2.3
+  resolution: "@next/bundle-analyzer@npm:12.2.3::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40next%2Fbundle-analyzer%2F-%2Fbundle-analyzer-12.2.3.tgz"
+  dependencies:
+    webpack-bundle-analyzer: 4.3.0
+  checksum: 86745354ac90ac72d203d0d1051114f90cc7de7b2e64ea1f7129621fd1d9fde36fe00901747b4c56708777023b08b936ded1aaafaf40f1709c3ad3a8c04f1f07
+  languageName: node
+  linkType: hard
+
 "@next/env@npm:11.1.2":
   version: 11.1.2
   resolution: "@next/env@npm:11.1.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40next%2Fenv%2F-%2Fenv-11.1.2.tgz"
@@ -2948,6 +2957,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@polka/url@npm:^1.0.0-next.20":
+  version: 1.0.0-next.21
+  resolution: "@polka/url@npm:1.0.0-next.21::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40polka%2Furl%2F-%2Furl-1.0.0-next.21.tgz"
+  checksum: c7654046d38984257dd639eab3dc770d1b0340916097b2fac03ce5d23506ada684e05574a69b255c32ea6a144a957c8cd84264159b545fca031c772289d88788
+  languageName: node
+  linkType: hard
+
 "@prisma/client@npm:^4.0.0":
   version: 4.0.0
   resolution: "@prisma/client@npm:4.0.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40prisma%2Fclient%2F-%2Fclient-4.0.0.tgz"
@@ -3046,6 +3062,73 @@ __metadata:
   version: 1.1.0
   resolution: "@protobufjs/utf8@npm:1.1.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40protobufjs%2Futf8%2F-%2Futf8-1.1.0.tgz"
   checksum: f9bf3163d13aaa3b6f5e6fbf37a116e094ea021c0e1f2a7ccd0e12a29e2ce08dafba4e8b36e13f8ed7397e1591610ce880ed1289af4d66cf4ace8a36a9557278
+  languageName: node
+  linkType: hard
+
+"@react-spring/animated@npm:~9.5.2":
+  version: 9.5.2
+  resolution: "@react-spring/animated@npm:9.5.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40react-spring%2Fanimated%2F-%2Fanimated-9.5.2.tgz"
+  dependencies:
+    "@react-spring/shared": ~9.5.2
+    "@react-spring/types": ~9.5.2
+  peerDependencies:
+    react: ^16.8.0  || >=17.0.0 || >=18.0.0
+  checksum: d2cf4fb5b91002747358aedbea8f7e4a9b3a48620404c7a0dc70e5c2d088851588c366952d14b509dbf5dbe9425128af72fa8a8e46cdf4611e6090cdfb6abc4f
+  languageName: node
+  linkType: hard
+
+"@react-spring/core@npm:~9.5.2":
+  version: 9.5.2
+  resolution: "@react-spring/core@npm:9.5.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40react-spring%2Fcore%2F-%2Fcore-9.5.2.tgz"
+  dependencies:
+    "@react-spring/animated": ~9.5.2
+    "@react-spring/rafz": ~9.5.2
+    "@react-spring/shared": ~9.5.2
+    "@react-spring/types": ~9.5.2
+  peerDependencies:
+    react: ^16.8.0  || >=17.0.0 || >=18.0.0
+  checksum: 386a841d9b8d18e45d8b02999d5e38c4ef48f71e9b84e4088abeecea6eb719fbbddc8cfc21a9443cba7cbe81263c376ee28c510809e6365328d3ac027665c95a
+  languageName: node
+  linkType: hard
+
+"@react-spring/rafz@npm:~9.5.2":
+  version: 9.5.2
+  resolution: "@react-spring/rafz@npm:9.5.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40react-spring%2Frafz%2F-%2Frafz-9.5.2.tgz"
+  checksum: 669fcfd098b2ced1bc0259933bc8afbd748f5e10191337ed5f73bc798f29bcd6b7eba7db55035440724bc01dffc90f33e1e2abe8080554723ef75d4a699eebf4
+  languageName: node
+  linkType: hard
+
+"@react-spring/shared@npm:~9.5.2":
+  version: 9.5.2
+  resolution: "@react-spring/shared@npm:9.5.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40react-spring%2Fshared%2F-%2Fshared-9.5.2.tgz"
+  dependencies:
+    "@react-spring/rafz": ~9.5.2
+    "@react-spring/types": ~9.5.2
+  peerDependencies:
+    react: ^16.8.0  || >=17.0.0 || >=18.0.0
+  checksum: 080e4fbb9fdcff40678fc4bd5cd01f97775586ec4d24bb5101bcb80b5073e56952d637a87ebe0feca6e1a4f52fdcb795f6b30fca2be66c7fd79733ad5240fca5
+  languageName: node
+  linkType: hard
+
+"@react-spring/types@npm:~9.5.2":
+  version: 9.5.2
+  resolution: "@react-spring/types@npm:9.5.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40react-spring%2Ftypes%2F-%2Ftypes-9.5.2.tgz"
+  checksum: db3e5e240feb22181343837a5c9047cea8ddfef4875ec0a2217a4d6c1f04b13c675056d943d22c7987d71138cf7da9b391c3a31ab7f9a90cdebc93a793b3640f
+  languageName: node
+  linkType: hard
+
+"@react-spring/web@npm:^9.5.2":
+  version: 9.5.2
+  resolution: "@react-spring/web@npm:9.5.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40react-spring%2Fweb%2F-%2Fweb-9.5.2.tgz"
+  dependencies:
+    "@react-spring/animated": ~9.5.2
+    "@react-spring/core": ~9.5.2
+    "@react-spring/shared": ~9.5.2
+    "@react-spring/types": ~9.5.2
+  peerDependencies:
+    react: ^16.8.0  || >=17.0.0 || >=18.0.0
+    react-dom: ^16.8.0  || >=17.0.0 || >=18.0.0
+  checksum: 38dea309e324aae6f3c9bc270876247672776248fd2f734061c28ec3674151a7c58bd562209d462287cd86c4d800a75791592e1fb0bf50b8b18ea00fc8cfea1a
   languageName: node
   linkType: hard
 
@@ -3792,6 +3875,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/highlight.js@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "@types/highlight.js@npm:10.1.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Fhighlight.js%2F-%2Fhighlight.js-10.1.0.tgz"
+  dependencies:
+    highlight.js: "*"
+  checksum: 284f47e89bfe300f307ad76523a257ff12ed7cf0318cdc0a7fe6965a1d7e21840d133cfc623ec705495550d37341c278c2c9641bafce8b8dbb4bea4acd46f0ec
+  languageName: node
+  linkType: hard
+
 "@types/http-cache-semantics@npm:*":
   version: 4.0.1
   resolution: "@types/http-cache-semantics@npm:4.0.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Fhttp-cache-semantics%2F-%2Fhttp-cache-semantics-4.0.1.tgz"
@@ -4401,7 +4493,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn-walk@npm:^8.1.1":
+"acorn-walk@npm:^8.0.0, acorn-walk@npm:^8.1.1":
   version: 8.2.0
   resolution: "acorn-walk@npm:8.2.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Facorn-walk%2F-%2Facorn-walk-8.2.0.tgz"
   checksum: 1715e76c01dd7b2d4ca472f9c58968516a4899378a63ad5b6c2d668bba8da21a71976c14ec5f5b75f887b6317c4ae0b897ab141c831d741dc76024d8745f1ad1
@@ -4414,6 +4506,15 @@ __metadata:
   bin:
     acorn: bin/acorn
   checksum: 1860f23c2107c910c6177b7b7be71be350db9e1080d814493fae143ae37605189504152d1ba8743ba3178d0b37269ce1ffc42b101547fdc1827078f82671e407
+  languageName: node
+  linkType: hard
+
+"acorn@npm:^8.0.4":
+  version: 8.8.0
+  resolution: "acorn@npm:8.8.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Facorn%2F-%2Facorn-8.8.0.tgz"
+  bin:
+    acorn: bin/acorn
+  checksum: 7270ca82b242eafe5687a11fea6e088c960af712683756abf0791b68855ea9cace3057bd5e998ffcef50c944810c1e0ca1da526d02b32110e13c722aa959afdc
   languageName: node
   linkType: hard
 
@@ -6404,6 +6505,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"commander@npm:^6.2.0":
+  version: 6.2.1
+  resolution: "commander@npm:6.2.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fcommander%2F-%2Fcommander-6.2.1.tgz"
+  checksum: d7090410c0de6bc5c67d3ca41c41760d6d268f3c799e530aafb73b7437d1826bbf0d2a3edac33f8b57cc9887b4a986dce307fa5557e109be40eadb7c43b21742
+  languageName: node
+  linkType: hard
+
 "commander@npm:^7.2.0":
   version: 7.2.0
   resolution: "commander@npm:7.2.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fcommander%2F-%2Fcommander-7.2.0.tgz"
@@ -7533,6 +7641,13 @@ __metadata:
   version: 0.1.5
   resolution: "duplexer3@npm:0.1.5::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fduplexer3%2F-%2Fduplexer3-0.1.5.tgz"
   checksum: e677cb4c48f031ca728601d6a20bf6aed4c629d69ef9643cb89c67583d673c4ec9317cc6427501f38bd8c368d3a18f173987cc02bd99d8cf8fe3d94259a22a20
+  languageName: node
+  linkType: hard
+
+"duplexer@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "duplexer@npm:0.1.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fduplexer%2F-%2Fduplexer-0.1.2.tgz"
+  checksum: 62ba61a830c56801db28ff6305c7d289b6dc9f859054e8c982abd8ee0b0a14d2e9a8e7d086ffee12e868d43e2bbe8a964be55ddbd8c8957714c87373c7a4f9b0
   languageName: node
   linkType: hard
 
@@ -9129,6 +9244,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"get-user-locale@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "get-user-locale@npm:1.4.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fget-user-locale%2F-%2Fget-user-locale-1.4.0.tgz"
+  dependencies:
+    lodash.once: ^4.1.1
+  checksum: d27a6cf7b1aacdec1786c6877511efc956eb17810e10c55a408753af38f13b5d854f3a0033320f94a6046e95d3c0fc2248c950aeecfc181353599facd344b7e4
+  languageName: node
+  linkType: hard
+
 "get-value@npm:^2.0.3, get-value@npm:^2.0.6":
   version: 2.0.6
   resolution: "get-value@npm:2.0.6::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fget-value%2F-%2Fget-value-2.0.6.tgz"
@@ -9412,6 +9536,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"gzip-size@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "gzip-size@npm:6.0.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fgzip-size%2F-%2Fgzip-size-6.0.0.tgz"
+  dependencies:
+    duplexer: ^0.1.2
+  checksum: 2df97f359696ad154fc171dcb55bc883fe6e833bca7a65e457b9358f3cb6312405ed70a8da24a77c1baac0639906cd52358dc0ce2ec1a937eaa631b934c94194
+  languageName: node
+  linkType: hard
+
 "has-ansi@npm:^2.0.0":
   version: 2.0.0
   resolution: "has-ansi@npm:2.0.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fhas-ansi%2F-%2Fhas-ansi-2.0.0.tgz"
@@ -9582,6 +9715,13 @@ __metadata:
   version: 1.0.0
   resolution: "hexoid@npm:1.0.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fhexoid%2F-%2Fhexoid-1.0.0.tgz"
   checksum: 27a148ca76a2358287f40445870116baaff4a0ed0acc99900bf167f0f708ffd82e044ff55e9949c71963852b580fc024146d3ac6d5d76b508b78d927fa48ae2d
+  languageName: node
+  linkType: hard
+
+"highlight.js@npm:*, highlight.js@npm:^11.6.0":
+  version: 11.6.0
+  resolution: "highlight.js@npm:11.6.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fhighlight.js%2F-%2Fhighlight.js-11.6.0.tgz"
+  checksum: 3908eb34a4b442ca1e20c1ae6415ea935fbbcdb2b532a89948d82b0fa4ad41fc5de3802a0de4e88a0bcb7d97d4445579048cd2aab1d105ac47f59dd58a9a98ae
   languageName: node
   linkType: hard
 
@@ -11191,7 +11331,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.once@npm:^4.0.0":
+"lodash.once@npm:^4.0.0, lodash.once@npm:^4.1.1":
   version: 4.1.1
   resolution: "lodash.once@npm:4.1.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Flodash.once%2F-%2Flodash.once-4.1.1.tgz"
   checksum: d768fa9f9b4e1dc6453be99b753906f58990e0c45e7b2ca5a3b40a33111e5d17f6edf2f768786e2716af90a8e78f8f91431ab8435f761fef00f9b0c256f6d245
@@ -11862,6 +12002,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mrmime@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "mrmime@npm:1.0.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fmrmime%2F-%2Fmrmime-1.0.1.tgz"
+  checksum: cc979da44bbbffebaa8eaf7a45117e851f2d4cb46a3ada6ceb78130466a04c15a0de9a9ce1c8b8ba6f6e1b8618866b1352992bf1757d241c0ddca558b9f28a77
+  languageName: node
+  linkType: hard
+
 "ms@npm:2.0.0":
   version: 2.0.0
   resolution: "ms@npm:2.0.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fms%2F-%2Fms-2.0.0.tgz"
@@ -12038,7 +12185,9 @@ __metadata:
     "@graphql-codegen/typescript-operations": 2.4.3
     "@graphql-codegen/typescript-react-apollo": 3.2.17
     "@hookform/resolvers": ^2.9.6
+    "@next/bundle-analyzer": ^12.2.3
     "@prisma/client": ^4.0.0
+    "@react-spring/web": ^9.5.2
     "@sls-next/aws-cloudfront": ^3.7.0
     "@sls-next/aws-lambda": ^3.7.0
     "@sls-next/aws-sqs": ^3.7.0
@@ -12048,6 +12197,7 @@ __metadata:
     "@types/bcryptjs": ^2.4.2
     "@types/crypto-hash": ^1.1.2
     "@types/date-fns": ^2.6.0
+    "@types/highlight.js": ^10.1.0
     "@types/jsonwebtoken": ^8.5.8
     "@types/jwk-to-pem": ^2.0.1
     "@types/marked": ^4.0.3
@@ -12069,8 +12219,10 @@ __metadata:
     eslint-config-next: 12.2.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-prettier: ^4.0.0
+    get-user-locale: ^1.4.0
     graphql: ^16.5.0
     graphql-scalars: ^1.17.0
+    highlight.js: ^11.6.0
     jose: ^4.8.3
     jsonwebtoken: ^8.5.1
     jwk-to-pem: ^2.0.5
@@ -12818,6 +12970,15 @@ __metadata:
     is-docker: ^2.0.0
     is-wsl: ^2.1.1
   checksum: 3333900ec0e420d64c23b831bc3467e57031461d843c801f569b2204a1acc3cd7b3ec3c7897afc9dde86491dfa289708eb92bba164093d8bd88fb2c231843c91
+  languageName: node
+  linkType: hard
+
+"opener@npm:^1.5.2":
+  version: 1.5.2
+  resolution: "opener@npm:1.5.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fopener%2F-%2Fopener-1.5.2.tgz"
+  bin:
+    opener: bin/opener-bin.js
+  checksum: 33b620c0d53d5b883f2abc6687dd1c5fd394d270dbe33a6356f2d71e0a2ec85b100d5bac94694198ccf5c30d592da863b2292c5539009c715a9c80c697b4f6cc
   languageName: node
   linkType: hard
 
@@ -15152,6 +15313,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sirv@npm:^1.0.7":
+  version: 1.0.19
+  resolution: "sirv@npm:1.0.19::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fsirv%2F-%2Fsirv-1.0.19.tgz"
+  dependencies:
+    "@polka/url": ^1.0.0-next.20
+    mrmime: ^1.0.0
+    totalist: ^1.0.0
+  checksum: c943cfc61baf85f05f125451796212ec35d4377af4da90ae8ec1fa23e6d7b0b4d9c74a8fbf65af83c94e669e88a09dc6451ba99154235eead4393c10dda5b07c
+  languageName: node
+  linkType: hard
+
 "slash@npm:^2.0.0":
   version: 2.0.0
   resolution: "slash@npm:2.0.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fslash%2F-%2Fslash-2.0.0.tgz"
@@ -16290,6 +16462,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"totalist@npm:^1.0.0":
+  version: 1.1.0
+  resolution: "totalist@npm:1.1.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Ftotalist%2F-%2Ftotalist-1.1.0.tgz"
+  checksum: dfab80c7104a1d170adc8c18782d6c04b7df08352dec452191208c66395f7ef2af7537ddfa2cf1decbdcfab1a47afbbf0dec6543ea191da98c1c6e1599f86adc
+  languageName: node
+  linkType: hard
+
 "tr46@npm:^1.0.1":
   version: 1.0.1
   resolution: "tr46@npm:1.0.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Ftr46%2F-%2Ftr46-1.0.1.tgz"
@@ -16991,6 +17170,25 @@ __metadata:
   version: 4.0.2
   resolution: "webidl-conversions@npm:4.0.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fwebidl-conversions%2F-%2Fwebidl-conversions-4.0.2.tgz"
   checksum: c93d8dfe908a0140a4ae9c0ebc87a33805b416a33ee638a605b551523eec94a9632165e54632f6d57a39c5f948c4bab10e0e066525e9a4b87a79f0d04fbca374
+  languageName: node
+  linkType: hard
+
+"webpack-bundle-analyzer@npm:4.3.0":
+  version: 4.3.0
+  resolution: "webpack-bundle-analyzer@npm:4.3.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fwebpack-bundle-analyzer%2F-%2Fwebpack-bundle-analyzer-4.3.0.tgz"
+  dependencies:
+    acorn: ^8.0.4
+    acorn-walk: ^8.0.0
+    chalk: ^4.1.0
+    commander: ^6.2.0
+    gzip-size: ^6.0.0
+    lodash: ^4.17.20
+    opener: ^1.5.2
+    sirv: ^1.0.7
+    ws: ^7.3.1
+  bin:
+    webpack-bundle-analyzer: lib/bin/analyzer.js
+  checksum: 00b7bf4ac9fca17062b66b6897145b94e87153d3ec8815f0e0c05a3b8a1ca75320262db01a5fa634f604ee3d41aecde1ee59838d05b6d03cd5be62eb1addbcf8
   languageName: node
   linkType: hard
 

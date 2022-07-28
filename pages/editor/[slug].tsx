@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import Title from '../../components/common/Title';
+import Wrapper from '../../components/common/wrapper';
 import ArticleEditor from '../../components/editor/ArticleEditor';
 import { useEditArticleQuery } from '../../generated/graphql';
 import withAuth from '../../lib/auth/with-auth';
@@ -24,10 +24,9 @@ const EditArticle: NextPage = () => {
 
   const { article } = data;
   return (
-    <>
-      <Title title='Edit article' />
+    <Wrapper title='Edit article'>
       <ArticleEditor article={article} />;
-    </>
+    </Wrapper>
   );
 };
 

@@ -19,7 +19,7 @@ interface FavoritesButtonProps {
 export default function FavoritesButton({ article, className, text }: FavoritesButtonProps) {
   const { user } = useCurrentUser();
   const router = useRouter();
-  const { handleErrors } = useErrorsHandler();
+  const { toasting, handleErrors } = useErrorsHandler();
   const { id, slug, favorited, favoritesCount } = article;
 
   const [favorite, { loading: favoriteLoading }] = useFavoriteMutation({
@@ -27,14 +27,14 @@ export default function FavoritesButton({ article, className, text }: FavoritesB
     optimisticResponse: {
       favorite: { id, favorited: true, favoritesCount: favoritesCount + 1, __typename: 'Article' },
     },
-    onError: (err) => handleErrors(err),
+    onError: (err) => handleErrors(err, true),
   });
   const [unfavorite, { loading: unfavoriteLoading }] = useUnfavoriteMutation({
     refetchQueries: [{ query: ArticlesDocument, variables: { favorited: user?.username, offset: 0 } }],
     optimisticResponse: {
       unfavorite: { id, favorited: true, favoritesCount: favoritesCount - 1, __typename: 'Article' },
     },
-    onError: (err) => handleErrors(err),
+    onError: (err) => handleErrors(err, true),
   });
   async function onFavoriteToggle() {
     if (!user) {
@@ -51,7 +51,7 @@ export default function FavoritesButton({ article, className, text }: FavoritesB
       outlined={!favorited}
       className={className}
       aria-label='Toggle Favorite'
-      disabled={favoriteLoading || unfavoriteLoading}
+      disabled={favoriteLoading || unfavoriteLoading || !!toasting}
       onClick={onFavoriteToggle}
     >
       <i className='ion-heart'></i>

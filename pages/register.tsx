@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import Alert from '../components/common/alert';
 import CustomLink from '../components/common/CustomLink';
-import Title from '../components/common/Title';
+import Wrapper from '../components/common/wrapper';
 import Form from '../components/forms/form';
 import FormInput from '../components/forms/FormInput';
 import Submit from '../components/forms/submit';
@@ -17,7 +17,7 @@ const Register: NextPage = () => {
   const router = useRouter();
   const client = useApolloClient();
   const { handleChangeToken } = useToken();
-  const { errors, handleErrors, dismiss } = useErrorsHandler();
+  const { errors, handleErrors } = useErrorsHandler();
 
   const [signUp, { loading }] = useSignupMutation({
     onCompleted: async (data) => {
@@ -35,33 +35,30 @@ const Register: NextPage = () => {
   }
   const init: UserSignupInput = { email: '', password: '', username: '' };
   return (
-    <>
-      <Title title='Sign up' />
-      <div className='mb-auto'>
-        <div className='container flex flex-wrap flex-col items-center mx-auto'>
-          <h1 className='text-4xl font-extralight'>Sign up</h1>
-          <p className='mt-4'>
-            <CustomLink href='/login' mode='primary' underlined>
-              Have an account?
-            </CustomLink>
-          </p>
-          <div className='w-6/12'>
-            <Alert type='danger' message={errors} />
-            <Form<UserSignupInput> onSubmit={onSignUp} schema={signupInputSchema} defaultValues={init}>
-              <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
-                <FormInput<UserSignupInput> name='username' placeholder='Username' dismiss={dismiss} />
-                <FormInput<UserSignupInput> name='email' placeholder='Email' dismiss={dismiss} />
-                <FormInput<UserSignupInput> name='password' placeholder='Password' type='password' dismiss={dismiss} />
+    <Wrapper title='Sign up'>
+      <div className='container flex flex-wrap flex-col items-center mx-auto'>
+        <h1 className='text-4xl font-extralight'>Sign up</h1>
+        <p className='mt-4'>
+          <CustomLink href='/login' mode='primary' underlined>
+            Have an account?
+          </CustomLink>
+        </p>
+        <div className='w-6/12'>
+          <Alert type='danger' message={errors} />
+          <Form<UserSignupInput> onSubmit={onSignUp} schema={signupInputSchema} defaultValues={init}>
+            <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
+              <FormInput<UserSignupInput> name='username' placeholder='Username' />
+              <FormInput<UserSignupInput> name='email' placeholder='Email' />
+              <FormInput<UserSignupInput> name='password' placeholder='Password' type='password' />
 
-                <Submit size='l' className='self-end'>
-                  Sign up
-                </Submit>
-              </fieldset>
-            </Form>
-          </div>
+              <Submit size='l' className='self-end'>
+                Sign up
+              </Submit>
+            </fieldset>
+          </Form>
         </div>
       </div>
-    </>
+    </Wrapper>
   );
 };
 

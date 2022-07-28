@@ -11,7 +11,8 @@
     "generate:prisma": "prisma generate",
     "generate:nexus": "ts-node --transpile-only lib/api/schema",
     "generate:jwk": "node gen-jwk",
-    "generate:graphql": "graphql-codegen --config .graphql-codegen.yml"
+    "generate:graphql": "graphql-codegen --config .graphql-codegen.yml",
+    "build:anl": "ANALYZE=true next build"
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
@@ -21,12 +22,15 @@
     "@graphql-codegen/typescript-react-apollo": "3.2.17",
     "@hookform/resolvers": "^2.9.6",
     "@prisma/client": "^4.0.0",
+    "@react-spring/web": "^9.5.2",
     "apollo-server-micro": "^3.9.0",
     "bcryptjs": "^2.4.3",
     "crypto-hash": "^2.0.1",
     "date-fns": "^2.28.0",
+    "get-user-locale": "^1.4.0",
     "graphql": "^16.5.0",
     "graphql-scalars": "^1.17.0",
+    "highlight.js": "^11.6.0",
     "jsonwebtoken": "^8.5.1",
     "jwk-to-pem": "^2.0.5",
     "marked": "^4.0.18",
@@ -43,6 +47,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^12.2.3",
     "@sls-next/aws-cloudfront": "^3.7.0",
     "@sls-next/aws-lambda": "^3.7.0",
     "@sls-next/aws-sqs": "^3.7.0",
@@ -52,6 +57,7 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/crypto-hash": "^1.1.2",
     "@types/date-fns": "^2.6.0",
+    "@types/highlight.js": "^10.1.0",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/jwk-to-pem": "^2.0.1",
     "@types/marked": "^4.0.3",

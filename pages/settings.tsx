@@ -4,7 +4,7 @@ import * as R from 'ramda';
 import Alert from '../components/common/alert';
 import CustomButton from '../components/common/CustomButton';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import Title from '../components/common/Title';
+import Wrapper from '../components/common/wrapper';
 import Form from '../components/forms/form';
 import FormTextarea from '../components/forms/form-teextarea';
 import FormInput from '../components/forms/FormInput';
@@ -42,40 +42,37 @@ const Settings: NextPage = () => {
   const init = R.pickAll<AuthUser, UserUpdateInput>(['username', 'email', 'bio', 'image'], user);
   const checkSchema = updateUserInputSchemaAsync(client, init);
   return (
-    <>
-      <Title title='Settings' />
-      <div className='mb-auto'>
-        <div className='container flex flex-wrap flex-col items-center mx-auto'>
-          <h1 className='text-4xl font-extralight'>Your Settings</h1>
-          <div className='w-6/12'>
-            <Alert type='danger' message={errors} />
-            <Form<UserUpdateInput> onSubmit={onUpdateSettings} schema={checkSchema} mode='onBlur' defaultValues={init}>
-              <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
-                <FormInput<UserUpdateInput>
-                  name='image'
-                  placeholder='URL of profile picture(currently support i.imgur.com)'
-                  watch
-                />
-                <FormInput<UserUpdateInput> name='username' placeholder='Your name' />
-                <FormTextarea<UserUpdateInput> name='bio' placeholder='Short bio about you' rows={8} />
-                <FormInput<UserUpdateInput> name='email' placeholder='Email' />
-                <FormInput<UserUpdateInput> name='password' placeholder='Password' type='password' watch />
+    <Wrapper title='Settings'>
+      <div className='container flex flex-wrap flex-col items-center mx-auto'>
+        <h1 className='text-4xl font-extralight'>Your Settings</h1>
+        <div className='w-6/12'>
+          <Alert type='danger' message={errors} />
+          <Form<UserUpdateInput> onSubmit={onUpdateSettings} schema={checkSchema} mode='onBlur' defaultValues={init}>
+            <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
+              <FormInput<UserUpdateInput>
+                name='image'
+                placeholder='URL of profile picture(currently support i.imgur.com)'
+                watch
+              />
+              <FormInput<UserUpdateInput> name='username' placeholder='Your name' />
+              <FormTextarea<UserUpdateInput> name='bio' placeholder='Short bio about you' rows={8} />
+              <FormInput<UserUpdateInput> name='email' placeholder='Email' />
+              <FormInput<UserUpdateInput> name='password' placeholder='Password' type='password' watch />
 
-                <Submit size='l' className='self-end' strict>
-                  Update Settings
-                </Submit>
-              </fieldset>
-            </Form>
+              <Submit size='l' className='self-end' strict>
+                Update Settings
+              </Submit>
+            </fieldset>
+          </Form>
 
-            <hr className='my-4' />
+          <hr className='my-4' />
 
-            <CustomButton color='danger' outlined className='self-start' onClick={onLogout()}>
-              Or click here to logout.()
-            </CustomButton>
-          </div>
+          <CustomButton color='danger' outlined className='self-start' onClick={onLogout()}>
+            Or click here to logout.()
+          </CustomButton>
         </div>
       </div>
-    </>
+    </Wrapper>
   );
 };
 

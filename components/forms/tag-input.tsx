@@ -1,12 +1,13 @@
 import * as R from 'ramda';
 import { useState } from 'react';
-import { Path, useController, useFormContext } from 'react-hook-form';
+import { useController, useFormContext } from 'react-hook-form';
+import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
 import TagList from '../common/TagList';
 import FormErrorMessage from './FormErrorMessage';
 import Input, { InputProps } from './Input';
 
 export type TagInputProps<TFormValues extends { tagList: string[] }> = {
-  name: Path<TFormValues>;
+  name: 'tagList'; // Path<TFormValues>; // haven't find a better approach to deal with the 'setValue' function in typescript
 } & Omit<InputProps, 'name'>;
 
 export default function TagInput<TFormValues extends Record<string, any> & { tagList: string[] }>({
@@ -19,6 +20,12 @@ export default function TagInput<TFormValues extends Record<string, any> & { tag
   const { value } = field;
   const { error, isDirty } = fieldState;
   const [tag, setTag] = useState('');
+  const { dismiss } = useErrorsHandler();
+
+  function executeCheck() {
+    trigger(name);
+    dismiss();
+  }
 
   function onChange(): (ev: React.ChangeEvent<HTMLInputElement>) => void {
     return ({ target: { value } }) => {
@@ -34,23 +41,23 @@ export default function TagInput<TFormValues extends Record<string, any> & { tag
       if (ev.key === 'Enter') {
         ev.preventDefault();
         if (tag.trim().length > 0) {
-          setValue('tagList', R.append(tag.trim(), value));
+          setValue(name, R.append(tag.trim(), value));
         }
         setTag('');
-        trigger(name);
+        executeCheck();
       }
     };
   }
 
   function onRemoveTag(index: number) {
-    setValue('tagList', R.remove(index, 1, value)); // haven't find a better way to deal with the 'setValue' function in typescript
-    trigger(name);
+    setValue(name, R.remove(index, 1, value));
+    executeCheck();
   }
 
   function onBlur(): (ev: React.FocusEvent) => void {
     return (ev) => {
       ev.preventDefault();
-      trigger(name);
+      executeCheck();
     };
   }
 

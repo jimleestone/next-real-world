@@ -44,7 +44,7 @@ export default function CommentForm({
         });
       }
     },
-    onError: (err) => handleErrors(err),
+    onError: (err) => handleErrors(err, true),
   });
 
   async function onPostComment(input: CommentInput) {

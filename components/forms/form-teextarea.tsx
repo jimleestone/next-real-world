@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Path, useController, useFormContext, useFormState, useWatch } from 'react-hook-form';
+import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
 import FormErrorMessage from './FormErrorMessage';
 import Textarea, { TextareaProps } from './textarea';
 
@@ -19,11 +20,13 @@ export default function FormTextarea<TFormValues extends Record<string, any>>({
   const { isSubmitting, isSubmitSuccessful } = useFormState();
   const { field, fieldState } = useController({ name, control });
   const { error, isDirty } = fieldState;
+  const { dismiss } = useErrorsHandler();
 
   const watching = useWatch({ control, name });
   useEffect(() => {
     if (watch) trigger(name);
-  }, [watching, trigger, name, watch]);
+    dismiss();
+  }, [watching, trigger, name, watch, dismiss]);
 
   useEffect(() => {
     if (clear) reset();
