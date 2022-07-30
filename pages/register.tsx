@@ -1,7 +1,6 @@
 import { useApolloClient } from '@apollo/client';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import Alert from '../components/common/alert';
 import CustomLink from '../components/common/CustomLink';
 import Wrapper from '../components/common/wrapper';
 import Form from '../components/forms/form';
@@ -9,7 +8,7 @@ import FormInput from '../components/forms/FormInput';
 import Submit from '../components/forms/submit';
 import { UserSignupInput, useSignupMutation } from '../generated/graphql';
 import guestOnly from '../lib/auth/guest-only';
-import { useErrorsHandler } from '../lib/hooks/use-errors-handler';
+import { useMessageHandler } from '../lib/hooks/use-message';
 import { useToken } from '../lib/hooks/use-token';
 import { signupInputSchema } from '../lib/validation/schema';
 
@@ -17,7 +16,7 @@ const Register: NextPage = () => {
   const router = useRouter();
   const client = useApolloClient();
   const { handleChangeToken } = useToken();
-  const { errors, handleErrors } = useErrorsHandler();
+  const { handleErrors } = useMessageHandler();
 
   const [signUp, { loading }] = useSignupMutation({
     onCompleted: async (data) => {
@@ -27,7 +26,7 @@ const Register: NextPage = () => {
         router.back();
       }
     },
-    onError: (err) => handleErrors(err),
+    onError: (err) => handleErrors({ err, mode: 'alert' }),
   });
 
   async function onSignUp(input: UserSignupInput) {
@@ -44,7 +43,6 @@ const Register: NextPage = () => {
           </CustomLink>
         </p>
         <div className='w-6/12'>
-          <Alert type='danger' message={errors} />
           <Form<UserSignupInput> onSubmit={onSignUp} schema={signupInputSchema} defaultValues={init}>
             <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
               <FormInput<UserSignupInput> name='username' placeholder='Username' />

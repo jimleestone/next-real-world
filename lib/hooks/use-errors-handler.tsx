@@ -25,11 +25,17 @@ const initErrorsContext: ErrorsContext = {
 
 const errorsContext = createContext<ErrorsContext>(initErrorsContext);
 
+/**
+ * @deprecated
+ */
 export function ErrorsProvider({ children }: { children: React.ReactNode }) {
   const errorsHandler = useProvideErrorsHandler();
   return <errorsContext.Provider value={errorsHandler}>{children}</errorsContext.Provider>;
 }
 
+/**
+ * @deprecated
+ */
 export const useErrorsHandler = () => {
   return useContext(errorsContext);
 };

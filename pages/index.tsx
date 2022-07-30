@@ -31,17 +31,11 @@ const Home: NextPage = () => {
   return (
     <Wrapper title='Home'>
       <HomeBanner />
-      <div className='container flex flex-col-reverse justify-center mx-auto mt-8 md:flex-row'>
-        <div className='basis-9/12 shrink-0 md:mr-6'>
-          <ArticlesViewer
-            toggleClassName='feed-toggle'
-            tabs={buildTabList()}
-            queryFilter={queryFilter}
-            isFeedQuery={isFeedQuery}
-          />
-        </div>
-
-        <aside className=''>
+      <div className='container flex flex-col-reverse justify-center mt-8 mx-auto md:flex-row'>
+        <main className='basis-9/12 shrink-0'>
+          <ArticlesViewer tabs={buildTabList()} queryFilter={queryFilter} isFeedQuery={isFeedQuery} />
+        </main>
+        <aside className='md:ml-8'>
           <HomeSidebar />
         </aside>
       </div>

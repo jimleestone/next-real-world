@@ -5,6 +5,12 @@ module.exports = {
   content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      maxWidth: {
+        'tag-s': '180px',
+        'tag-m': '240px',
+        'tag-l': '300px',
+        tab: '300px',
+      },
       colors: {
         primary: '#5cb85c',
         'primary-300': '#a3d7a3',
@@ -18,7 +24,7 @@ module.exports = {
         mono: ['Source Code Pro', 'Ubuntu Mono', 'monospace', ...defaultTheme.fontFamily.mono],
         serif: ['Noto Serif JP', 'serif', ...defaultTheme.fontFamily.serif],
         titillium: ['titillium web', ...defaultTheme.fontFamily.sans],
-        mplus: ['M PLUS Rounded 1c', ...defaultTheme.fontFamily.sans],
+        zen: ['Zen Kaku Gothic New', 'Noto Sans JP'],
       },
       container: {
         padding: {
@@ -29,6 +35,9 @@ module.exports = {
           xl: '4rem',
           '2xl': '14rem',
         },
+      },
+      flex: {
+        2: '1 0 auto',
       },
       typography: (theme) => ({
         DEFAULT: {

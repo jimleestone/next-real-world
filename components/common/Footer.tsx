@@ -2,7 +2,7 @@ import CustomLink from './CustomLink';
 
 export default function Footer() {
   return (
-    <footer className='bg-gray-50 mt-3 py-4'>
+    <footer className='bg-gray-50 mt-3 py-4 shrink-0'>
       <div className='container flex flex-col items-center mx-auto md:flex-row'>
         <CustomLink href='/' className='font-titillium' mode='primary' underlined>
           conduit

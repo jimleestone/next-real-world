@@ -1,9 +1,10 @@
-import { ApolloClient, ApolloLink, ApolloProvider, createHttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloClient, ApolloLink, ApolloProvider, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { createPersistedQueryLink } from '@apollo/client/link/persisted-queries';
 import { sha256 } from 'crypto-hash';
 import React, { useMemo, useRef } from 'react';
+import { cache } from '../cache';
 import { useToken } from './use-token';
 
 export function CustomApolloProvider({ children }: { children: React.ReactNode }) {
@@ -32,66 +33,20 @@ export function CustomApolloProvider({ children }: { children: React.ReactNode }
     });
 
     const errorLink = onError(({ graphQLErrors, networkError }) => {
-      if (graphQLErrors) {
-        graphQLErrors.forEach(({ message, locations, path }) =>
-          console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
-        );
+      if (process.env.NODE_ENV === 'development') {
+        if (graphQLErrors) {
+          graphQLErrors.forEach(({ message, locations, path }) =>
+            console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
+          );
+        }
+        if (networkError) console.log(`[Network error]: ${networkError.message}`);
       }
-      if (networkError) console.log(`[Network error]: ${networkError.message}`);
     });
 
     return new ApolloClient({
       link: ApolloLink.from([errorLink, authLink, cacheLink, httpLink]),
       connectToDevTools: process.env.NODE_ENV === 'development',
-      cache: new InMemoryCache({
-        typePolicies: {
-          Article: {
-            keyFields: ['id'],
-          },
-          Comment: {
-            keyFields: ['id'],
-          },
-          Profile: {
-            keyFields: ['username'],
-          },
-          AuthUser: {
-            keyFields: ['id'],
-          },
-          Tag: {
-            keyFields: ['name'],
-          },
-          Query: {
-            fields: {
-              feed: {
-                keyArgs: [],
-                merge(existing: any[], incoming: any[], { args, readField }) {
-                  const offset = args?.offset as number;
-                  const merged = existing ? existing.slice(0) : [];
-                  const existingIdSet = new Set(merged.map((article) => readField('id', article)));
-                  incoming = incoming.filter((article) => !existingIdSet.has(readField('id', article)));
-                  for (let i = 0; i < incoming.length; ++i) {
-                    merged[offset + i] = incoming[i];
-                  }
-                  return merged;
-                },
-              },
-              articles: {
-                keyArgs: ['author', 'favorited', 'tag'],
-                merge(existing: any[], incoming: any[], { args, readField }) {
-                  const offset = args?.offset as number;
-                  const merged = existing ? existing.slice(0) : [];
-                  const existingIdSet = new Set(merged.map((article) => readField('id', article)));
-                  incoming = incoming.filter((article) => !existingIdSet.has(readField('id', article)));
-                  for (let i = 0; i < incoming.length; ++i) {
-                    merged[offset + i] = incoming[i];
-                  }
-                  return merged;
-                },
-              },
-            },
-          },
-        },
-      }),
+      cache,
     });
   }, []);
 

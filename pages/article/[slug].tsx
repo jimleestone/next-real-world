@@ -23,7 +23,9 @@ const ArticlePage: NextPage = () => {
       <ArticlePageBanner article={article} />
 
       <div className='container flex flex-wrap flex-col mx-auto mt-8'>
-        <Marked content={article.body} className='mb-4' />
+        <div className='w-full'>
+          <Marked content={article.body} className='mb-4' />
+        </div>
         <TagList outlined tagList={article.tagList} />
 
         <hr className='my-4' />

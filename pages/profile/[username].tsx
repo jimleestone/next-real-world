@@ -24,7 +24,6 @@ const Profile: NextPage = () => {
       <div className='container flex flex-wrap justify-center mx-auto mt-8'>
         <div className='w-full'>
           <ArticlesViewer
-            toggleClassName='articles-toggle'
             tabs={[
               { name: 'My Articles', href: `/profile/${username}` },
               { name: 'Favorited Articles', href: `/profile/${username}?favorites=true` },

@@ -1,22 +1,18 @@
-import Link from 'next/link';
+import Link, { LinkProps } from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { UrlObject } from 'url';
 import { joinStylesFromArray } from '../../lib/utils/styles-builder';
 
 export type LinkType = 'none' | 'primary' | 'secondary' | 'reverse' | 'nav' | 'tab' | 'tag';
 type LinkPattern = 'basic' | 'hover' | 'active';
 
-interface CustomLinkProps {
-  href: string | UrlObject;
+export type CustomLinkProps = Partial<{
   children: React.ReactNode;
-  className?: string;
-  as?: string | UrlObject;
-  shallow?: boolean;
-  replace?: boolean;
-  underlined?: boolean;
-  mode?: LinkType;
-}
+  className: string;
+  underlined: boolean;
+  mode: LinkType;
+}> &
+  LinkProps;
 
 const linkConfig = {
   basic: 'active:cursor-default',
@@ -31,7 +27,7 @@ const linkTypeConfig: { [key in LinkType]: Partial<{ [key in LinkPattern]: strin
     active: 'text-gray-900 hover:text-black',
   },
   tab: {
-    basic: 'p-4 rounded-t-lg text-gray-400 bg-gray-50',
+    basic: 'flex p-4 rounded-t-lg text-gray-400 bg-gray-50 max-w-tab whitespace-nowrap',
     hover: 'hover:text-gray-700 hover:border-b-2 hover:border-gray-300',
     active: 'text-primary border-b-2 border-primary hover:text-primary-600 hover:border-primary-600',
   },
@@ -66,21 +62,19 @@ const joinLinkStyles = (
   );
 
 export default function CustomLink({
-  className,
   href,
-  as,
-  shallow,
-  replace,
+  className,
   underlined = false,
   mode = 'none',
   children,
+  ...props
 }: CustomLinkProps) {
   const { asPath } = useRouter();
   const active = decodeURIComponent(asPath) === decodeURIComponent(href as string);
   const ariaCurrent = active ? 'page' : undefined;
 
   return (
-    <Link href={href} as={as} passHref shallow={shallow} replace={replace}>
+    <Link href={href} {...props}>
       <a aria-current={ariaCurrent} className={joinLinkStyles({ mode, underlined, className }, active)}>
         {children}
       </a>

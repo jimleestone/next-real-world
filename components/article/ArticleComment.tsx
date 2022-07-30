@@ -1,6 +1,6 @@
 import { ArticleViewFragment, CommentViewFragment, useDeleteCommentMutation } from '../../generated/graphql';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
-import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import { useMessageHandler } from '../../lib/hooks/use-message';
 import ArticleAuthorInfo, { AuthorInfo } from './ArticleAuthorInfo';
 
 interface ArticleCommentProps {
@@ -10,7 +10,7 @@ interface ArticleCommentProps {
 
 export default function ArticleComment({ comment, article }: ArticleCommentProps) {
   const { user } = useCurrentUser();
-  const { handleErrors } = useErrorsHandler();
+  const { info, handleErrors } = useMessageHandler();
   const { id, body, author, createdAt } = comment;
   const { username, image } = author;
   const authorInfo: AuthorInfo = { createdAt, username, image };
@@ -30,7 +30,8 @@ export default function ArticleComment({ comment, article }: ArticleCommentProps
         });
       }
     },
-    onError: (err) => handleErrors(err),
+    onError: (err) => handleErrors({ err, mode: 'toast' }),
+    onCompleted: () => info({ content: 'Comment deleted!', mode: 'toast' }),
   });
   async function onDeleteComment() {
     await deleteComment({ variables: { deleteCommentId: id } });

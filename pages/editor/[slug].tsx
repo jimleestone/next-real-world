@@ -25,7 +25,7 @@ const EditArticle: NextPage = () => {
   const { article } = data;
   return (
     <Wrapper title='Edit article'>
-      <ArticleEditor article={article} />;
+      <ArticleEditor article={article} />
     </Wrapper>
   );
 };

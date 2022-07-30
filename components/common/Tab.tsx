@@ -1,18 +1,14 @@
-import { UrlObject } from 'url';
+import { LinkProps } from 'next/link';
 import CustomLink from './CustomLink';
 
-export interface TabProps {
+export type TabProps = {
   name: string;
-  href: string | UrlObject;
-  as?: string | UrlObject;
-}
+} & LinkProps;
 
-export default function Tab({ name, href, as }: TabProps) {
+export default function Tab({ name, ...props }: TabProps) {
   return (
-    <li>
-      <CustomLink mode='tab' href={href} as={as} shallow>
-        {name}
-      </CustomLink>
-    </li>
+    <CustomLink mode='tab' shallow {...props}>
+      <span className='pr-4 overflow-hidden'>{name}</span>
+    </CustomLink>
   );
 }

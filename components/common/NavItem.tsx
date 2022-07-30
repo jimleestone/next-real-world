@@ -1,16 +1,15 @@
-import { UrlObject } from 'url';
+import { LinkProps } from 'next/link';
 import CustomLink from './CustomLink';
 
-interface NavItemProps {
+type NavItemProps = {
   text: string;
-  href: string | UrlObject;
   icon?: string;
-}
+} & LinkProps;
 
-export default function NavItem({ text, href, icon }: NavItemProps) {
+export default function NavItem({ text, icon, ...props }: NavItemProps) {
   return (
     <li>
-      <CustomLink href={href} mode='nav'>
+      <CustomLink mode='nav' {...props}>
         {icon && <i className={icon}></i>}&nbsp;
         {text}
       </CustomLink>

@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import { useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
-import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import { useMessageHandler } from '../../lib/hooks/use-message';
 import TagList from '../common/TagList';
 import FormErrorMessage from './FormErrorMessage';
 import Input, { InputProps } from './Input';
@@ -18,9 +18,9 @@ export default function TagInput<TFormValues extends Record<string, any> & { tag
   const { isSubmitting } = formState;
   const { field, fieldState } = useController({ name, control });
   const { value } = field;
-  const { error, isDirty } = fieldState;
+  const { error } = fieldState;
   const [tag, setTag] = useState('');
-  const { dismiss } = useErrorsHandler();
+  const { dismiss } = useMessageHandler();
 
   function executeCheck() {
     trigger(name);
@@ -40,7 +40,13 @@ export default function TagInput<TFormValues extends Record<string, any> & { tag
     return (ev) => {
       if (ev.key === 'Enter') {
         ev.preventDefault();
-        if (tag.trim().length > 0) {
+        if (
+          tag.trim().length > 0 &&
+          !value.some((val: string) => {
+            // remove the duplicated tag ignore case
+            return val.toLowerCase() === tag.trim().toLowerCase();
+          })
+        ) {
           setValue(name, R.append(tag.trim(), value));
         }
         setTag('');

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { FeedDocument, Profile, useFollowMutation, useUnFollowMutation } from '../../generated/graphql';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
-import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import { useMessageHandler } from '../../lib/hooks/use-message';
 import CustomButton from './CustomButton';
 
 interface FollowsButtonProps {
@@ -12,18 +12,18 @@ interface FollowsButtonProps {
 export default function FollowsButton({ author, className }: FollowsButtonProps) {
   const { user } = useCurrentUser();
   const router = useRouter();
-  const { toasting, handleErrors } = useErrorsHandler();
+  const { message, handleErrors } = useMessageHandler();
   const { following, username } = author;
 
   const [follow, { loading: followLoading }] = useFollowMutation({
     refetchQueries: [{ query: FeedDocument, variables: { offset: 0 } }], // reload the first page of user feeds
     optimisticResponse: { follow: { username, following: true, __typename: 'Profile' } },
-    onError: (err) => handleErrors(err, true),
+    onError: (err) => handleErrors({ err, mode: 'toast' }),
   });
   const [unFollow, { loading: unFollowLoading }] = useUnFollowMutation({
     refetchQueries: [{ query: FeedDocument, variables: { offset: 0 } }],
     optimisticResponse: { unFollow: { username, following: false, __typename: 'Profile' } },
-    onError: (err) => handleErrors(err, true),
+    onError: (err) => handleErrors({ err, mode: 'toast' }),
   });
   async function onFollowToggle() {
     if (!user) {
@@ -40,7 +40,7 @@ export default function FollowsButton({ author, className }: FollowsButtonProps)
       outlined={!following}
       className={className}
       onClick={onFollowToggle}
-      disabled={followLoading || unFollowLoading || !!toasting}
+      disabled={followLoading || unFollowLoading || !!message}
     >
       {following ? (
         <>

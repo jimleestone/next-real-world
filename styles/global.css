@@ -1,7 +1,6 @@
 @import url('//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css');
-@import url('https://fonts.googleapis.com/css?family=Titillium+Web:700');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&family=Noto+Serif+JP&family=Source+Code+Pro&family=Ubuntu+Mono&family=M+PLUS+Rounded+1c&display=swap');
-@import url('../node_modules/highlight.js/styles/tokyo-night-dark.css');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&family=Noto+Sans+Mono&family=Noto+Serif+JP&family=Source+Code+Pro&family=Titillium+Web:wght@700&family=Ubuntu+Mono&family=Zen+Kaku+Gothic+New:wght@900&display=swap');
+@import url('https://unpkg.com/highlight.js@11.6.0/styles/tokyo-night-dark.css');
 
 @tailwind base;
 @tailwind components;

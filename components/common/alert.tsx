@@ -1,40 +1,38 @@
+import { MessageType, useMessageHandler } from '../../lib/hooks/use-message';
 import { joinStylesFromArray } from '../../lib/utils/styles-builder';
 
-export type AlertType = 'info' | 'danger' | 'success';
-
 type AlertProps = Partial<{
-  type: AlertType;
-  message: string;
   className: string;
 }>;
 
 const alertConfig = {
-  basic: 'flex px-4 py-2 my-2 text-sm rounded-lg font-semibold h-10', // a fixed height to take the place permanently
+  basic: 'flex px-4 py-2 text-sm rounded-lg font-medium',
 };
 
-const alertTypeConfig: { [key in AlertType]: string } = {
+const alertTypeConfig: { [key in MessageType]: string } = {
   info: 'text-primary-700 bg-green-100',
-  danger: 'text-red-700 bg-red-100',
-  success: 'text-green-700 bg-green-100',
+  error: 'text-red-700 bg-red-100',
+  success: 'text-green-700 bg-green-200',
 };
 
-const alertPrefixConfig: { [key in AlertType]: string } = {
+const alertPrefixConfig: { [key in MessageType]: string } = {
   info: 'Info',
-  danger: 'Error',
+  error: 'Error',
   success: 'Success',
 };
 
-const joinAlertStyles = ({ type, message, className }: AlertProps) =>
-  joinStylesFromArray(alertConfig.basic, message && type && alertTypeConfig[type], className);
+const joinAlertStyles = ({ type, className }: { type: MessageType; className?: string }) =>
+  joinStylesFromArray(alertConfig.basic, alertTypeConfig[type], className);
 
-export default function Alert({ type = 'info', message, className }: AlertProps) {
+export default function Alert({ className }: AlertProps) {
+  const { message } = useMessageHandler();
   return (
-    <div className={joinAlertStyles({ type, message, className })} role='alert'>
-      {message && (
-        <>
+    <div className='my-2 h-10' role='alert'>
+      {message && message.mode === 'alert' && (
+        <div className={joinAlertStyles({ className, type: message.type })}>
           <svg
             aria-hidden='true'
-            className={`flex-shrink-0 w-5 h-5 ${alertTypeConfig[type]}`}
+            className={`inline shrink-0 w-5 h-5 ${alertTypeConfig[message.type]}`}
             fill='currentColor'
             viewBox='0 0 20 20'
             xmlns='http://www.w3.org/2000/svg'
@@ -45,9 +43,9 @@ export default function Alert({ type = 'info', message, className }: AlertProps)
               clipRule='evenodd'
             ></path>
           </svg>
-          <span className='sr-only'>{alertPrefixConfig[type]}</span>
-          <p className='ml-2'> {message}</p>
-        </>
+          <span className='sr-only'>{alertPrefixConfig[message.type]}</span>
+          <p className='ml-2'> {message.content}</p>
+        </div>
       )}
     </div>
   );

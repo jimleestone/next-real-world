@@ -8,9 +8,9 @@ import {
   useCreateArticleMutation,
   useUpdateArticleMutation,
 } from '../../generated/graphql';
-import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import { useCurrentUser } from '../../lib/hooks/use-current-user';
+import { useMessageHandler } from '../../lib/hooks/use-message';
 import { articleInputSchema } from '../../lib/validation/schema';
-import Alert from '../common/alert';
 import Form from '../forms/form';
 import FormTextarea from '../forms/form-teextarea';
 import FormInput from '../forms/FormInput';
@@ -19,25 +19,26 @@ import TagInput from '../forms/tag-input';
 
 export default function ArticleEditor({ article }: { article?: EditArticleViewFragment }) {
   const router = useRouter();
-  const { errors, handleErrors } = useErrorsHandler();
+  const { handleErrors } = useMessageHandler();
+  const { user } = useCurrentUser();
 
   const [createArticle, { loading: createSubmitting }] = useCreateArticleMutation({
     refetchQueries: [
       { query: TagsDocument },
       { query: ArticlesDocument, variables: { offset: 0 } },
-      { query: ArticlesDocument, variables: { author: article?.author.username, offset: 0 } },
+      { query: ArticlesDocument, variables: { author: user?.username, offset: 0 } },
     ],
     onCompleted: (data) => {
       if (data) router.replace(`/article/${data.createArticle.slug}`);
     },
-    onError: (err) => handleErrors(err),
+    onError: (err) => handleErrors({ err, mode: 'alert' }),
   });
   const [updateArticle, { loading: updateSubmitting }] = useUpdateArticleMutation({
     refetchQueries: [{ query: TagsDocument }],
     onCompleted: (data) => {
       if (data) router.replace(`/article/${data.updateArticle.slug}`);
     },
-    onError: (err) => handleErrors(err),
+    onError: (err) => handleErrors({ err, mode: 'alert' }),
   });
 
   async function onSubmit(input: ArticleInput) {
@@ -54,7 +55,6 @@ export default function ArticleEditor({ article }: { article?: EditArticleViewFr
     <div className='mb-auto'>
       <div className='container flex flex-wrap flex-col items-center mx-auto mt-12'>
         <div className='w-9/12'>
-          <Alert type='danger' message={errors} />
           <Form<ArticleInput> onSubmit={onSubmit} schema={articleInputSchema} mode='onChange' defaultValues={init}>
             <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
               <FormInput<ArticleInput> name='title' placeholder='Article title' />

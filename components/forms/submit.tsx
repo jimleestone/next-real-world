@@ -1,5 +1,5 @@
 import { useFormContext, useFormState } from 'react-hook-form';
-import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import { useMessageHandler } from '../../lib/hooks/use-message';
 import CustomButton, { ButtonProps, joinButtonStyles } from '../common/CustomButton';
 
 type SubmitProps = Partial<{
@@ -9,14 +9,14 @@ type SubmitProps = Partial<{
 
 export default function Submit({ color, size, outlined, className, children, strict = false, ...props }: SubmitProps) {
   const { control } = useFormContext();
-  const { isSubmitting, isValid } = useFormState({ control });
-  const { toasting, errors } = useErrorsHandler();
+  const { isSubmitting, isValid, isDirty } = useFormState({ control });
+  const { message } = useMessageHandler();
   return (
     <CustomButton
       type='submit'
       className={joinButtonStyles({ color, size, outlined, className })}
       {...props}
-      disabled={isSubmitting || (strict && !isValid) || !!toasting || !!errors}
+      disabled={isSubmitting || (strict && !isValid) || !!message}
     >
       {children}
     </CustomButton>

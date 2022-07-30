@@ -6,7 +6,7 @@ import {
   CommentViewFragmentDoc,
   useCreateCommentMutation,
 } from '../../generated/graphql';
-import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import { useMessageHandler } from '../../lib/hooks/use-message';
 import { commentInputSchema } from '../../lib/validation/schema';
 import CustomImage from '../common/CustomImage';
 import Form from '../forms/form';
@@ -20,7 +20,7 @@ export default function CommentForm({
   user: AuthUser;
   article: ArticleViewFragment;
 }) {
-  const { handleErrors } = useErrorsHandler();
+  const { success, handleErrors } = useMessageHandler();
 
   const [createComment, { loading }] = useCreateCommentMutation({
     update(cache, { data }) {
@@ -44,7 +44,8 @@ export default function CommentForm({
         });
       }
     },
-    onError: (err) => handleErrors(err, true),
+    onCompleted: () => success({ content: 'Succeed adding a comment!', mode: 'toast' }),
+    onError: (err) => handleErrors({ err, mode: 'toast' }),
   });
 
   async function onPostComment(input: CommentInput) {

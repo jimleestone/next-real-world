@@ -6,9 +6,9 @@ export default function HomeSidebar() {
   const { loading, data } = useTagsQuery();
   if (loading) return <LoadingSpinner />;
   return (
-    <div className='px-2 bg-gray-200 rounded-sm mb-4'>
-      <p>Popular Tags</p>
-      {data && <TagList tagList={data.tags} withLink />}
+    <div className='p-2 bg-gray-200 rounded-sm mb-4'>
+      <p className='mb-2 font-semibold'>Popular Tags</p>
+      {data && <TagList tagList={data.tags} withLink size='s' />}
     </div>
   );
 }

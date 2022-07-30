@@ -1,45 +1,45 @@
 import { animated, useSpring } from '@react-spring/web';
 import { useEffect, useRef } from 'react';
-import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import { MessageType, useMessageHandler } from '../../lib/hooks/use-message';
 import { joinStylesFromArray } from '../../lib/utils/styles-builder';
 
-type ToastType = 'error' | 'success';
-
-interface ToastProps {
-  type?: ToastType;
-}
-
-const toastConfig = 'fixed right-5 bottom-5 p-4 w-full max-w-xs rounded-lg shadow-lg';
-const toastTypeConfig: { [key in ToastType]: string } = {
-  error: 'text-red-600 bg-red-300 ',
-  success: 'text-green-600 bg-green-300 ',
+const toastConfig = 'fixed right-5 bottom-5 p-4 w-full max-w-xs rounded-lg shadow-lg font-medium whitespace-nowrap';
+const toastTypeConfig: { [key in MessageType]: string } = {
+  error: 'text-red-600 bg-red-200',
+  info: 'text-blue-600 bg-blue-200',
+  success: 'text-green-600 bg-green-200',
 };
 
-const joinToastStyles = (type: ToastType) => joinStylesFromArray(toastConfig, toastTypeConfig[type]);
+const joinToastStyles = (type: MessageType) => joinStylesFromArray(toastConfig, toastTypeConfig[type]);
 
-export default function Toast({ type = 'error' }: ToastProps) {
-  const { toasting, dismiss } = useErrorsHandler();
+export default function Toast() {
+  const { message, dismiss } = useMessageHandler();
   const removeRef = useRef(dismiss);
   removeRef.current = dismiss;
   const styles = useSpring({
-    to: { opacity: toasting ? 1 : 0 },
+    // I wonder if there is a way to deal with this fade-in using pure tailwind css
+    to: { opacity: message ? 1 : 0 },
     from: { opacity: 0 },
-    config: { duration: 500 },
+    config: { duration: 300 },
   });
   useEffect(() => {
-    const duration = 4500;
-    const id = setTimeout(() => removeRef.current(), duration);
+    if (message?.mode === 'toast') {
+      const duration = 3500;
+      const id = setTimeout(() => removeRef.current(), duration);
 
-    return () => clearTimeout(id);
-  }, [toasting]);
+      return () => clearTimeout(id);
+    }
+  }, [message]);
 
   return (
     <animated.div style={styles}>
-      {toasting && (
-        <div className={joinToastStyles(type)} role='alert'>
-          <p className='font-normal whitespace-nowrap overflow-clip'>{toasting}</p>
-        </div>
-      )}
+      <>
+        {message && message.mode === 'toast' && (
+          <div className={joinToastStyles(message.type)} role='alert'>
+            <p className='overflow-hidden pr-4'>{message.content}</p>
+          </div>
+        )}
+      </>
     </animated.div>
   );
 }

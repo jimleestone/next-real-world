@@ -1,36 +1,23 @@
-import { useEffect } from 'react';
-import { Path, useController, useFormContext, useFormState, useWatch } from 'react-hook-form';
-import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import { useController, useFormContext, useFormState } from 'react-hook-form';
+import { useFormCallback } from '../../lib/hooks/use-form-callback';
 import FormErrorMessage from './FormErrorMessage';
+import { FormInputBaseProps } from './FormInput';
 import Textarea, { TextareaProps } from './textarea';
 
-export type FormTextareaProps<TFormValues> = {
-  name: Path<TFormValues>;
-  watch?: boolean; // RHF 'onBlur' mode to watch change
-  clear?: boolean; //clear after submit successful
-} & Omit<TextareaProps, 'name'>;
+export type FormTextareaProps<TFormValues> = FormInputBaseProps<TFormValues> & Omit<TextareaProps, 'name'>;
 
 export default function FormTextarea<TFormValues extends Record<string, any>>({
   name,
-  watch = false,
-  clear = false,
+  watch,
+  clear,
   ...props
 }: FormTextareaProps<TFormValues>) {
-  const { control, trigger, reset } = useFormContext();
-  const { isSubmitting, isSubmitSuccessful } = useFormState();
+  const { control } = useFormContext();
+  const { isSubmitting } = useFormState();
   const { field, fieldState } = useController({ name, control });
-  const { error, isDirty } = fieldState;
-  const { dismiss } = useErrorsHandler();
+  const { error } = fieldState;
 
-  const watching = useWatch({ control, name });
-  useEffect(() => {
-    if (watch) trigger(name);
-    dismiss();
-  }, [watching, trigger, name, watch, dismiss]);
-
-  useEffect(() => {
-    if (clear) reset();
-  }, [clear, isSubmitSuccessful, reset, name]);
+  useFormCallback({ name, watch, clear });
 
   return (
     <>

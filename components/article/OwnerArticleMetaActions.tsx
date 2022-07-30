@@ -2,12 +2,12 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { ArticlesDocument, ArticleViewFragment, TagsDocument, useDeleteArticleMutation } from '../../generated/graphql';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
-import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import { useMessageHandler } from '../../lib/hooks/use-message';
 import CustomButton from '../common/CustomButton';
 
 export default function OwnerArticleMetaActions({ article }: { article: ArticleViewFragment }) {
   const router = useRouter();
-  const { handleErrors } = useErrorsHandler();
+  const { handleErrors } = useMessageHandler();
   const { slug } = article;
   const { user } = useCurrentUser();
 
@@ -18,7 +18,7 @@ export default function OwnerArticleMetaActions({ article }: { article: ArticleV
       { query: ArticlesDocument, variables: { author: user?.username, offset: 0 } },
     ],
     onCompleted: () => router.replace('/'),
-    onError: (err) => handleErrors(err),
+    onError: (err) => handleErrors({ err, mode: 'toast' }),
   });
 
   async function onDeleteArticle() {

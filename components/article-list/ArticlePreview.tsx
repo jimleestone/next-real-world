@@ -9,7 +9,7 @@ export function ArticlePreview({ article }: { article: ArticlePreviewFragment })
   const { username, image } = author;
   const authorInfo: AuthorInfo = { createdAt, username, image };
   return (
-    <li>
+    <>
       <div className='flex flex-wrap justify-between items-center py-3'>
         <ArticleAuthorInfo authorInfo={authorInfo} />
         <FavoritesButton className='' article={article} />
@@ -19,9 +19,9 @@ export function ArticlePreview({ article }: { article: ArticlePreviewFragment })
         <p className='text-lg font-thin text-gray-400'>{description}</p>
         <div className='flex flex-wrap justify-between items-center mt-4'>
           <span className='text-sm font-light text-gray-300'>Read more...</span>
-          <TagList tagList={tagList} outlined />
+          <TagList tagList={tagList} outlined size='s' />
         </div>
       </CustomLink>
-    </li>
+    </>
   );
 }

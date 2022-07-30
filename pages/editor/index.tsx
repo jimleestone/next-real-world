@@ -6,7 +6,7 @@ import withAuth from '../../lib/auth/with-auth';
 const NewArticle: NextPage = () => {
   return (
     <Wrapper title='New article'>
-      <ArticleEditor />;
+      <ArticleEditor />
     </Wrapper>
   );
 };

@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { DefaultValues, FormProvider, SubmitHandler, useForm, ValidationMode } from 'react-hook-form';
 import { AnyObjectSchema } from 'yup';
+import Alert from '../common/alert';
 
 interface FormProps<TFormValues> {
   onSubmit: SubmitHandler<TFormValues>;
@@ -21,6 +22,7 @@ export default function Form<TFormValues extends Record<string, any>>({
 
   return (
     <FormProvider {...methods}>
+      <Alert />
       <form onSubmit={methods.handleSubmit(onSubmit)}>{children}</form>
     </FormProvider>
   );

@@ -8,41 +8,47 @@ import {
   useFeedCountLazyQuery,
   useFeedLazyQuery,
 } from '../../generated/graphql';
-import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import { useMessageHandler } from '../../lib/hooks/use-message';
 import LoadMore from '../common/LoadMore';
 import TabList from '../common/TabList';
 import ArticleList from './ArticleList';
 
 interface ArticleListProps {
   tabs: { name: string; href: string | UrlObject }[];
-  toggleClassName: string;
   isFeedQuery?: boolean;
   queryFilter: ArticlesQueryVariables;
 }
 
-export default function ArticlesViewer({ tabs, toggleClassName, isFeedQuery, queryFilter }: ArticleListProps) {
+export default function ArticlesViewer({ tabs, isFeedQuery, queryFilter }: ArticleListProps) {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const { errors, handleErrors } = useErrorsHandler();
+  const { error, info } = useMessageHandler();
 
-  const [loadArticles, { data: articlesData, loading: articlesLoading, error, fetchMore }] = useArticlesLazyQuery({
+  const fallbackMessage = 'Could not load articles... ';
+  const noArticlesMessage = 'No articles are here... yet';
+  const [loadArticles, { data: articlesData, loading: articlesLoading, fetchMore }] = useArticlesLazyQuery({
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
-    onError: (err) => handleErrors(err),
+    onError: () => error({ content: fallbackMessage, mode: 'alert' }),
+    onCompleted: (data) => {
+      if (data && data.articles.length === 0) info({ content: noArticlesMessage, mode: 'alert' });
+    },
   });
   const [loadArticlesCount, { data: articlesCount }] = useArticlesCountLazyQuery({
     fetchPolicy: 'cache-and-network',
-    onError: (err) => handleErrors(err),
+    errorPolicy: 'ignore',
   });
 
-  const [loadFeed, { data: feedData, loading: feedLoading, error: feedError, fetchMore: fetchMoreFeed }] =
-    useFeedLazyQuery({
-      fetchPolicy: 'cache-and-network',
-      nextFetchPolicy: 'cache-first',
-      onError: (err) => handleErrors(err),
-    });
+  const [loadFeed, { data: feedData, loading: feedLoading, fetchMore: fetchMoreFeed }] = useFeedLazyQuery({
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    onError: () => error({ content: fallbackMessage, mode: 'alert' }),
+    onCompleted: (data) => {
+      if (data && data.feed.length === 0) info({ content: noArticlesMessage, mode: 'alert' });
+    },
+  });
   const [loadFeedCount, { data: feedCount }] = useFeedCountLazyQuery({
     fetchPolicy: 'cache-and-network',
-    onError: (err) => handleErrors(err),
+    errorPolicy: 'ignore',
   });
 
   useEffect(() => {
@@ -78,8 +84,8 @@ export default function ArticlesViewer({ tabs, toggleClassName, isFeedQuery, que
 
   return (
     <React.Fragment>
-      <TabList {...{ tabs, toggleClassName }} />
-      <ArticleList articles={articles} loading={feedLoading || articlesLoading} errors={errors} />
+      <TabList {...{ tabs }} />
+      <ArticleList articles={articles} loading={feedLoading || articlesLoading} />
       <LoadMore currentSize={currentSize || 0} totalCount={totalCount || 0} onLoadMore={onLoadMore} />
     </React.Fragment>
   );

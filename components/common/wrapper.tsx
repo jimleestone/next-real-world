@@ -1,5 +1,4 @@
-import { ReactNode, useEffect } from 'react';
-import { useErrorsHandler } from '../../lib/hooks/use-errors-handler';
+import { ReactNode } from 'react';
 import Title from './Title';
 
 interface WrapperProps {
@@ -8,14 +7,10 @@ interface WrapperProps {
 }
 
 export default function Wrapper({ title, children }: WrapperProps) {
-  const { dismiss } = useErrorsHandler();
-  useEffect(() => {
-    dismiss();
-  }, [dismiss]);
   return (
     <>
       <Title title={title} />
-      <div className='mb-auto'>{children}</div>
+      <div className='flex-2 '>{children}</div>
     </>
   );
 }
