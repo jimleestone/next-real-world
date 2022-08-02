@@ -49,10 +49,16 @@ const Settings: NextPage = () => {
   };
   return (
     <Wrapper title='Settings'>
-      <div className='container flex flex-wrap flex-col items-center mx-auto'>
+      <div className='container flex flex-wrap flex-col items-center mx-auto pt-12'>
         <h1 className='text-4xl font-extralight'>Your Settings</h1>
         <div className='w-6/12'>
-          <Form<UserUpdateInput> onSubmit={onUpdateSettings} schema={checkSchema} mode='onBlur' defaultValues={init}>
+          <Form<UserUpdateInput>
+            onSubmit={onUpdateSettings}
+            schema={checkSchema}
+            mode='onBlur'
+            reValidateMode='onBlur'
+            defaultValues={init}
+          >
             <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
               <FormInput<UserUpdateInput>
                 name='image'

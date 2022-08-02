@@ -44,6 +44,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.33.1",
     "slug": "^5.3.0",
+    "usehooks-ts": "^2.6.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {

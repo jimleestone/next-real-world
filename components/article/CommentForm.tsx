@@ -3,7 +3,7 @@ import {
   ArticleViewFragment,
   AuthUser,
   CommentInput,
-  CommentViewFragmentDoc,
+  CommentsDocument,
   useCreateCommentMutation,
 } from '../../generated/graphql';
 import { useMessageHandler } from '../../lib/hooks/use-message';
@@ -26,22 +26,9 @@ export default function CommentForm({
     update(cache, { data }) {
       if (data) {
         const newComment = data.createComment;
-        cache.modify({
-          id: cache.identify(article),
-          fields: {
-            comments(existingCommentRefs = [], { readField }) {
-              const newCommentRef = cache.writeFragment({
-                data: newComment,
-                fragment: CommentViewFragmentDoc,
-              });
-              if (existingCommentRefs.some((ref: any) => readField('id', ref) === newComment.id)) {
-                return existingCommentRefs;
-              }
-              // prepend new comment to the top
-              return R.prepend(newCommentRef, existingCommentRefs);
-            },
-          },
-        });
+        cache.updateQuery({ query: CommentsDocument, variables: { articleId: article.id } }, (data) => ({
+          comments: R.prepend(newComment, data.comments),
+        }));
       }
     },
     onCompleted: () => success({ content: 'Succeed adding a comment!', mode: 'toast' }),
@@ -53,7 +40,13 @@ export default function CommentForm({
   }
   const init: CommentInput = { body: '' };
   return (
-    <Form<CommentInput> onSubmit={onPostComment} mode='onChange' schema={commentInputSchema} defaultValues={init}>
+    <Form<CommentInput>
+      onSubmit={onPostComment}
+      mode='onChange'
+      schema={commentInputSchema}
+      defaultValues={init}
+      alert={false}
+    >
       <div className='bg-gray-100 border rounded-t-md shadow-sm'>
         <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
           <FormTextarea<CommentInput> name='body' placeholder='Write a comment...' rows={3} clear />

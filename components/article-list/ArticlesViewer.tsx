@@ -1,15 +1,9 @@
 import * as R from 'ramda';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { UrlObject } from 'url';
-import {
-  ArticlesQueryVariables,
-  useArticlesCountLazyQuery,
-  useArticlesLazyQuery,
-  useFeedCountLazyQuery,
-  useFeedLazyQuery,
-} from '../../generated/graphql';
+import { ArticlesQueryVariables, useArticlesLazyQuery, useFeedLazyQuery } from '../../generated/graphql';
 import { useMessageHandler } from '../../lib/hooks/use-message';
-import LoadMore from '../common/LoadMore';
+import ReverseLoadMore from '../common/reverse-load-more';
 import TabList from '../common/TabList';
 import ArticleList from './ArticleList';
 
@@ -20,7 +14,6 @@ interface ArticleListProps {
 }
 
 export default function ArticlesViewer({ tabs, isFeedQuery, queryFilter }: ArticleListProps) {
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const { error, info } = useMessageHandler();
 
   const fallbackMessage = 'Could not load articles... ';
@@ -33,10 +26,6 @@ export default function ArticlesViewer({ tabs, isFeedQuery, queryFilter }: Artic
       if (data && data.articles.length === 0) info({ content: noArticlesMessage, mode: 'alert' });
     },
   });
-  const [loadArticlesCount, { data: articlesCount }] = useArticlesCountLazyQuery({
-    fetchPolicy: 'cache-and-network',
-    errorPolicy: 'ignore',
-  });
 
   const [loadFeed, { data: feedData, loading: feedLoading, fetchMore: fetchMoreFeed }] = useFeedLazyQuery({
     fetchPolicy: 'cache-and-network',
@@ -46,47 +35,38 @@ export default function ArticlesViewer({ tabs, isFeedQuery, queryFilter }: Artic
       if (data && data.feed.length === 0) info({ content: noArticlesMessage, mode: 'alert' });
     },
   });
-  const [loadFeedCount, { data: feedCount }] = useFeedCountLazyQuery({
-    fetchPolicy: 'cache-and-network',
-    errorPolicy: 'ignore',
-  });
-
-  useEffect(() => {
-    setCurrentPage(1); // reset current page when query filter changes
-  }, [isFeedQuery, queryFilter]);
 
   useEffect(() => {
     const loadData = async () => {
-      const offset = (currentPage - 1) * 10;
+      const offset = 0;
       const pagedQueryFilter = R.mergeRight(queryFilter, { offset });
-      if (isFeedQuery) {
-        await loadFeedCount();
-        await loadFeed({ variables: { ...pagedQueryFilter } });
-      } else {
-        await loadArticlesCount({ variables: { ...queryFilter } });
-        await loadArticles({ variables: { ...pagedQueryFilter } });
-      }
+      isFeedQuery
+        ? await loadFeed({ variables: { ...pagedQueryFilter } })
+        : await loadArticles({ variables: { ...pagedQueryFilter } });
     };
     loadData();
-  }, [isFeedQuery, queryFilter, currentPage, loadFeed, loadArticles, loadArticlesCount, loadFeedCount]);
-  const onPageChange = useCallback((index: number) => {
-    setCurrentPage(index);
-  }, []);
+  }, [isFeedQuery, queryFilter, loadFeed, loadArticles]);
 
   const articles = isFeedQuery ? feedData?.feed : articlesData?.articles;
-  const totalCount = isFeedQuery ? feedCount?.feedCount : articlesCount?.articlesCount;
   const currentSize = articles?.length;
+  const loading = feedLoading || articlesLoading;
+  const first = articles && articles.length && articles[0].id;
+  const last = articles && articles.length && articles[articles.length - 1].id;
 
-  const onLoadMore = useCallback(() => {
-    const fetchMoreQueryFilter = R.mergeRight(queryFilter, { offset: currentSize });
-    isFeedQuery ? fetchMoreFeed({ variables: fetchMoreQueryFilter }) : fetchMore({ variables: fetchMoreQueryFilter });
-  }, [isFeedQuery, fetchMoreFeed, fetchMore, queryFilter, currentSize]);
-
+  const onLoadMore = useCallback(
+    async ({ offset, cursor }: { offset: number; cursor: number }) => {
+      const fetchMoreQueryFilter = R.mergeRight(queryFilter, { offset, cursor });
+      isFeedQuery
+        ? await fetchMoreFeed({ variables: fetchMoreQueryFilter })
+        : await fetchMore({ variables: fetchMoreQueryFilter });
+    },
+    [isFeedQuery, fetchMoreFeed, fetchMore, queryFilter]
+  );
   return (
     <React.Fragment>
       <TabList {...{ tabs }} />
-      <ArticleList articles={articles} loading={feedLoading || articlesLoading} />
-      <LoadMore currentSize={currentSize || 0} totalCount={totalCount || 0} onLoadMore={onLoadMore} />
+      <ArticleList {...{ articles, loading }} />
+      <ReverseLoadMore {...{ first, last, currentSize, onLoadMore }} />
     </React.Fragment>
   );
 }

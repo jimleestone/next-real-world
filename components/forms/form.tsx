@@ -1,28 +1,34 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { DefaultValues, FormProvider, SubmitHandler, useForm, ValidationMode } from 'react-hook-form';
+import { FormProvider, SubmitHandler, useForm, UseFormProps } from 'react-hook-form';
 import { AnyObjectSchema } from 'yup';
 import Alert from '../common/alert';
 
-interface FormProps<TFormValues> {
+type FormProps<TFormValues> = {
   onSubmit: SubmitHandler<TFormValues>;
   children: React.ReactNode;
   schema?: AnyObjectSchema;
-  defaultValues?: DefaultValues<TFormValues>;
-  mode?: keyof ValidationMode;
-}
+  alert?: boolean; // use alert message on top of the form
+} & UseFormProps<TFormValues>;
 
 export default function Form<TFormValues extends Record<string, any>>({
   onSubmit,
   schema,
   defaultValues,
   mode,
+  reValidateMode,
+  alert = true,
   children,
 }: FormProps<TFormValues>) {
-  const methods = useForm<TFormValues>({ defaultValues, mode, resolver: schema && yupResolver(schema) });
+  const methods = useForm<TFormValues>({
+    defaultValues,
+    mode,
+    reValidateMode,
+    resolver: schema && yupResolver(schema),
+  });
 
   return (
     <FormProvider {...methods}>
-      <Alert />
+      {alert && <Alert />}
       <form onSubmit={methods.handleSubmit(onSubmit)}>{children}</form>
     </FormProvider>
   );

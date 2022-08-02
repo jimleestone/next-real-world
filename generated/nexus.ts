@@ -120,7 +120,6 @@ export interface NexusGenFieldTypes {
   Article: { // field return type
     author: NexusGenRootTypes['Profile']; // Profile!
     body: string; // String!
-    comments: NexusGenRootTypes['Comment'][]; // [Comment!]!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     description: string; // String!
     favorited: boolean; // Boolean!
@@ -193,7 +192,6 @@ export interface NexusGenFieldTypeNames {
   Article: { // field return type name
     author: 'Profile'
     body: 'String'
-    comments: 'Comment'
     createdAt: 'DateTime'
     description: 'String'
     favorited: 'Boolean'
@@ -309,6 +307,7 @@ export interface NexusGenArgTypes {
     }
     articles: { // args
       author?: string | null; // String
+      cursor?: number | null; // Int
       favorited?: string | null; // String
       limit: number | null; // Int
       offset?: number | null; // Int
@@ -326,9 +325,13 @@ export interface NexusGenArgTypes {
       username: string; // String!
     }
     comments: { // args
-      slug: string; // String!
+      articleId: number; // Int!
+      cursor?: number | null; // Int
+      limit: number | null; // Int
+      offset?: number | null; // Int
     }
     feed: { // args
+      cursor?: number | null; // Int
       limit: number | null; // Int
       offset?: number | null; // Int
     }

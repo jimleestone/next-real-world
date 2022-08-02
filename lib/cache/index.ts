@@ -1,4 +1,13 @@
-import { InMemoryCache } from '@apollo/client';
+import { FieldMergeFunction, InMemoryCache } from '@apollo/client';
+import * as R from 'ramda';
+
+const merge: FieldMergeFunction = (existing: any[], incoming: any[], { args, readField }) => {
+  const offset = args?.offset as number;
+  const merged = existing ? existing.slice(0) : [];
+  const existingIdSet = new Set(merged.map((article) => readField('id', article)));
+  incoming = incoming.filter((article) => !existingIdSet.has(readField('id', article)));
+  return offset > 0 ? R.concat(merged, incoming) : R.concat(incoming, merged);
+};
 
 export const cache = new InMemoryCache({
   typePolicies: {
@@ -21,29 +30,15 @@ export const cache = new InMemoryCache({
       fields: {
         feed: {
           keyArgs: [],
-          merge(existing: any[], incoming: any[], { args, readField }) {
-            const offset = args?.offset as number;
-            const merged = existing ? existing.slice(0) : [];
-            const existingIdSet = new Set(merged.map((article) => readField('id', article)));
-            incoming = incoming.filter((article) => !existingIdSet.has(readField('id', article)));
-            for (let i = 0; i < incoming.length; ++i) {
-              merged[offset + i] = incoming[i];
-            }
-            return merged;
-          },
+          merge,
         },
         articles: {
           keyArgs: ['author', 'favorited', 'tag'],
-          merge(existing: any[], incoming: any[], { args, readField }) {
-            const offset = args?.offset as number;
-            const merged = existing ? existing.slice(0) : [];
-            const existingIdSet = new Set(merged.map((article) => readField('id', article)));
-            incoming = incoming.filter((article) => !existingIdSet.has(readField('id', article)));
-            for (let i = 0; i < incoming.length; ++i) {
-              merged[offset + i] = incoming[i];
-            }
-            return merged;
-          },
+          merge,
+        },
+        comments: {
+          keyArgs: ['articleId'],
+          merge,
         },
       },
     },

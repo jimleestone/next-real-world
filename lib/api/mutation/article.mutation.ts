@@ -182,6 +182,12 @@ export async function checkArticle(ctx: Context, slug: string) {
   return origin;
 }
 
+export async function checkArticleById(ctx: Context, id: number) {
+  const origin = await ctx.prisma.article.findUnique({ where: { id } });
+  if (!origin || origin.del) throw new UserInputError('Article not found');
+  return origin;
+}
+
 function checkArticleOwner(ctx: Context, article: Article) {
   if (ctx.currentUser!.id !== article.authorId) throw new AuthenticationError('unauthorized');
 }

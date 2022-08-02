@@ -35,7 +35,7 @@ const Register: NextPage = () => {
   const init: UserSignupInput = { email: '', password: '', username: '' };
   return (
     <Wrapper title='Sign up'>
-      <div className='container flex flex-wrap flex-col items-center mx-auto'>
+      <div className='container flex flex-wrap flex-col items-center mx-auto pt-12'>
         <h1 className='text-4xl font-extralight'>Sign up</h1>
         <p className='mt-4'>
           <CustomLink href='/login' mode='primary' underlined>

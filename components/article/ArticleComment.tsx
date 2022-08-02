@@ -1,16 +1,11 @@
-import { ArticleViewFragment, CommentViewFragment, useDeleteCommentMutation } from '../../generated/graphql';
+import { CommentViewFragment, useDeleteCommentMutation } from '../../generated/graphql';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
 import { useMessageHandler } from '../../lib/hooks/use-message';
 import ArticleAuthorInfo, { AuthorInfo } from './ArticleAuthorInfo';
 
-interface ArticleCommentProps {
-  comment: CommentViewFragment;
-  article: ArticleViewFragment;
-}
-
-export default function ArticleComment({ comment, article }: ArticleCommentProps) {
+export default function ArticleComment({ comment }: { comment: CommentViewFragment }) {
   const { user } = useCurrentUser();
-  const { info, handleErrors } = useMessageHandler();
+  const { success, handleErrors } = useMessageHandler();
   const { id, body, author, createdAt } = comment;
   const { username, image } = author;
   const authorInfo: AuthorInfo = { createdAt, username, image };
@@ -20,25 +15,26 @@ export default function ArticleComment({ comment, article }: ArticleCommentProps
     update(cache, { data }) {
       if (data) {
         const deleted = data.deleteComment;
+        // a cache.updateQuery approach seems not work here ...
         cache.modify({
-          id: cache.identify(article),
           fields: {
             comments(existingCommentRefs = [], { readField }) {
               return existingCommentRefs.filter((commentRef: any) => deleted.id !== readField('id', commentRef));
             },
           },
+          optimistic: true,
         });
       }
     },
     onError: (err) => handleErrors({ err, mode: 'toast' }),
-    onCompleted: () => info({ content: 'Comment deleted!', mode: 'toast' }),
+    onCompleted: () => success({ content: 'Comment deleted!', mode: 'toast' }),
   });
   async function onDeleteComment() {
     await deleteComment({ variables: { deleteCommentId: id } });
   }
 
   return (
-    <li className='border rounded-sm shadow-sm mb-2'>
+    <div className='border rounded-sm shadow-sm mb-2'>
       <div className='p-4'>
         <p className=''>{body}</p>
       </div>
@@ -56,6 +52,6 @@ export default function ArticleComment({ comment, article }: ArticleCommentProps
           )}
         </div>
       </div>
-    </li>
+    </div>
   );
 }

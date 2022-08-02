@@ -4,7 +4,12 @@ import Alert from '../common/alert';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { ArticlePreview } from './ArticlePreview';
 
-export default function ArticleList({ articles, loading }: { articles?: ArticlePreviewFragment[]; loading: boolean }) {
+interface ArticleListProps {
+  articles?: ArticlePreviewFragment[];
+  loading: boolean;
+}
+
+export default function ArticleList({ articles, loading }: ArticleListProps) {
   const { info, message } = useMessageHandler();
   if (loading || !articles) return <LoadingSpinner />;
   return (
@@ -12,13 +17,13 @@ export default function ArticleList({ articles, loading }: { articles?: ArticleP
       {message && message.mode === 'alert' ? (
         <Alert />
       ) : (
-        <ol className='divide-y divider-gray-200'>
+        <ul className='divide-y divider-gray-200'>
           {articles.map((article, index) => (
             <li key={article.slug}>
               <ArticlePreview article={article} />
             </li>
           ))}
-        </ol>
+        </ul>
       )}
     </div>
   );

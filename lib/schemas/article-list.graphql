@@ -1,5 +1,5 @@
-query Articles($author: String, $favorited: String, $offset: Int, $tag: String) {
-  articles(author: $author, favorited: $favorited, offset: $offset, tag: $tag) {
+query Articles($author: String, $favorited: String, $offset: Int, $limit: Int, $tag: String, $cursor: Int) {
+  articles(author: $author, favorited: $favorited, offset: $offset, limit: $limit, tag: $tag, cursor: $cursor) {
     ...ArticlePreview
   }
 }
@@ -8,8 +8,8 @@ query ArticlesCount($author: String, $favorited: String, $tag: String) {
   articlesCount(author: $author, favorited: $favorited, tag: $tag)
 }
 
-query Feed($offset: Int) {
-  feed(offset: $offset) {
+query Feed($offset: Int, $limit: Int, $cursor: Int) {
+  feed(offset: $offset, limit: $limit, cursor: $cursor) {
     ...ArticlePreview
   }
 }

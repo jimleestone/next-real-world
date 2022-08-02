@@ -30,7 +30,7 @@ module.exports = {
         padding: {
           DEFAULT: '1rem',
           sm: '1rem',
-          md: '1rem',
+          md: '2rem',
           lg: '3rem',
           xl: '4rem',
           '2xl': '14rem',
@@ -38,6 +38,7 @@ module.exports = {
       },
       flex: {
         2: '1 0 auto',
+        3: '0 0 auto',
       },
       typography: (theme) => ({
         DEFAULT: {

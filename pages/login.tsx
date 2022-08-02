@@ -23,7 +23,7 @@ const Login: NextPage = () => {
       if (data) {
         handleChangeToken(data.login.token as string);
         await client.resetStore();
-        router.back();
+        router.replace('/');
       }
     },
     onError: (err) => handleErrors({ err, mode: 'alert' }),
@@ -35,7 +35,7 @@ const Login: NextPage = () => {
   const init = { email: '', password: '' };
   return (
     <Wrapper title='Sign in'>
-      <div className='container flex flex-wrap flex-col items-center mx-auto'>
+      <div className='container flex flex-wrap flex-col items-center mx-auto pt-12'>
         <h1 className='text-4xl font-extralight'>Sign in</h1>
         <p className='mt-4'>
           <CustomLink href='/register' mode='primary' underlined>

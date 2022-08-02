@@ -64,6 +64,7 @@ function useProvideMessageHandler() {
       setDismissing(false);
     };
     onMount();
+    return () => setDismissing(false);
   }, [asPath]);
 
   const success = useCallback(({ content, mode }: Pick<Message, 'content' | 'mode'>) => {

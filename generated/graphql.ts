@@ -20,7 +20,6 @@ export type Article = Node & {
   __typename?: 'Article';
   author: Profile;
   body: Scalars['String'];
-  comments: Array<Comment>;
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
   favorited: Scalars['Boolean'];
@@ -181,6 +180,7 @@ export type QueryArticleArgs = {
 
 export type QueryArticlesArgs = {
   author?: InputMaybe<Scalars['String']>;
+  cursor?: InputMaybe<Scalars['Int']>;
   favorited?: InputMaybe<Scalars['String']>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -206,11 +206,15 @@ export type QueryCheckUsernameArgs = {
 
 
 export type QueryCommentsArgs = {
-  slug: Scalars['String'];
+  articleId: Scalars['Int'];
+  cursor?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
 };
 
 
 export type QueryFeedArgs = {
+  cursor?: InputMaybe<Scalars['Int']>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
@@ -243,7 +247,9 @@ export type ArticlesQueryVariables = Exact<{
   author?: InputMaybe<Scalars['String']>;
   favorited?: InputMaybe<Scalars['String']>;
   offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
   tag?: InputMaybe<Scalars['String']>;
+  cursor?: InputMaybe<Scalars['Int']>;
 }>;
 
 
@@ -260,6 +266,8 @@ export type ArticlesCountQuery = { __typename?: 'Query', articlesCount: number }
 
 export type FeedQueryVariables = Exact<{
   offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  cursor?: InputMaybe<Scalars['Int']>;
 }>;
 
 
@@ -293,7 +301,17 @@ export type ArticleQueryVariables = Exact<{
 }>;
 
 
-export type ArticleQuery = { __typename?: 'Query', article?: { __typename?: 'Article', id: number, slug: string, title: string, body: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean }, comments: Array<{ __typename?: 'Comment', id: number, body: string, createdAt: any, author: { __typename?: 'Profile', username: string, image?: string | null } }> } | null };
+export type ArticleQuery = { __typename?: 'Query', article?: { __typename?: 'Article', id: number, slug: string, title: string, body: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean } } | null };
+
+export type CommentsQueryVariables = Exact<{
+  articleId: Scalars['Int'];
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  cursor?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type CommentsQuery = { __typename?: 'Query', comments: Array<{ __typename?: 'Comment', id: number, body: string, createdAt: any, author: { __typename?: 'Profile', username: string, image?: string | null } }> };
 
 export type CreateCommentMutationVariables = Exact<{
   slug: Scalars['String'];
@@ -317,7 +335,7 @@ export type DeleteArticleMutationVariables = Exact<{
 
 export type DeleteArticleMutation = { __typename?: 'Mutation', deleteArticle: { __typename?: 'Article', id: number } };
 
-export type ArticleViewFragment = { __typename?: 'Article', id: number, slug: string, title: string, body: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean }, comments: Array<{ __typename?: 'Comment', id: number, body: string, createdAt: any, author: { __typename?: 'Profile', username: string, image?: string | null } }> };
+export type ArticleViewFragment = { __typename?: 'Article', id: number, slug: string, title: string, body: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean } };
 
 export type CommentViewFragment = { __typename?: 'Comment', id: number, body: string, createdAt: any, author: { __typename?: 'Profile', username: string, image?: string | null } };
 
@@ -436,17 +454,6 @@ export const ArticlePreviewFragmentDoc = gql`
   tagList
 }
     `;
-export const CommentViewFragmentDoc = gql`
-    fragment CommentView on Comment {
-  id
-  body
-  createdAt
-  author {
-    username
-    image
-  }
-}
-    `;
 export const ArticleViewFragmentDoc = gql`
     fragment ArticleView on Article {
   id
@@ -461,12 +468,20 @@ export const ArticleViewFragmentDoc = gql`
     image
     following
   }
-  comments {
-    ...CommentView
-  }
   tagList
 }
-    ${CommentViewFragmentDoc}`;
+    `;
+export const CommentViewFragmentDoc = gql`
+    fragment CommentView on Comment {
+  id
+  body
+  createdAt
+  author {
+    username
+    image
+  }
+}
+    `;
 export const EditArticleViewFragmentDoc = gql`
     fragment EditArticleView on Article {
   id
@@ -487,8 +502,15 @@ export const FollowsFragmentDoc = gql`
 }
     `;
 export const ArticlesDocument = gql`
-    query Articles($author: String, $favorited: String, $offset: Int, $tag: String) {
-  articles(author: $author, favorited: $favorited, offset: $offset, tag: $tag) {
+    query Articles($author: String, $favorited: String, $offset: Int, $limit: Int, $tag: String, $cursor: Int) {
+  articles(
+    author: $author
+    favorited: $favorited
+    offset: $offset
+    limit: $limit
+    tag: $tag
+    cursor: $cursor
+  ) {
     ...ArticlePreview
   }
 }
@@ -509,7 +531,9 @@ export const ArticlesDocument = gql`
  *      author: // value for 'author'
  *      favorited: // value for 'favorited'
  *      offset: // value for 'offset'
+ *      limit: // value for 'limit'
  *      tag: // value for 'tag'
+ *      cursor: // value for 'cursor'
  *   },
  * });
  */
@@ -560,8 +584,8 @@ export type ArticlesCountQueryHookResult = ReturnType<typeof useArticlesCountQue
 export type ArticlesCountLazyQueryHookResult = ReturnType<typeof useArticlesCountLazyQuery>;
 export type ArticlesCountQueryResult = Apollo.QueryResult<ArticlesCountQuery, ArticlesCountQueryVariables>;
 export const FeedDocument = gql`
-    query Feed($offset: Int) {
-  feed(offset: $offset) {
+    query Feed($offset: Int, $limit: Int, $cursor: Int) {
+  feed(offset: $offset, limit: $limit, cursor: $cursor) {
     ...ArticlePreview
   }
 }
@@ -580,6 +604,8 @@ export const FeedDocument = gql`
  * const { data, loading, error } = useFeedQuery({
  *   variables: {
  *      offset: // value for 'offset'
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
  *   },
  * });
  */
@@ -727,6 +753,44 @@ export function useArticleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ar
 export type ArticleQueryHookResult = ReturnType<typeof useArticleQuery>;
 export type ArticleLazyQueryHookResult = ReturnType<typeof useArticleLazyQuery>;
 export type ArticleQueryResult = Apollo.QueryResult<ArticleQuery, ArticleQueryVariables>;
+export const CommentsDocument = gql`
+    query Comments($articleId: Int!, $limit: Int, $offset: Int, $cursor: Int) {
+  comments(articleId: $articleId, limit: $limit, offset: $offset, cursor: $cursor) {
+    ...CommentView
+  }
+}
+    ${CommentViewFragmentDoc}`;
+
+/**
+ * __useCommentsQuery__
+ *
+ * To run a query within a React component, call `useCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommentsQuery({
+ *   variables: {
+ *      articleId: // value for 'articleId'
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useCommentsQuery(baseOptions: Apollo.QueryHookOptions<CommentsQuery, CommentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CommentsQuery, CommentsQueryVariables>(CommentsDocument, options);
+      }
+export function useCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CommentsQuery, CommentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CommentsQuery, CommentsQueryVariables>(CommentsDocument, options);
+        }
+export type CommentsQueryHookResult = ReturnType<typeof useCommentsQuery>;
+export type CommentsLazyQueryHookResult = ReturnType<typeof useCommentsLazyQuery>;
+export type CommentsQueryResult = Apollo.QueryResult<CommentsQuery, CommentsQueryVariables>;
 export const CreateCommentDocument = gql`
     mutation CreateComment($slug: String!, $input: CommentInput!) {
   createComment(slug: $slug, input: $input) {

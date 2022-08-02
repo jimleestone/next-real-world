@@ -7,7 +7,7 @@ export default function Header() {
   const { user } = useCurrentUser();
   const [ariaExpanded, setAriaExpanded] = useState(false);
   return (
-    <nav className='bg-white border-gray-200 py-2.5 rounded '>
+    <nav className='bg-white py-2.5 rounded-b fixed w-full z-20 shadow-md shadow-gray-300'>
       <div className='container flex flex-wrap justify-between items-center mx-auto'>
         <CustomLink className='flex items-center' href='/'>
           <span className='self-center text-primary text-2xl font-titillium whitespace-nowrap '>conduit</span>

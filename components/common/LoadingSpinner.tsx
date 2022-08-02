@@ -1,9 +1,9 @@
 export default function LoadingSpinner() {
   return (
-    <div className=' text-center'>
+    <div className='flex flex-2 justify-center pt-24'>
       <div role='status'>
         <svg
-          className='inline pt-4 w-16 h-16 text-gray-200 animate-spin fill-primary'
+          className='inline mr-2 w-16 h-16 text-gray-200 animate-spin fill-primary'
           viewBox='0 0 100 101'
           fill='none'
           xmlns='http://www.w3.org/2000/svg'

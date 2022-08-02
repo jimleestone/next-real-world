@@ -14,7 +14,7 @@ export type InputProps = Partial<{
   Omit<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, 'size'>;
 
 const inputConfig = {
-  basic: 'rounded-md border focus:outline-none focus:ring-4 focus:ring-opacity-50',
+  basic: 'rounded-md border focus:outline-none focus:ring-4 focus:ring-opacity-50 appearance-none',
   disabled: 'cursor-not-allowed focus:ring-0',
 };
 

@@ -6,6 +6,9 @@ export const email = string().trim().required('Email is required').email('Invali
 export const password = string().trim().max(100, 'Password is too long');
 const passwordRequired = password.required('Password is required');
 
+export const bio = string().trim().max(300, 'Bio is too long').nullable();
+export const image = string().trim().url('Invalid URL').max(1024, 'Image URL is too long').nullable();
+
 export const loginInputSchema = object<Record<keyof UserLoginInput, AnySchema>>({
   email,
   password: passwordRequired,
@@ -21,8 +24,8 @@ export const updateUserInputSchema = object<Record<keyof UserUpdateInput, AnySch
   username,
   email,
   password,
-  bio: string().max(300, 'Bio is too long').nullable(),
-  image: string().url('Invalid URL').max(1024, 'Image URL is too long').nullable(),
+  bio,
+  image,
 });
 
 export const articleInputSchema = object<Record<keyof ArticleInput, AnySchema>>({

@@ -5,7 +5,6 @@
 type Article implements Node {
   author: Profile!
   body: String!
-  comments: [Comment!]!
   createdAt: DateTime!
   description: String!
   favorited: Boolean!
@@ -84,13 +83,13 @@ type Profile implements BaseUser {
 
 type Query {
   article(slug: String!): Article
-  articles(author: String, favorited: String, limit: Int = 10, offset: Int = 0, tag: String): [Article!]!
+  articles(author: String, cursor: Int, favorited: String, limit: Int = 10, offset: Int = 0, tag: String): [Article!]!
   articlesCount(author: String, favorited: String, tag: String): Int!
   checkEmail(email: String!): String
   checkUsername(username: String!): String
-  comments(slug: String!): [Comment!]!
+  comments(articleId: Int!, cursor: Int, limit: Int = 20, offset: Int = 0): [Comment!]!
   currentUser: AuthUser!
-  feed(limit: Int = 10, offset: Int = 0): [Article!]!
+  feed(cursor: Int, limit: Int = 10, offset: Int = 0): [Article!]!
   feedCount: Int!
   profile(username: String!): Profile
   tags: [String!]!

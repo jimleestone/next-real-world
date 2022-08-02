@@ -1,6 +1,6 @@
-import { AnySchema, object, string } from 'yup';
+import { AnySchema, object } from 'yup';
 import { AuthUser, useCheckEmailLazyQuery, useCheckUsernameLazyQuery, UserUpdateInput } from '../../generated/graphql';
-import { email, password, username } from '../validation/schema';
+import { bio, email, image, password, username } from '../validation/schema';
 import { useMessageHandler } from './use-message';
 
 export function useCheckUser(origin?: AuthUser) {
@@ -26,7 +26,7 @@ export function useCheckUser(origin?: AuthUser) {
       return data?.checkEmail === null;
     }),
     password,
-    bio: string().trim().max(300, 'Bio is too long').nullable(),
-    image: string().url('Invalid URL').max(1024, 'Image URL is too long').nullable(),
+    bio,
+    image,
   });
 }

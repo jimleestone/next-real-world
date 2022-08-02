@@ -1,6 +1,6 @@
-import { extendType, nonNull, stringArg } from 'nexus';
+import { extendType, intArg, nonNull } from 'nexus';
 import { Context } from '../context';
-import { checkArticle } from '../mutation/article.mutation';
+import { checkArticleById } from '../mutation/article.mutation';
 
 const CommentQuery = extendType({
   type: 'Query',
@@ -8,16 +8,33 @@ const CommentQuery = extendType({
     t.nonNull.list.nonNull.field('comments', {
       type: 'Comment',
       args: {
-        slug: nonNull(stringArg()),
+        articleId: nonNull(intArg()),
+        limit: intArg({ default: 20 }),
+        offset: intArg({ default: 0 }),
+        cursor: intArg(),
       },
-      validate: ({ string }) => ({
-        slug: string().required(),
+      validate: ({ number }) => ({
+        articleId: number().required(),
+        limit: number().integer().positive().max(100),
+        offset: number().integer(),
+        cursor: number().integer().positive(),
       }),
-      resolve: async (_, { slug }, context: Context) => {
-        const article = await checkArticle(context, slug);
+      resolve: async (_, { articleId, limit, offset, cursor }, context: Context) => {
+        const article = await checkArticleById(context, articleId);
+        let skip, take;
+        if (cursor && limit && offset) {
+          skip = 1;
+          take = offset > 0 ? limit : -limit;
+        } else {
+          skip = offset || undefined;
+          take = limit || undefined;
+        }
         return context.prisma.comment.findMany({
           where: { del: false, articleId: article.id },
-          orderBy: { createdAt: 'desc' },
+          skip,
+          take,
+          cursor: cursor ? { id: cursor } : undefined,
+          orderBy: { createdAt: 'asc' },
         });
       },
     });

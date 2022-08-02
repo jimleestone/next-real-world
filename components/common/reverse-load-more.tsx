@@ -3,15 +3,9 @@ import { useCountdown } from 'usehooks-ts';
 import { useEventListener } from '../../lib/hooks/use-event-listener';
 import { usePrevious } from '../../lib/hooks/use-previous';
 import CustomButton from './CustomButton';
+import { LoadMoreProps } from './LoadMore';
 
-export interface LoadMoreProps {
-  currentSize?: number;
-  first?: number;
-  last?: number;
-  onLoadMore: ({ offset, cursor }: { offset: number; cursor: number }) => void;
-}
-
-export default function LoadMore({ first, last, currentSize = 0, onLoadMore }: LoadMoreProps) {
+export default function ReverseLoadMore({ first, last, currentSize = 0, onLoadMore }: LoadMoreProps) {
   const prevSize = usePrevious(currentSize);
   const fetchedSize = currentSize - (prevSize ?? 0);
   const noMore = fetchedSize < 10;
@@ -19,15 +13,23 @@ export default function LoadMore({ first, last, currentSize = 0, onLoadMore }: L
   const showNoMore = window.scrollY >= window.innerHeight / 2;
 
   const handleScrollToBottom = useCallback(() => {
-    if (noMore) startCountdown();
-    if (last && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight && count === 0) {
+    if (last && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
       onLoadMore({ offset: 1, cursor: last });
+    }
+  }, [onLoadMore, last]);
+
+  const handleScrollToTop = useCallback(() => {
+    if (noMore) startCountdown();
+    if (first && window.scrollY === 0 && (!noMore || count === 0)) {
+      onLoadMore({ offset: -1, cursor: first }); // load more and prepend to the list top
       resetCountdown();
       startCountdown();
     }
-  }, [onLoadMore, last, count, noMore, resetCountdown, startCountdown]);
+  }, [onLoadMore, first, noMore, count, startCountdown, resetCountdown]);
 
   useEventListener('scroll', handleScrollToBottom);
+  useEventListener('scroll', handleScrollToTop);
+
   return (
     <nav className='flex mt-4'>
       {showNoMore && (

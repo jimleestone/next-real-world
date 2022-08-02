@@ -25,20 +25,30 @@ const ArticleQuery = extendType({
         favorited: stringArg(),
         limit: intArg({ default: 10 }),
         offset: intArg({ default: 0 }),
+        cursor: intArg(),
       },
       validate: ({ string, number }) => ({
         author: string(),
         tag: string(),
         favorited: string(),
         limit: number().integer().positive().max(100),
-        offset: number().integer().min(0),
+        offset: number().integer(),
+        cursor: number().integer().positive(),
       }),
-      resolve: (_, args, context: Context) => {
-        const { limit, offset, ...rest } = args;
+      resolve: (_, { limit, offset, ...rest }, context: Context) => {
+        let skip, take;
+        if (rest.cursor && limit && offset) {
+          skip = 1;
+          take = offset > 0 ? limit : -limit;
+        } else {
+          skip = offset || undefined;
+          take = limit || undefined;
+        }
         return context.prisma.article.findMany({
           where: articleQueryFilter(rest),
-          skip: offset || undefined,
-          take: limit || undefined,
+          skip,
+          take,
+          cursor: rest.cursor ? { id: rest.cursor } : undefined,
           orderBy: { createdAt: 'desc' },
         });
       },
@@ -68,17 +78,29 @@ const ArticleQuery = extendType({
       args: {
         limit: intArg({ default: 10 }),
         offset: intArg({ default: 0 }),
+        cursor: intArg(),
       },
       authorize: (_, _args, ctx: Context) => !!ctx.currentUser,
       validate: ({ number }) => ({
         limit: number().integer().positive().max(100),
-        offset: number().integer().min(0),
+        offset: number().integer(),
+        cursor: number().integer().positive(),
       }),
-      resolve: (_, { limit, offset }, context: Context) => {
+      resolve: (_, { limit, offset, cursor }, context: Context) => {
+        let skip, take;
+        if (cursor && limit && offset) {
+          skip = 1;
+          take = offset > 0 ? limit : -limit;
+        } else {
+          skip = offset || undefined;
+          take = limit || undefined;
+        }
+
         return context.prisma.article.findMany({
           where: feedQueryFilter(context.currentUser!.id),
-          skip: offset || undefined,
-          take: limit || undefined,
+          skip,
+          take,
+          cursor: cursor ? { id: cursor } : undefined,
           orderBy: { createdAt: 'desc' },
         });
       },

@@ -35,7 +35,7 @@ const Home: NextPage = () => {
         <main className='basis-9/12 shrink-0'>
           <ArticlesViewer tabs={buildTabList()} queryFilter={queryFilter} isFeedQuery={isFeedQuery} />
         </main>
-        <aside className='md:ml-8'>
+        <aside className='basis-3/12 shrink-0 sticky self-start md:top-16 md:ml-8'>
           <HomeSidebar />
         </aside>
       </div>
