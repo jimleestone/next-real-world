@@ -20,6 +20,11 @@ This codebase was created to demonstrate a fully fledged fullstack application b
 - [Apollo Client] together with [GraphQL Code Generator]
 - [Tailwind CSS]
 
+## Features
+
+- **Pagination**: use Prisma cursor-based query as well as Apollo Client `fetchMore` approach to implement a infinity load-more feature on the feed list and comment list.
+- **Form Validation**: including a [Yup] schema check and [React Hook Form] for frontend form validation.
+
 ## Folder Structure
 
 - `pages` All pages of a regular Next.js app.
@@ -105,3 +110,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 [GraphQL Code Generator]:https://github.com/dotansimha/graphql-code-generator
 [Tailwind CSS]:https://github.com/tailwindlabs/tailwindcss
 [Next.js]:https://github.com/vercel/next.js
+[Yup]:https://github.com/jquense/yup
+[React Hook Form]:https://github.com/react-hook-form/react-hook-form
