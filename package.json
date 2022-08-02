@@ -1,6 +1,7 @@
 {
   "name": "next-real-world",
   "version": "0.1.0",
+  "description": "A fullstack implementation of the RealWorld App using Next.js, Prisma ORM and Apollo GraphQL stack",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "deploy": "sls --debug",
+    "db:migrate": "prisma migrate dev",
     "generate:prisma": "prisma generate",
     "generate:nexus": "ts-node --transpile-only lib/api/schema",
     "generate:jwk": "node gen-jwk",
