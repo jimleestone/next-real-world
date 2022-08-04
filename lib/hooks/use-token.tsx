@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext } from 'react';
-import { useLocalStorage } from './use-local-storage';
+import { useLocalStorage } from 'usehooks-ts';
 
 interface TokenContext {
   token: string;

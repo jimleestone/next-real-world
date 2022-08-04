@@ -32,8 +32,10 @@ fragment ArticleView on Article {
   id
   slug
   title
+  description
   body
   createdAt
+  updatedAt
   favorited
   favoritesCount
   author {

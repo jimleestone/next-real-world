@@ -7,23 +7,27 @@ import { ArticlePreview } from './ArticlePreview';
 interface ArticleListProps {
   articles?: ArticlePreviewFragment[];
   loading: boolean;
+  loadMoreLoading?: boolean;
 }
 
-export default function ArticleList({ articles, loading }: ArticleListProps) {
-  const { info, message } = useMessageHandler();
+export default function ArticleList({ articles, loading, loadMoreLoading }: ArticleListProps) {
+  const { message } = useMessageHandler();
   if (loading || !articles) return <LoadingSpinner />;
   return (
-    <div className='mb-4 bg-gray-50 rounded-lg border border-gray-100 py-4'>
+    <div className='mb-4 bg-gray-50 rounded-lg border border-gray-100 pt-4'>
       {message && message.mode === 'alert' ? (
         <Alert />
       ) : (
-        <ul className='divide-y divider-gray-200'>
-          {articles.map((article, index) => (
-            <li key={article.slug}>
-              <ArticlePreview article={article} />
-            </li>
-          ))}
-        </ul>
+        <>
+          {loadMoreLoading && <LoadingSpinner fixed nowrap />}
+          <ul className='divide-y divider-gray-200'>
+            {articles?.map((article, index) => (
+              <li key={article.slug}>
+                <ArticlePreview article={article} />
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );

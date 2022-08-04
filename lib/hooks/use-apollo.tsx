@@ -1,10 +1,8 @@
-import { ApolloClient, ApolloLink, ApolloProvider, createHttpLink } from '@apollo/client';
+import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import { onError } from '@apollo/client/link/error';
-import { createPersistedQueryLink } from '@apollo/client/link/persisted-queries';
-import { sha256 } from 'crypto-hash';
 import React, { useMemo, useRef } from 'react';
 import { cache } from '../cache';
+import { cacheLink, errorLink, httpLink } from '../client/apollo-client';
 import { useToken } from './use-token';
 
 export function CustomApolloProvider({ children }: { children: React.ReactNode }) {
@@ -22,26 +20,6 @@ export function CustomApolloProvider({ children }: { children: React.ReactNode }
         authorization: tokenRef.current ? `Bearer ${tokenRef.current}` : '',
       },
     }));
-
-    const cacheLink = createPersistedQueryLink({
-      sha256,
-      useGETForHashedQueries: true,
-    });
-
-    const httpLink = createHttpLink({
-      uri: '/api',
-    });
-
-    const errorLink = onError(({ graphQLErrors, networkError }) => {
-      if (process.env.NODE_ENV === 'development') {
-        if (graphQLErrors) {
-          graphQLErrors.forEach(({ message, locations, path }) =>
-            console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
-          );
-        }
-        if (networkError) console.log(`[Network error]: ${networkError.message}`);
-      }
-    });
 
     return new ApolloClient({
       link: ApolloLink.from([errorLink, authLink, cacheLink, httpLink]),

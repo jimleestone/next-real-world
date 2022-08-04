@@ -1,3 +1,4 @@
+import { NetworkStatus } from '@apollo/client';
 import { useCallback } from 'react';
 import { ArticleViewFragment, useCommentsQuery } from '../../generated/graphql';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
@@ -14,7 +15,7 @@ export default function CommentSection({ article }: { article: ArticleViewFragme
 
   const fallbackMessage = 'Could not load comments... ';
   const noArticlesMessage = 'No comments here... yet';
-  const { data, loading, fetchMore } = useCommentsQuery({
+  const { data, fetchMore, networkStatus } = useCommentsQuery({
     variables: { articleId: article.id },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -28,6 +29,8 @@ export default function CommentSection({ article }: { article: ArticleViewFragme
   const currentSize = comments?.length;
   const first = comments && comments.length && comments[0].id;
   const last = comments && comments.length && comments[data.comments.length - 1].id;
+  const loading = networkStatus === NetworkStatus.loading;
+  const loadMoreLoading = networkStatus === NetworkStatus.fetchMore;
 
   const onLoadMore = useCallback(
     async ({ offset, cursor }: { offset: number; cursor: number }) => {
@@ -38,7 +41,7 @@ export default function CommentSection({ article }: { article: ArticleViewFragme
   return (
     <div className='p-4 bg-gray-50 '>
       <div className='container flex flex-col items-center mx-auto'>
-        <div className='w-8/12'>
+        <div className='w-full sm:w-8/12'>
           {user ? (
             <CommentForm user={user} article={article} />
           ) : (
@@ -62,7 +65,7 @@ export default function CommentSection({ article }: { article: ArticleViewFragme
               </li>
             ))}
           </ul>
-          <LoadMore {...{ first, last, currentSize, onLoadMore }} />
+          <LoadMore {...{ first, last, currentSize, onLoadMore, loadMoreLoading }} />
         </div>
       </div>
     </div>
