@@ -1,4 +1,4 @@
-import { useTools } from '../../lib/hooks/use-tools';
+import Markdown from '../../lib/utils/markdown';
 import { joinStyles, joinStylesFromArray } from '../../lib/utils/styles-builder';
 
 interface MarkedProps {
@@ -14,9 +14,8 @@ const typoStyles = {
 const joinMarkedStyles = (className?: string) => joinStylesFromArray(basicStyle, joinStyles(typoStyles), className);
 
 export default function Marked({ content, className }: MarkedProps) {
-  const { markdown } = useTools();
   const markedContent = {
-    __html: markdown.parse(content),
+    __html: Markdown.parse(content),
   };
   return <div dangerouslySetInnerHTML={markedContent} className={joinMarkedStyles(className)} />;
 }

@@ -4,7 +4,7 @@ import CustomLink from './CustomLink';
 import NavItem from './NavItem';
 
 export default function Header() {
-  const { user } = useCurrentUser();
+  const { user, loading } = useCurrentUser();
   const [ariaExpanded, setAriaExpanded] = useState(false);
   return (
     <nav className='bg-white py-2.5 rounded-b fixed w-full z-20 shadow-md shadow-gray-300'>
@@ -37,18 +37,22 @@ export default function Header() {
 
         <div className={`${ariaExpanded ? 'block' : 'hidden'} w-full md:block md:w-auto`} id='navbar-default'>
           <ul className='flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium'>
-            <NavItem text='Home' href='/' />
-            {user ? (
-              <React.Fragment>
-                <NavItem text='New Article' href='/editor' icon='ion-compose' />
-                <NavItem text='Settings' href='/settings' icon='ion-gear-a' />
-                <NavItem text={`${user.username}`} href={`/profile/${user.username}`} />
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                <NavItem text='Sign in' href='/login' />
-                <NavItem text='Sign up' href='/register' />
-              </React.Fragment>
+            {!loading && (
+              <>
+                <NavItem text='Home' href='/' />
+                {user ? (
+                  <React.Fragment>
+                    <NavItem text='New Article' href='/editor' icon='ion-compose' />
+                    <NavItem text='Settings' href='/settings' icon='ion-gear-a' />
+                    <NavItem text={`${user.username}`} href={`/profile/${user.username}`} />
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <NavItem text='Sign in' href='/login' />
+                    <NavItem text='Sign up' href='/register' />
+                  </React.Fragment>
+                )}
+              </>
             )}
           </ul>
         </div>

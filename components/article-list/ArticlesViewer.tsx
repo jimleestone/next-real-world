@@ -1,3 +1,4 @@
+import { NetworkStatus } from '@apollo/client';
 import * as R from 'ramda';
 import React, { useCallback, useEffect } from 'react';
 import { UrlObject } from 'url';
@@ -18,18 +19,20 @@ export default function ArticlesViewer({ tabs, isFeedQuery, queryFilter }: Artic
 
   const fallbackMessage = 'Could not load articles... ';
   const noArticlesMessage = 'No articles are here... yet';
-  const [loadArticles, { data: articlesData, loading: articlesLoading, fetchMore }] = useArticlesLazyQuery({
+  const [loadArticles, { data: articlesData, fetchMore, networkStatus }] = useArticlesLazyQuery({
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
     onError: () => error({ content: fallbackMessage, mode: 'alert' }),
     onCompleted: (data) => {
       if (data && data.articles.length === 0) info({ content: noArticlesMessage, mode: 'alert' });
     },
   });
 
-  const [loadFeed, { data: feedData, loading: feedLoading, fetchMore: fetchMoreFeed }] = useFeedLazyQuery({
+  const [loadFeed, { data: feedData, fetchMore: fetchMoreFeed, networkStatus: feedNetworkStatus }] = useFeedLazyQuery({
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
     onError: () => error({ content: fallbackMessage, mode: 'alert' }),
     onCompleted: (data) => {
       if (data && data.feed.length === 0) info({ content: noArticlesMessage, mode: 'alert' });
@@ -49,9 +52,10 @@ export default function ArticlesViewer({ tabs, isFeedQuery, queryFilter }: Artic
 
   const articles = isFeedQuery ? feedData?.feed : articlesData?.articles;
   const currentSize = articles?.length;
-  const loading = feedLoading || articlesLoading;
+  const loading = networkStatus === NetworkStatus.loading || feedNetworkStatus === NetworkStatus.loading;
   const first = articles && articles.length && articles[0].id;
   const last = articles && articles.length && articles[articles.length - 1].id;
+  const loadMoreLoading = networkStatus === NetworkStatus.fetchMore || feedNetworkStatus === NetworkStatus.fetchMore;
 
   const onLoadMore = useCallback(
     async ({ offset, cursor }: { offset: number; cursor: number }) => {
@@ -65,8 +69,8 @@ export default function ArticlesViewer({ tabs, isFeedQuery, queryFilter }: Artic
   return (
     <React.Fragment>
       <TabList {...{ tabs }} />
-      <ArticleList {...{ articles, loading }} />
-      <ReverseLoadMore {...{ first, last, currentSize, onLoadMore }} />
+      <ArticleList {...{ articles, loading, loadMoreLoading }} />
+      <ReverseLoadMore {...{ first, last, currentSize, onLoadMore, loadMoreLoading }} />
     </React.Fragment>
   );
 }

@@ -1,7 +1,13 @@
-export default function LoadingSpinner() {
+type LoadingSpinnerProps = Partial<{
+  fixed: boolean;
+  nowrap: boolean;
+}>;
+
+export default function LoadingSpinner({ fixed = false, nowrap = false }: LoadingSpinnerProps) {
   return (
-    <div className='flex flex-2 justify-center pt-24'>
-      <div role='status'>
+    // <div className='flex flex-2 justify-center pt-24'>
+    <div className={`flex flex-2 justify-center ${!nowrap ? 'pt-24' : ''}`}>
+      <div role='status' className={`${fixed ? 'fixed' : ''}`}>
         <svg
           className='inline mr-2 w-16 h-16 text-gray-200 animate-spin fill-primary'
           viewBox='0 0 100 101'

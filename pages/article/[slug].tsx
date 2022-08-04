@@ -1,25 +1,29 @@
-import { NextPage } from 'next';
-import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
+import ArticleJsonMeta from '../../components/article/article-json-meta';
 import ArticleMeta from '../../components/article/ArticleMeta';
 import ArticlePageBanner from '../../components/article/ArticlePageBanner';
 import CommentSection from '../../components/article/CommentSection';
 import Marked from '../../components/article/marked';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
 import TagList from '../../components/common/TagList';
 import Wrapper from '../../components/common/wrapper';
-import { useArticleQuery } from '../../generated/graphql';
+import { ArticleDocument, ArticleQuery, ArticleViewFragment } from '../../generated/graphql';
+import client from '../../lib/client/apollo-client';
+import { BASE_URL } from '../../lib/constants';
 import Custom404 from '../404';
 
-const ArticlePage: NextPage = () => {
-  const { slug } = useRouter().query as { slug: string };
-  const { data, loading } = useArticleQuery({ variables: { slug } });
-
-  if (loading || !data) return <LoadingSpinner />;
-  if (!data.article) return <Custom404 />;
-  const { article } = data;
-
+const ArticlePage = ({ article }: { article: ArticleViewFragment }) => {
+  if (!article) return <Custom404 />;
+  const { slug, title, description } = article;
   return (
-    <Wrapper title={article.title}>
+    <Wrapper
+      {...{ title, description }}
+      openGraph={{
+        url: `${BASE_URL}/article/${slug}`,
+        title,
+        description,
+      }}
+    >
+      <ArticleJsonMeta article={article} />
       <ArticlePageBanner article={article} />
 
       <div className='container flex flex-wrap flex-col mx-auto mt-8'>
@@ -40,3 +44,15 @@ const ArticlePage: NextPage = () => {
 };
 
 export default ArticlePage;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { slug } = context.query;
+  const { data } = await client.query<ArticleQuery>({
+    query: ArticleDocument,
+    variables: { slug },
+    errorPolicy: 'ignore',
+  });
+  return {
+    props: { article: data.article },
+  };
+};

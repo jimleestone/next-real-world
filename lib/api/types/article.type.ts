@@ -45,16 +45,6 @@ const Article = objectType({
         return tags.map((t) => t.tag.name);
       },
     });
-    // t.nonNull.list.nonNull.field('comments', {
-    //   type: 'Comment',
-    //   resolve: ({ slug }, _, context: Context) => {
-    //     return context.prisma.article
-    //       .findUnique({
-    //         where: { slug },
-    //       })
-    //       .comments({ where: { del: false }, orderBy: { createdAt: 'desc' } });
-    //   },
-    // });
   },
 });
 

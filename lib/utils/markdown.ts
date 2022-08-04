@@ -8,11 +8,9 @@ import ruby from 'highlight.js/lib/languages/ruby';
 import ts from 'highlight.js/lib/languages/typescript';
 import yaml from 'highlight.js/lib/languages/yaml';
 import { marked } from 'marked';
-import { useMemo } from 'react';
 
-export function useMarkdown() {
-  return useMemo(() => {
-    // trying to use dynamic import but seemed not work
+export default class Markdown {
+  constructor() {
     highlighted.registerLanguage('jsx', js);
     highlighted.registerLanguage('javascript', js);
     highlighted.registerLanguage('typescript', ts);
@@ -23,7 +21,7 @@ export function useMarkdown() {
     highlighted.registerLanguage('json', json);
     highlighted.registerLanguage('yaml', yaml);
 
-    return marked.setOptions({
+    marked.setOptions({
       highlight: function (code, lang) {
         return highlighted.highlightAuto(code, [lang]).value;
       },
@@ -31,5 +29,9 @@ export function useMarkdown() {
       // breaks: true,
       silent: false,
     });
-  }, []);
+  }
+
+  static parse(content: string) {
+    return marked.parse(content);
+  }
 }

@@ -301,7 +301,7 @@ export type ArticleQueryVariables = Exact<{
 }>;
 
 
-export type ArticleQuery = { __typename?: 'Query', article?: { __typename?: 'Article', id: number, slug: string, title: string, body: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean } } | null };
+export type ArticleQuery = { __typename?: 'Query', article?: { __typename?: 'Article', id: number, slug: string, title: string, description: string, body: string, createdAt: any, updatedAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean } } | null };
 
 export type CommentsQueryVariables = Exact<{
   articleId: Scalars['Int'];
@@ -335,7 +335,7 @@ export type DeleteArticleMutationVariables = Exact<{
 
 export type DeleteArticleMutation = { __typename?: 'Mutation', deleteArticle: { __typename?: 'Article', id: number } };
 
-export type ArticleViewFragment = { __typename?: 'Article', id: number, slug: string, title: string, body: string, createdAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean } };
+export type ArticleViewFragment = { __typename?: 'Article', id: number, slug: string, title: string, description: string, body: string, createdAt: any, updatedAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean } };
 
 export type CommentViewFragment = { __typename?: 'Comment', id: number, body: string, createdAt: any, author: { __typename?: 'Profile', username: string, image?: string | null } };
 
@@ -459,8 +459,10 @@ export const ArticleViewFragmentDoc = gql`
   id
   slug
   title
+  description
   body
   createdAt
+  updatedAt
   favorited
   favoritesCount
   author {
