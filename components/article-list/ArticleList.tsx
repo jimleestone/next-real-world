@@ -7,10 +7,9 @@ import { ArticlePreview } from './ArticlePreview';
 interface ArticleListProps {
   articles?: ArticlePreviewFragment[];
   loading: boolean;
-  loadMoreLoading?: boolean;
 }
 
-export default function ArticleList({ articles, loading, loadMoreLoading }: ArticleListProps) {
+export default function ArticleList({ articles, loading }: ArticleListProps) {
   const { message } = useMessageHandler();
   if (loading || !articles) return <LoadingSpinner />;
   return (
@@ -18,16 +17,13 @@ export default function ArticleList({ articles, loading, loadMoreLoading }: Arti
       {message && message.mode === 'alert' ? (
         <Alert />
       ) : (
-        <>
-          {loadMoreLoading && <LoadingSpinner fixed nowrap />}
-          <ul className='divide-y divider-gray-200'>
-            {articles?.map((article, index) => (
-              <li key={article.slug}>
-                <ArticlePreview article={article} />
-              </li>
-            ))}
-          </ul>
-        </>
+        <ul className='divide-y divider-gray-200'>
+          {articles?.map((article, index) => (
+            <li key={article.slug}>
+              <ArticlePreview article={article} />
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );

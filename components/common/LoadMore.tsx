@@ -1,26 +1,31 @@
 import { useCallback } from 'react';
 import { useCountdown, useEventListener } from 'usehooks-ts';
-import { usePrevious } from '../../lib/hooks/use-previous';
+import { COMMENTS_FETCH_MORE_INTERVAL, COMMENTS_PAGE_SIZE } from '../../lib/constants';
 import CustomButton from './CustomButton';
 import LoadingSpinner from './LoadingSpinner';
 
-export interface LoadMoreProps {
-  currentSize?: number;
+export interface BaseLoadMoreProps {
   first?: number;
   last?: number;
   onLoadMore: ({ offset, cursor }: { offset: number; cursor: number }) => void;
   loadMoreLoading: boolean;
 }
 
-export default function LoadMore({ first, last, currentSize = 0, onLoadMore, loadMoreLoading }: LoadMoreProps) {
-  const prevSize = usePrevious(currentSize);
-  const fetchedSize = currentSize - (prevSize ?? 0);
-  const noMore = fetchedSize < 10;
-  const [count, { startCountdown, resetCountdown }] = useCountdown({ countStart: 15 });
+type LoadMoreProps = {
+  fetchedSize: number;
+} & BaseLoadMoreProps;
+
+export default function LoadMore({ last, fetchedSize, onLoadMore, loadMoreLoading }: LoadMoreProps) {
+  const noMore = fetchedSize < COMMENTS_PAGE_SIZE;
+  const [count, { startCountdown, resetCountdown }] = useCountdown({ countStart: COMMENTS_FETCH_MORE_INTERVAL });
 
   const handleScrollToBottom = useCallback(() => {
     if (noMore) startCountdown();
-    if (last && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight && count === 0) {
+    if (
+      last &&
+      window.scrollY + window.innerHeight >= document.documentElement.scrollHeight &&
+      (!noMore || count === 0)
+    ) {
       onLoadMore({ offset: 1, cursor: last });
       resetCountdown();
       startCountdown();

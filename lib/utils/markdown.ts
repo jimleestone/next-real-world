@@ -9,8 +9,10 @@ import ts from 'highlight.js/lib/languages/typescript';
 import yaml from 'highlight.js/lib/languages/yaml';
 import { marked } from 'marked';
 
-export default class Markdown {
-  constructor() {
+class Markdown {
+  private static _instance: Markdown;
+  private markdown: typeof marked;
+  private constructor() {
     highlighted.registerLanguage('jsx', js);
     highlighted.registerLanguage('javascript', js);
     highlighted.registerLanguage('typescript', ts);
@@ -21,17 +23,21 @@ export default class Markdown {
     highlighted.registerLanguage('json', json);
     highlighted.registerLanguage('yaml', yaml);
 
-    marked.setOptions({
+    this.markdown = marked.setOptions({
       highlight: function (code, lang) {
         return highlighted.highlightAuto(code, [lang]).value;
       },
-      // gfm: true,
-      // breaks: true,
+      gfm: true,
+      breaks: true,
       silent: false,
     });
   }
 
-  static parse(content: string) {
-    return marked.parse(content);
+  public static get instance() {
+    return this._instance || (this._instance = new this());
   }
+
+  parse = (content: string) => this.markdown.parse(content);
 }
+
+export default Markdown.instance;

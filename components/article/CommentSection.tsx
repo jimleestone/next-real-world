@@ -1,6 +1,7 @@
 import { NetworkStatus } from '@apollo/client';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { ArticleViewFragment, useCommentsQuery } from '../../generated/graphql';
+import { COMMENTS_PAGE_SIZE } from '../../lib/constants';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
 import { useMessageHandler } from '../../lib/hooks/use-message';
 import CustomLink from '../common/CustomLink';
@@ -16,9 +17,10 @@ export default function CommentSection({ article }: { article: ArticleViewFragme
   const fallbackMessage = 'Could not load comments... ';
   const noArticlesMessage = 'No comments here... yet';
   const { data, fetchMore, networkStatus } = useCommentsQuery({
-    variables: { articleId: article.id },
+    variables: { articleId: article.id, offset: 0, limit: COMMENTS_PAGE_SIZE },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
     onError: () => error({ content: fallbackMessage, mode: 'toast' }),
     onCompleted: (data) => {
       if (data && data.comments.length === 0) info({ content: noArticlesMessage, mode: 'none' });
@@ -26,15 +28,17 @@ export default function CommentSection({ article }: { article: ArticleViewFragme
   });
 
   const comments = data?.comments;
-  const currentSize = comments?.length;
-  const first = comments && comments.length && comments[0].id;
   const last = comments && comments.length && comments[data.comments.length - 1].id;
   const loading = networkStatus === NetworkStatus.loading;
   const loadMoreLoading = networkStatus === NetworkStatus.fetchMore;
 
+  const [fetchedSize, setFetchedSize] = useState(COMMENTS_PAGE_SIZE);
   const onLoadMore = useCallback(
     async ({ offset, cursor }: { offset: number; cursor: number }) => {
-      await fetchMore({ variables: { articleId: article.id, offset, cursor } });
+      const { data } = await fetchMore({
+        variables: { articleId: article.id, offset, cursor, limit: COMMENTS_PAGE_SIZE },
+      });
+      setFetchedSize(data.comments.length);
     },
     [article, fetchMore]
   );
@@ -65,7 +69,7 @@ export default function CommentSection({ article }: { article: ArticleViewFragme
               </li>
             ))}
           </ul>
-          <LoadMore {...{ first, last, currentSize, onLoadMore, loadMoreLoading }} />
+          <LoadMore {...{ last, fetchedSize, onLoadMore, loadMoreLoading }} />
         </div>
       </div>
     </div>
