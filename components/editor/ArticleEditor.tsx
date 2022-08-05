@@ -54,7 +54,7 @@ export default function ArticleEditor({ article, user }: { article?: EditArticle
   return (
     <div className='mb-auto'>
       <div className='container flex flex-wrap flex-col items-center mx-auto mt-12'>
-        <div className='w-9/12'>
+        <div className='w-full md:w-9/12'>
           <Form<ArticleInput> onSubmit={onSubmit} schema={articleInputSchema} mode='onChange' defaultValues={init}>
             <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
               <FormInput<ArticleInput> name='title' placeholder='Article title' />

@@ -40,7 +40,7 @@ const Settings = ({ user }: { user: AuthUser }) => {
     <Wrapper title='Settings'>
       <div className='container flex flex-wrap flex-col items-center mx-auto pt-12'>
         <h1 className='text-4xl font-extralight'>Your Settings</h1>
-        <div className='w-6/12'>
+        <div className='w-full sm:w-10/12 md:w-8/12 lg:w-6/12'>
           <Form<UserUpdateInput>
             onSubmit={onUpdateSettings}
             schema={checkSchema}

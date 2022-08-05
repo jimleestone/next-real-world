@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
+import * as R from 'ramda';
+import { useState } from 'react';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
 import CustomLink from './CustomLink';
-import NavItem from './NavItem';
+import NavItem, { NavItemProps } from './NavItem';
 
 export default function Header() {
   const { user, loading } = useCurrentUser();
   const [ariaExpanded, setAriaExpanded] = useState(false);
+  function toggleExpand(): () => void {
+    return () => setAriaExpanded(!ariaExpanded);
+  }
+
+  const commonNavItems: NavItemProps[] = [{ text: 'Home', href: '/' }];
+  const guestNavItems: NavItemProps[] = [
+    { text: 'Sign in', href: '/login' },
+    { text: 'Sign up', href: '/register' },
+  ];
+  const userNavItems: NavItemProps[] = [
+    { text: 'New Article', href: '/editor', icon: 'ion-compose' },
+    { text: 'Settings', href: '/settings', icon: 'ion-gear-a' },
+    { text: `${user?.username}`, href: `/profile/${user?.username}` },
+  ];
   return (
     <nav className='bg-white py-2.5 rounded-b fixed w-full z-20 shadow-md shadow-gray-300'>
       <div className='container flex flex-wrap justify-between items-center mx-auto'>
@@ -13,7 +28,7 @@ export default function Header() {
           <span className='self-center text-primary text-2xl font-titillium whitespace-nowrap '>conduit</span>
         </CustomLink>
         <button
-          onClick={() => setAriaExpanded(!ariaExpanded)}
+          onClick={toggleExpand()}
           type='button'
           className='inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 '
           aria-controls='navbar-default'
@@ -39,18 +54,22 @@ export default function Header() {
           <ul className='flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium'>
             {!loading && (
               <>
-                <NavItem text='Home' href='/' />
                 {user ? (
-                  <React.Fragment>
-                    <NavItem text='New Article' href='/editor' icon='ion-compose' />
-                    <NavItem text='Settings' href='/settings' icon='ion-gear-a' />
-                    <NavItem text={`${user.username}`} href={`/profile/${user.username}`} />
-                  </React.Fragment>
+                  <>
+                    {R.concat(commonNavItems, userNavItems).map(({ text, href, icon }) => (
+                      <li key={text} onClick={toggleExpand()}>
+                        <NavItem {...{ text, icon, href }} />
+                      </li>
+                    ))}
+                  </>
                 ) : (
-                  <React.Fragment>
-                    <NavItem text='Sign in' href='/login' />
-                    <NavItem text='Sign up' href='/register' />
-                  </React.Fragment>
+                  <>
+                    {R.concat(commonNavItems, guestNavItems).map(({ text, href, icon }) => (
+                      <li key={text} onClick={toggleExpand()}>
+                        <NavItem {...{ text, icon, href }} />
+                      </li>
+                    ))}
+                  </>
                 )}
               </>
             )}
