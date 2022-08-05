@@ -3,33 +3,38 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import ArticlesViewer from '../../components/article-list/ArticlesViewer';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { TabProps } from '../../components/common/Tab';
 import Wrapper from '../../components/common/wrapper';
 import UserInfo from '../../components/profile/UserInfo';
-import { ArticlesQueryVariables, useProfileQuery } from '../../generated/graphql';
+import { ArticlesQueryVariables, useProfileLazyQuery } from '../../generated/graphql';
 import Custom404 from '../404';
 
 const Profile: NextPage = () => {
+  const router = useRouter();
   const { username, favorites } = useRouter().query as { username: string; favorites?: string };
   const [queryFilter, setQueryFilter] = useState<ArticlesQueryVariables>({});
+  const [tabs, setTabs] = useState<TabProps[]>([]);
+  const [loadProfile, { data, loading }] = useProfileLazyQuery();
   useEffect(() => {
-    setQueryFilter(favorites ? { favorited: username } : { author: username });
-  }, [username, favorites]);
+    if (router.isReady) {
+      loadProfile({ variables: { username } });
+      setQueryFilter(favorites ? { favorited: username } : { author: username });
+      setTabs([
+        { name: 'My Articles', href: `/profile/${username}` },
+        { name: 'Favorited Articles', href: `/profile/${username}?favorites=true` },
+      ]);
+    }
+  }, [username, favorites, router.isReady, loadProfile]);
 
-  const { data, loading } = useProfileQuery({ variables: { username } });
-  if (loading) return <LoadingSpinner />;
-  if (!data || !data.profile) return <Custom404 />;
+  if (loading || !data) return <LoadingSpinner />;
+  const { profile } = data;
+  if (!profile) return <Custom404 />;
   return (
     <Wrapper title='Profile'>
-      <UserInfo author={data.profile} />,
+      <UserInfo author={profile} />,
       <div className='container flex flex-wrap justify-center mx-auto mt-8'>
         <div className='w-full'>
-          <ArticlesViewer
-            tabs={[
-              { name: 'My Articles', href: `/profile/${username}` },
-              { name: 'Favorited Articles', href: `/profile/${username}?favorites=true` },
-            ]}
-            queryFilter={queryFilter}
-          />
+          <ArticlesViewer {...{ tabs, queryFilter }} />
         </div>
       </div>
     </Wrapper>

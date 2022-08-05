@@ -15,7 +15,7 @@ export type CustomLinkProps = Partial<{
   LinkProps;
 
 const linkConfig = {
-  basic: 'active:cursor-default',
+  basic: '',
   underline: 'hover:underline',
 };
 
@@ -24,15 +24,15 @@ const linkTypeConfig: { [key in LinkType]: Partial<{ [key in LinkPattern]: strin
   nav: {
     basic: 'block p-2 text-gray-400 border-b border-gray-100 md:border-0 md:p-0',
     hover: 'hover:bg-gray-50 hover:text-gray-700 md:hover:bg-transparent',
-    active: 'text-gray-900 hover:text-black',
+    active: 'cursor-default text-gray-900 hover:text-black',
   },
   tab: {
     basic: 'flex p-4 rounded-t-lg text-gray-400 bg-gray-50 max-w-tab whitespace-nowrap',
     hover: 'hover:text-gray-700 hover:border-b-2 hover:border-gray-300',
-    active: 'text-primary border-b-2 border-primary hover:text-primary-600 hover:border-primary-600',
+    active: 'cursor-default text-primary border-b-2 border-primary hover:text-primary-600 hover:border-primary-600',
   },
   tag: {
-    active: 'underline bg-gray-600',
+    active: 'cursor-default underline bg-gray-600',
   },
   primary: {
     basic: 'text-primary',
@@ -71,13 +71,9 @@ export default function CustomLink({
 }: CustomLinkProps) {
   const { asPath } = useRouter();
   const active = decodeURIComponent(asPath) === decodeURIComponent(href as string);
-  const ariaCurrent = active ? 'page' : undefined;
-
   return (
     <Link href={href} {...props}>
-      <a aria-current={ariaCurrent} className={joinLinkStyles({ mode, underlined, className }, active)}>
-        {children}
-      </a>
+      <a className={joinLinkStyles({ mode, underlined, className }, active)}>{children}</a>
     </Link>
   );
 }

@@ -10,7 +10,7 @@ export default function withAuth(Component: any) {
     useEffect(() => {
       if (!loading && !user) push('/login');
     }, [user, loading, push]);
-    return user ? <Component /> : <LoadingSpinner />;
+    return user ? <Component {...{ user }} /> : <LoadingSpinner />;
   };
   return AuthenticatedComponent;
 }

@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { FeedDocument, Profile, useFollowMutation, useUnFollowMutation } from '../../generated/graphql';
+import { ARTICLES_PAGE_SIZE } from '../../lib/constants';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
 import { useMessageHandler } from '../../lib/hooks/use-message';
 import CustomButton from './CustomButton';
@@ -16,12 +17,12 @@ export default function FollowsButton({ author, className }: FollowsButtonProps)
   const { following, username } = author;
 
   const [follow, { loading: followLoading }] = useFollowMutation({
-    refetchQueries: [{ query: FeedDocument, variables: { offset: 0 } }], // reload the first page of user feeds
+    refetchQueries: [{ query: FeedDocument, variables: { offset: 0, limit: ARTICLES_PAGE_SIZE } }], // reload the first page of user feeds
     optimisticResponse: { follow: { username, following: true, __typename: 'Profile' } },
     onError: (err) => handleErrors({ err, mode: 'toast' }),
   });
   const [unFollow, { loading: unFollowLoading }] = useUnFollowMutation({
-    refetchQueries: [{ query: FeedDocument, variables: { offset: 0 } }],
+    refetchQueries: [{ query: FeedDocument, variables: { offset: 0, limit: ARTICLES_PAGE_SIZE } }],
     optimisticResponse: { unFollow: { username, following: false, __typename: 'Profile' } },
     onError: (err) => handleErrors({ err, mode: 'toast' }),
   });

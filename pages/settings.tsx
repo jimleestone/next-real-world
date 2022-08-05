@@ -1,22 +1,18 @@
 import { useApolloClient } from '@apollo/client';
-import { NextPage } from 'next';
 import CustomButton from '../components/common/CustomButton';
-import LoadingSpinner from '../components/common/LoadingSpinner';
 import Wrapper from '../components/common/wrapper';
 import Form from '../components/forms/form';
 import FormTextarea from '../components/forms/form-teextarea';
 import FormInput from '../components/forms/FormInput';
 import Submit from '../components/forms/submit';
-import { ProfileDocument, UserUpdateInput, useUpdateUserMutation } from '../generated/graphql';
+import { AuthUser, ProfileDocument, UserUpdateInput, useUpdateUserMutation } from '../generated/graphql';
 import withAuth from '../lib/auth/with-auth';
-import { useCurrentUser } from '../lib/hooks/use-current-user';
 import { useMessageHandler } from '../lib/hooks/use-message';
 import { useToken } from '../lib/hooks/use-token';
 import { useCheckUser } from '../lib/hooks/use-validation';
 
-const Settings: NextPage = () => {
+const Settings = ({ user }: { user: AuthUser }) => {
   const client = useApolloClient();
-  const { user } = useCurrentUser();
   const { handleChangeToken } = useToken();
   const { success, handleErrors } = useMessageHandler();
 
@@ -38,15 +34,8 @@ const Settings: NextPage = () => {
   }
 
   const checkSchema = useCheckUser(user);
-  if (!user) return <LoadingSpinner />;
   const { username, email, bio, image } = user;
-  const init: UserUpdateInput = {
-    username: user.username,
-    email: user.email,
-    bio: user.bio ?? '',
-    image: user.image ?? '',
-    password: '',
-  };
+  const init: UserUpdateInput = { username, email, bio: bio ?? '', image: image ?? '', password: '' };
   return (
     <Wrapper title='Settings'>
       <div className='container flex flex-wrap flex-col items-center mx-auto pt-12'>

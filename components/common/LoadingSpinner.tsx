@@ -1,13 +1,20 @@
+import { joinStylesFromArray } from '../../lib/utils/styles-builder';
+
 type LoadingSpinnerProps = Partial<{
-  fixed: boolean;
+  overlay: boolean;
   nowrap: boolean;
 }>;
 
-export default function LoadingSpinner({ fixed = false, nowrap = false }: LoadingSpinnerProps) {
+const loadingSpinnerConfig = {
+  basic: 'flex flex-2 justify-center',
+  wrap: 'pt-24',
+  overlay: 'z-1 absolute left-1/2',
+};
+
+export default function LoadingSpinner({ overlay = false, nowrap = false }: LoadingSpinnerProps) {
   return (
-    // <div className='flex flex-2 justify-center pt-24'>
-    <div className={`flex flex-2 justify-center ${!nowrap ? 'pt-24' : ''}`}>
-      <div role='status' className={`${fixed ? 'fixed' : ''}`}>
+    <div className={joinStylesFromArray(loadingSpinnerConfig.basic, !nowrap && loadingSpinnerConfig.wrap)}>
+      <div role='status' className={joinStylesFromArray(overlay && loadingSpinnerConfig.overlay)}>
         <svg
           className='inline mr-2 w-16 h-16 text-gray-200 animate-spin fill-primary'
           viewBox='0 0 100 101'

@@ -1,21 +1,24 @@
 import { NetworkStatus } from '@apollo/client';
+import { useRouter } from 'next/router';
 import * as R from 'ramda';
-import React, { useCallback, useEffect } from 'react';
-import { UrlObject } from 'url';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ArticlesQueryVariables, useArticlesLazyQuery, useFeedLazyQuery } from '../../generated/graphql';
+import { ARTICLES_PAGE_SIZE } from '../../lib/constants';
 import { useMessageHandler } from '../../lib/hooks/use-message';
 import ReverseLoadMore from '../common/reverse-load-more';
+import { TabProps } from '../common/Tab';
 import TabList from '../common/TabList';
 import ArticleList from './ArticleList';
 
 interface ArticleListProps {
-  tabs: { name: string; href: string | UrlObject }[];
+  tabs: TabProps[];
   isFeedQuery?: boolean;
   queryFilter: ArticlesQueryVariables;
 }
 
 export default function ArticlesViewer({ tabs, isFeedQuery, queryFilter }: ArticleListProps) {
   const { error, info } = useMessageHandler();
+  const { asPath } = useRouter();
 
   const fallbackMessage = 'Could not load articles... ';
   const noArticlesMessage = 'No articles are here... yet';
@@ -41,8 +44,7 @@ export default function ArticlesViewer({ tabs, isFeedQuery, queryFilter }: Artic
 
   useEffect(() => {
     const loadData = async () => {
-      const offset = 0;
-      const pagedQueryFilter = R.mergeRight(queryFilter, { offset });
+      const pagedQueryFilter = R.mergeRight(queryFilter, { offset: 0, limit: ARTICLES_PAGE_SIZE });
       isFeedQuery
         ? await loadFeed({ variables: { ...pagedQueryFilter } })
         : await loadArticles({ variables: { ...pagedQueryFilter } });
@@ -51,26 +53,37 @@ export default function ArticlesViewer({ tabs, isFeedQuery, queryFilter }: Artic
   }, [isFeedQuery, queryFilter, loadFeed, loadArticles]);
 
   const articles = isFeedQuery ? feedData?.feed : articlesData?.articles;
-  const currentSize = articles?.length;
   const loading = networkStatus === NetworkStatus.loading || feedNetworkStatus === NetworkStatus.loading;
   const first = articles && articles.length && articles[0].id;
   const last = articles && articles.length && articles[articles.length - 1].id;
   const loadMoreLoading = networkStatus === NetworkStatus.fetchMore || feedNetworkStatus === NetworkStatus.fetchMore;
 
+  const [topFetchedSize, setTopFetchedSize] = useState(ARTICLES_PAGE_SIZE);
+  const [bottomFetchedSize, setBottomFetchedSize] = useState(ARTICLES_PAGE_SIZE);
+  useEffect(() => {
+    // reset fetched size
+    setTopFetchedSize(ARTICLES_PAGE_SIZE);
+    setBottomFetchedSize(ARTICLES_PAGE_SIZE);
+  }, [asPath]);
   const onLoadMore = useCallback(
     async ({ offset, cursor }: { offset: number; cursor: number }) => {
-      const fetchMoreQueryFilter = R.mergeRight(queryFilter, { offset, cursor });
-      isFeedQuery
-        ? await fetchMoreFeed({ variables: fetchMoreQueryFilter })
-        : await fetchMore({ variables: fetchMoreQueryFilter });
+      const fetchMoreQueryFilter = R.mergeRight(queryFilter, { offset, cursor, limit: ARTICLES_PAGE_SIZE });
+      if (isFeedQuery) {
+        const { data } = await fetchMoreFeed({ variables: fetchMoreQueryFilter });
+        offset > 0 ? setBottomFetchedSize(data.feed.length) : setTopFetchedSize(data.feed.length);
+      } else {
+        const { data } = await fetchMore({ variables: fetchMoreQueryFilter });
+        offset > 0 ? setBottomFetchedSize(data.articles.length) : setTopFetchedSize(data.articles.length);
+      }
     },
     [isFeedQuery, fetchMoreFeed, fetchMore, queryFilter]
   );
   return (
     <React.Fragment>
       <TabList {...{ tabs }} />
-      <ArticleList {...{ articles, loading, loadMoreLoading }} />
-      <ReverseLoadMore {...{ first, last, currentSize, onLoadMore, loadMoreLoading }} />
+      <ReverseLoadMore {...{ first, last, onLoadMore, loadMoreLoading, topFetchedSize, bottomFetchedSize }}>
+        <ArticleList {...{ articles, loading }} />
+      </ReverseLoadMore>
     </React.Fragment>
   );
 }
