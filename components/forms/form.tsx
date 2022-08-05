@@ -15,7 +15,7 @@ export default function Form<TFormValues extends Record<string, any>>({
   schema,
   defaultValues,
   mode,
-  reValidateMode,
+  reValidateMode = 'onChange',
   alert = true,
   children,
 }: FormProps<TFormValues>) {

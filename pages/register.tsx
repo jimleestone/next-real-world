@@ -42,7 +42,7 @@ const Register: NextPage = () => {
             Have an account?
           </CustomLink>
         </p>
-        <div className='w-6/12'>
+        <div className='w-full sm:w-10/12 md:w-8/12 lg:w-6/12'>
           <Form<UserSignupInput> onSubmit={onSignUp} schema={signupInputSchema} defaultValues={init}>
             <fieldset className='flex flex-col justify-center mx-auto' aria-live='polite'>
               <FormInput<UserSignupInput> name='username' placeholder='Username' />
