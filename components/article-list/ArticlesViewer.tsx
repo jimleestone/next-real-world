@@ -2,16 +2,16 @@ import { NetworkStatus } from '@apollo/client';
 import { useRouter } from 'next/router';
 import * as R from 'ramda';
 import React, { useCallback, useEffect, useState } from 'react';
-import { UrlObject } from 'url';
 import { ArticlesQueryVariables, useArticlesLazyQuery, useFeedLazyQuery } from '../../generated/graphql';
 import { ARTICLES_PAGE_SIZE } from '../../lib/constants';
 import { useMessageHandler } from '../../lib/hooks/use-message';
 import ReverseLoadMore from '../common/reverse-load-more';
+import { TabProps } from '../common/Tab';
 import TabList from '../common/TabList';
 import ArticleList from './ArticleList';
 
 interface ArticleListProps {
-  tabs: { name: string; href: string | UrlObject }[];
+  tabs: TabProps[];
   isFeedQuery?: boolean;
   queryFilter: ArticlesQueryVariables;
 }

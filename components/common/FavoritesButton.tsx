@@ -6,6 +6,7 @@ import {
   useFavoriteMutation,
   useUnfavoriteMutation,
 } from '../../generated/graphql';
+import { ARTICLES_PAGE_SIZE } from '../../lib/constants';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
 import { useMessageHandler } from '../../lib/hooks/use-message';
 import CustomButton from './CustomButton';
@@ -23,14 +24,18 @@ export default function FavoritesButton({ article, className, text }: FavoritesB
   const { id, slug, favorited, favoritesCount } = article;
 
   const [favorite, { loading: favoriteLoading }] = useFavoriteMutation({
-    refetchQueries: [{ query: ArticlesDocument, variables: { favorited: user?.username, offset: 0 } }],
+    refetchQueries: [
+      { query: ArticlesDocument, variables: { favorited: user?.username, offset: 0, limit: ARTICLES_PAGE_SIZE } },
+    ],
     optimisticResponse: {
       favorite: { id, favorited: true, favoritesCount: favoritesCount + 1, __typename: 'Article' },
     },
     onError: (err) => handleErrors({ err, mode: 'toast' }),
   });
   const [unfavorite, { loading: unfavoriteLoading }] = useUnfavoriteMutation({
-    refetchQueries: [{ query: ArticlesDocument, variables: { favorited: user?.username, offset: 0 } }],
+    refetchQueries: [
+      { query: ArticlesDocument, variables: { favorited: user?.username, offset: 0, limit: ARTICLES_PAGE_SIZE } },
+    ],
     optimisticResponse: {
       unfavorite: { id, favorited: true, favoritesCount: favoritesCount - 1, __typename: 'Article' },
     },

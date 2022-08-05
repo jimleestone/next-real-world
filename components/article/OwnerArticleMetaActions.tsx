@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import { ArticlesDocument, ArticleViewFragment, TagsDocument, useDeleteArticleMutation } from '../../generated/graphql';
+import { ARTICLES_PAGE_SIZE } from '../../lib/constants';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
 import { useMessageHandler } from '../../lib/hooks/use-message';
 import CustomButton from '../common/CustomButton';
@@ -14,8 +15,8 @@ export default function OwnerArticleMetaActions({ article }: { article: ArticleV
   const [deleteArticle, { loading }] = useDeleteArticleMutation({
     refetchQueries: [
       { query: TagsDocument },
-      { query: ArticlesDocument, variables: { offset: 0 } },
-      { query: ArticlesDocument, variables: { author: user?.username, offset: 0 } },
+      { query: ArticlesDocument, variables: { offset: 0, limit: ARTICLES_PAGE_SIZE } },
+      { query: ArticlesDocument, variables: { author: user?.username, offset: 0, limit: ARTICLES_PAGE_SIZE } },
     ],
     onCompleted: () => router.replace('/'),
     onError: (err) => handleErrors({ err, mode: 'toast' }),

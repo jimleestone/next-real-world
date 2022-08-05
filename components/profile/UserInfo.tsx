@@ -7,7 +7,7 @@ import FollowsButton from '../common/FollowsButton';
 
 export default function UserInfo({ author }: { author: Profile }) {
   const router = useRouter();
-  const { user } = useCurrentUser();
+  const { user, loading } = useCurrentUser();
 
   const { image, username, bio } = author;
   const currentUsername = user ? user.username : '';
@@ -18,16 +18,17 @@ export default function UserInfo({ author }: { author: Profile }) {
         <CustomImage src={image} alt={username} size='l' />
         <h4 className='text-3xl font-bold mt-4 mb-2'>{username}</h4>
         <p className='font-thin text-lg text-gray-400 mb-4'>{bio}</p>
-
-        <div className='md:self-end'>
-          {currentUsername === username ? (
-            <CustomButton color='secondary' size='s' outlined onClick={() => router.push('/settings')}>
-              <i className='ion-gear-a'></i>&nbsp; Edit Profile Settings
-            </CustomButton>
-          ) : (
-            <FollowsButton author={author} />
-          )}
-        </div>
+        {!loading && (
+          <div className='md:self-end'>
+            {currentUsername === username ? (
+              <CustomButton color='secondary' size='s' outlined onClick={() => router.push('/settings')}>
+                <i className='ion-gear-a'></i>&nbsp; Edit Profile Settings
+              </CustomButton>
+            ) : (
+              <FollowsButton author={author} />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

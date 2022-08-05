@@ -11,7 +11,7 @@ import ArticleComment from './ArticleComment';
 import CommentForm from './CommentForm';
 
 export default function CommentSection({ article }: { article: ArticleViewFragment }) {
-  const { user } = useCurrentUser();
+  const { user, loading: userLoading } = useCurrentUser();
   const { message, error, info } = useMessageHandler();
 
   const fallbackMessage = 'Could not load comments... ';
@@ -46,19 +46,23 @@ export default function CommentSection({ article }: { article: ArticleViewFragme
     <div className='p-4 bg-gray-50 '>
       <div className='container flex flex-col items-center mx-auto'>
         <div className='w-full sm:w-8/12'>
-          {user ? (
-            <CommentForm user={user} article={article} />
-          ) : (
-            <p>
-              <CustomLink href='/login' mode='primary' underlined>
-                Sign in
-              </CustomLink>{' '}
-              or{' '}
-              <CustomLink href='/register' mode='primary' underlined>
-                sign up
-              </CustomLink>{' '}
-              to add comments on this article.
-            </p>
+          {!userLoading && (
+            <>
+              {user ? (
+                <CommentForm user={user} article={article} />
+              ) : (
+                <p>
+                  <CustomLink href='/login' mode='primary' underlined>
+                    Sign in
+                  </CustomLink>{' '}
+                  or{' '}
+                  <CustomLink href='/register' mode='primary' underlined>
+                    sign up
+                  </CustomLink>{' '}
+                  to add comments on this article.
+                </p>
+              )}
+            </>
           )}
           {loading && <LoadingSpinner />}
 

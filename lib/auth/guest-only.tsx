@@ -10,6 +10,7 @@ export default function guestOnly(Component: any) {
     useEffect(() => {
       if (!loading && user) replace('/');
     }, [user, loading, replace]);
+    if (loading) return <LoadingSpinner />;
     return !user ? <Component /> : <LoadingSpinner />;
   };
   return GuestComponent;
