@@ -7,7 +7,7 @@ export default function Footer() {
         <CustomLink href='/' className='font-titillium' mode='primary' underlined>
           conduit
         </CustomLink>
-        <span className='mt-2 font-light text-sm text-gray-400 md:ml-2.5 md:mt-0'>
+        <span className='mt-2 font-light text-sm text-gray-400 md:ml-2.5 md:mt-0 text-center'>
           An interactive learning project from <CustomLink href='https://thinkster.io'>Thinkster</CustomLink>. Code
           &amp; design licensed under MIT.
         </span>

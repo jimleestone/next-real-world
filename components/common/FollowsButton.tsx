@@ -13,7 +13,7 @@ interface FollowsButtonProps {
 export default function FollowsButton({ author, className }: FollowsButtonProps) {
   const { user } = useCurrentUser();
   const router = useRouter();
-  const { message, handleErrors } = useMessageHandler();
+  const { handleErrors } = useMessageHandler();
   const { following, username } = author;
 
   const [follow, { loading: followLoading }] = useFollowMutation({
@@ -41,19 +41,15 @@ export default function FollowsButton({ author, className }: FollowsButtonProps)
       outlined={!following}
       className={className}
       onClick={onFollowToggle}
-      disabled={followLoading || unFollowLoading || !!message}
+      disabled={followLoading || unFollowLoading}
     >
       {following ? (
         <>
-          {' '}
-          <i className='ion-minus-round'></i>
-          &nbsp; {`Unfollow ${username}`}
+          <i className='ion-minus-round'></i>&nbsp;Unfollow
         </>
       ) : (
         <>
-          {' '}
-          <i className='ion-plus-round'></i>
-          &nbsp; {`Follow ${username}`}
+          <i className='ion-plus-round'></i>&nbsp;Follow
         </>
       )}
     </CustomButton>

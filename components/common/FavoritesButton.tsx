@@ -20,7 +20,7 @@ interface FavoritesButtonProps {
 export default function FavoritesButton({ article, className, text }: FavoritesButtonProps) {
   const { user } = useCurrentUser();
   const router = useRouter();
-  const { message, handleErrors } = useMessageHandler();
+  const { handleErrors } = useMessageHandler();
   const { id, slug, favorited, favoritesCount } = article;
 
   const [favorite, { loading: favoriteLoading }] = useFavoriteMutation({
@@ -56,7 +56,7 @@ export default function FavoritesButton({ article, className, text }: FavoritesB
       outlined={!favorited}
       className={className}
       aria-label='Toggle Favorite'
-      disabled={favoriteLoading || unfavoriteLoading || !!message}
+      disabled={favoriteLoading || unfavoriteLoading}
       onClick={onFavoriteToggle}
     >
       <i className='ion-heart'></i>

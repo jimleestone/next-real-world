@@ -8,7 +8,7 @@ export type TabProps = {
 export default function Tab({ name, ...props }: TabProps) {
   return (
     <CustomLink mode='tab' shallow {...props}>
-      <span className='pr-4 overflow-hidden'>{name}</span>
+      <span className='pr-2 sm:pr-4 overflow-hidden'>{name}</span>
     </CustomLink>
   );
 }

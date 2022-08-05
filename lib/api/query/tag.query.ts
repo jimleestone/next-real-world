@@ -1,4 +1,5 @@
 import { extendType } from 'nexus';
+import { SIDEBAR_TAG_QUERY_SIZE } from '../../constants';
 import { Context } from '../context';
 
 const TagQuery = extendType({
@@ -13,7 +14,7 @@ const TagQuery = extendType({
           },
           orderBy: { articles: { _count: 'desc' } },
           skip: 0,
-          take: 39,
+          take: SIDEBAR_TAG_QUERY_SIZE,
         });
         return tags.filter((t) => t._count.articles != 0).map((t) => t.name);
       },

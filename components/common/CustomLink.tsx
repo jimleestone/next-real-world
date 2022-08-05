@@ -27,7 +27,8 @@ const linkTypeConfig: { [key in LinkType]: Partial<{ [key in LinkPattern]: strin
     active: 'cursor-default text-gray-900 hover:text-black',
   },
   tab: {
-    basic: 'flex p-4 rounded-t-lg text-gray-400 bg-gray-50 max-w-tab whitespace-nowrap',
+    basic:
+      'flex p-2 sm:p-4 rounded-t-lg text-gray-400 bg-gray-50 max-w-tab whitespace-nowrap text-sm sm:text-base font-medium',
     hover: 'hover:text-gray-700 hover:border-b-2 hover:border-gray-300',
     active: 'cursor-default text-primary border-b-2 border-primary hover:text-primary-600 hover:border-primary-600',
   },

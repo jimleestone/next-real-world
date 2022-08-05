@@ -7,7 +7,7 @@ type LoadingSpinnerProps = Partial<{
 
 const loadingSpinnerConfig = {
   basic: 'flex flex-2 justify-center',
-  wrap: 'pt-24',
+  wrap: 'py-24',
   overlay: 'z-1 absolute left-1/2',
 };
 
