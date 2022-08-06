@@ -4,6 +4,12 @@ query Article($slug: String!) {
   }
 }
 
+query ArticleMeta($slug: String!) {
+  article(slug: $slug) {
+    ...ArticleMetaView
+  }
+}
+
 query Comments($articleId: Int!, $limit: Int, $offset: Int, $cursor: Int) {
   comments(articleId: $articleId, limit: $limit, offset: $offset, cursor: $cursor) {
     ...CommentView
@@ -44,6 +50,17 @@ fragment ArticleView on Article {
     following
   }
   tagList
+}
+
+fragment ArticleMetaView on Article {
+  id
+  slug
+  favorited
+  favoritesCount
+  author {
+    username
+    following
+  }
 }
 
 fragment CommentView on Comment {

@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
+import * as R from 'ramda';
 import { useEffect, useState } from 'react';
 import ArticlesViewer from '../components/article-list/ArticlesViewer';
 import { TabProps } from '../components/common/Tab';
@@ -21,13 +22,11 @@ const Home: NextPage = () => {
       setFeedQuery(!!user && !!feed);
       setQueryFilter(tag ? { tag } : {});
       setTabs(
-        Array.from(
-          new Set([
-            ...(user ? [{ name: 'Your Feed', href: '/?feed=true' }] : []),
-            { name: 'Global Feed', href: '/' },
-            ...(tag ? [{ name: `# ${tag}`, href: `/?tag=${tag}` }] : []),
-          ])
-        )
+        R.unnest([
+          user ? [{ name: 'Your Feed', href: '/?feed=true' }] : [],
+          [{ name: 'Global Feed', href: '/' }],
+          tag ? [{ name: `# ${tag}`, href: `/?tag=${tag}` }] : [],
+        ])
       );
     }
   }, [feed, tag, user, router.isReady, loading]);
@@ -39,7 +38,7 @@ const Home: NextPage = () => {
         <main className='basis-9/12 shrink-0'>
           <ArticlesViewer {...{ tabs, queryFilter, isFeedQuery }} />
         </main>
-        <aside className='basis-3/12 shrink-0 sticky self-start md:top-16 md:ml-8'>
+        <aside className='w-full sticky self-start md:top-16 md:ml-8'>
           <HomeSidebar />
         </aside>
       </div>

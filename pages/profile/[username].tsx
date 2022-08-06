@@ -31,7 +31,7 @@ const Profile: NextPage = () => {
   if (!profile) return <Custom404 />;
   return (
     <Wrapper title='Profile'>
-      <UserInfo author={profile} />,
+      <UserInfo author={profile} />
       <div className='container flex flex-wrap justify-center mx-auto mt-8'>
         <div className='w-full'>
           <ArticlesViewer {...{ tabs, queryFilter }} />

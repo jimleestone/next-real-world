@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import React from 'react';
 import { ArticlesDocument, ArticleViewFragment, TagsDocument, useDeleteArticleMutation } from '../../generated/graphql';
 import { ARTICLES_PAGE_SIZE } from '../../lib/constants';
 import { useCurrentUser } from '../../lib/hooks/use-current-user';
@@ -27,16 +26,15 @@ export default function OwnerArticleMetaActions({ article }: { article: ArticleV
   }
 
   return (
-    <React.Fragment>
+    <div className='flex space-x-2'>
       <CustomButton size='s' color='secondary' outlined onClick={() => router.push(`/editor/${slug}`)}>
         <i className='ion-edit'></i>
-        &nbsp; Edit Article
+        &nbsp; Edit
       </CustomButton>
-      &nbsp;
       <CustomButton size='s' color='danger' outlined disabled={loading} onClick={() => onDeleteArticle()}>
         <i className='ion-trash-a'></i>
-        &nbsp; Delete Article
+        &nbsp; Delete
       </CustomButton>
-    </React.Fragment>
+    </div>
   );
 }
