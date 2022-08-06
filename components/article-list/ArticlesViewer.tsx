@@ -60,19 +60,27 @@ export default function ArticlesViewer({ tabs, isFeedQuery, queryFilter }: Artic
 
   const [topFetchedSize, setTopFetchedSize] = useState(ARTICLES_PAGE_SIZE);
   const [bottomFetchedSize, setBottomFetchedSize] = useState(ARTICLES_PAGE_SIZE);
+  const [topLoading, setTopLoading] = useState(false);
+  const [bottomLoading, setBottomLoading] = useState(false);
   useEffect(() => {
     // reset fetched size
     setTopFetchedSize(ARTICLES_PAGE_SIZE);
     setBottomFetchedSize(ARTICLES_PAGE_SIZE);
+    setTopLoading(false);
+    setBottomLoading(false);
   }, [asPath]);
   const onLoadMore = useCallback(
     async ({ offset, cursor }: { offset: number; cursor: number }) => {
       const fetchMoreQueryFilter = R.mergeRight(queryFilter, { offset, cursor, limit: ARTICLES_PAGE_SIZE });
       if (isFeedQuery) {
+        offset > 0 ? setBottomLoading(true) : setTopLoading(true);
         const { data } = await fetchMoreFeed({ variables: fetchMoreQueryFilter });
+        offset > 0 ? setBottomLoading(false) : setTopLoading(false);
         offset > 0 ? setBottomFetchedSize(data.feed.length) : setTopFetchedSize(data.feed.length);
       } else {
+        offset > 0 ? setBottomLoading(true) : setTopLoading(true);
         const { data } = await fetchMore({ variables: fetchMoreQueryFilter });
+        offset > 0 ? setBottomLoading(false) : setTopLoading(false);
         offset > 0 ? setBottomFetchedSize(data.articles.length) : setTopFetchedSize(data.articles.length);
       }
     },
@@ -81,7 +89,9 @@ export default function ArticlesViewer({ tabs, isFeedQuery, queryFilter }: Artic
   return (
     <React.Fragment>
       <TabList {...{ tabs }} />
-      <ReverseLoadMore {...{ first, last, onLoadMore, loadMoreLoading, topFetchedSize, bottomFetchedSize }}>
+      <ReverseLoadMore
+        {...{ first, last, onLoadMore, loadMoreLoading, topFetchedSize, bottomFetchedSize, topLoading, bottomLoading }}
+      >
         <ArticleList {...{ articles, loading }} />
       </ReverseLoadMore>
     </React.Fragment>

@@ -8,6 +8,8 @@ import { BaseLoadMoreProps } from './LoadMore';
 type ReverseLoadMoreProps = {
   topFetchedSize: number;
   bottomFetchedSize: number;
+  topLoading: boolean;
+  bottomLoading: boolean;
   children?: ReactNode;
 } & BaseLoadMoreProps;
 
@@ -19,6 +21,8 @@ export default function ReverseLoadMore({
   children,
   topFetchedSize,
   bottomFetchedSize,
+  topLoading,
+  bottomLoading,
 }: ReverseLoadMoreProps) {
   const bottomNoMore = bottomFetchedSize < ARTICLES_PAGE_SIZE;
   const topNoMore = topFetchedSize < ARTICLES_PAGE_SIZE;
@@ -44,9 +48,9 @@ export default function ReverseLoadMore({
 
   return (
     <div className=' flex flex-col justify-between relative'>
-      {loadMoreLoading && <LoadingSpinner nowrap overlay />}
+      {loadMoreLoading && topLoading && <LoadingSpinner nowrap overlay />}
       {children}
-      {loadMoreLoading && !bottomNoMore && <LoadingSpinner nowrap />}
+      {loadMoreLoading && bottomLoading && !bottomNoMore && <LoadingSpinner nowrap />}
       <nav className='flex mt-4'>
         {bottomNoMore && (
           <CustomButton color='secondary' outlined size='s' disabled>
