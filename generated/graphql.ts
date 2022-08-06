@@ -303,6 +303,13 @@ export type ArticleQueryVariables = Exact<{
 
 export type ArticleQuery = { __typename?: 'Query', article?: { __typename?: 'Article', id: number, slug: string, title: string, description: string, body: string, createdAt: any, updatedAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean } } | null };
 
+export type ArticleMetaQueryVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type ArticleMetaQuery = { __typename?: 'Query', article?: { __typename?: 'Article', id: number, slug: string, favorited: boolean, favoritesCount: number, author: { __typename?: 'Profile', username: string, following: boolean } } | null };
+
 export type CommentsQueryVariables = Exact<{
   articleId: Scalars['Int'];
   limit?: InputMaybe<Scalars['Int']>;
@@ -336,6 +343,8 @@ export type DeleteArticleMutationVariables = Exact<{
 export type DeleteArticleMutation = { __typename?: 'Mutation', deleteArticle: { __typename?: 'Article', id: number } };
 
 export type ArticleViewFragment = { __typename?: 'Article', id: number, slug: string, title: string, description: string, body: string, createdAt: any, updatedAt: any, favorited: boolean, favoritesCount: number, tagList: Array<string>, author: { __typename?: 'Profile', username: string, image?: string | null, following: boolean } };
+
+export type ArticleMetaViewFragment = { __typename?: 'Article', id: number, slug: string, favorited: boolean, favoritesCount: number, author: { __typename?: 'Profile', username: string, following: boolean } };
 
 export type CommentViewFragment = { __typename?: 'Comment', id: number, body: string, createdAt: any, author: { __typename?: 'Profile', username: string, image?: string | null } };
 
@@ -471,6 +480,18 @@ export const ArticleViewFragmentDoc = gql`
     following
   }
   tagList
+}
+    `;
+export const ArticleMetaViewFragmentDoc = gql`
+    fragment ArticleMetaView on Article {
+  id
+  slug
+  favorited
+  favoritesCount
+  author {
+    username
+    following
+  }
 }
     `;
 export const CommentViewFragmentDoc = gql`
@@ -755,6 +776,41 @@ export function useArticleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ar
 export type ArticleQueryHookResult = ReturnType<typeof useArticleQuery>;
 export type ArticleLazyQueryHookResult = ReturnType<typeof useArticleLazyQuery>;
 export type ArticleQueryResult = Apollo.QueryResult<ArticleQuery, ArticleQueryVariables>;
+export const ArticleMetaDocument = gql`
+    query ArticleMeta($slug: String!) {
+  article(slug: $slug) {
+    ...ArticleMetaView
+  }
+}
+    ${ArticleMetaViewFragmentDoc}`;
+
+/**
+ * __useArticleMetaQuery__
+ *
+ * To run a query within a React component, call `useArticleMetaQuery` and pass it any options that fit your needs.
+ * When your component renders, `useArticleMetaQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useArticleMetaQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useArticleMetaQuery(baseOptions: Apollo.QueryHookOptions<ArticleMetaQuery, ArticleMetaQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ArticleMetaQuery, ArticleMetaQueryVariables>(ArticleMetaDocument, options);
+      }
+export function useArticleMetaLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ArticleMetaQuery, ArticleMetaQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ArticleMetaQuery, ArticleMetaQueryVariables>(ArticleMetaDocument, options);
+        }
+export type ArticleMetaQueryHookResult = ReturnType<typeof useArticleMetaQuery>;
+export type ArticleMetaLazyQueryHookResult = ReturnType<typeof useArticleMetaLazyQuery>;
+export type ArticleMetaQueryResult = Apollo.QueryResult<ArticleMetaQuery, ArticleMetaQueryVariables>;
 export const CommentsDocument = gql`
     query Comments($articleId: Int!, $limit: Int, $offset: Int, $cursor: Int) {
   comments(articleId: $articleId, limit: $limit, offset: $offset, cursor: $cursor) {

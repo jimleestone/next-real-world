@@ -17,7 +17,7 @@ export default function ArticleMeta({ dark = false, article }: { dark?: boolean;
           {user && user.username === article.author.username ? (
             <OwnerArticleMetaActions article={article} />
           ) : (
-            <NonOwnerArticleMetaActions article={article} />
+            <NonOwnerArticleMetaActions article={article} user={user} />
           )}
         </div>
       )}

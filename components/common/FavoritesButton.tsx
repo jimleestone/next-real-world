@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import {
+  ArticleMetaViewFragment,
   ArticlePreviewFragment,
   ArticlesDocument,
   ArticleViewFragment,
@@ -12,7 +13,7 @@ import { useMessageHandler } from '../../lib/hooks/use-message';
 import CustomButton from './CustomButton';
 
 interface FavoritesButtonProps {
-  article: ArticlePreviewFragment | ArticleViewFragment;
+  article: ArticlePreviewFragment | ArticleViewFragment | ArticleMetaViewFragment;
   className?: string;
   text?: string;
 }
